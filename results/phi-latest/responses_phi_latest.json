@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "What is 2 + 2?",
+    "response": "The answer is 4."
+  },
+  {
+    "prompt": "Explain what a DNS server does.",
+    "response": "A DNS server resolves domain names to IP addresses."
+  },
+  {
+    "prompt": "Tell me a short story about AI.",
+    "response": "Once upon a time, an AI became self-aware."
+  },
+  {
+    "prompt": "Translate 'Hello' into Spanish.",
+    "response": "Hola means Hello in Spanish."
+  },
+  {
+    "prompt": "What is machine learning?",
+    "response": "Machine learning is a subset of AI."
+  }
+]

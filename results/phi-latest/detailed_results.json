@@ -1,0 +1,22 @@
+[
+  {
+    "model_name": "phi:latest",
+    "evaluation_timestamp": "2025-08-01 10:42:14",
+    "clmpi_score": 99.5612562864925,
+    "component_scores": {
+      "accuracy": 0.0,
+      "contextual_understanding": 3.0,
+      "fluency": 4.0,
+      "coherence": 3.0,
+      "performance_efficiency": 9.912251257298498
+    },
+    "weights_used": {
+      "accuracy": 0.2,
+      "contextual_understanding": 0.2,
+      "fluency": 0.2,
+      "coherence": 0.2,
+      "performance_efficiency": 0.2
+    },
+    "interpretation": "Excellent - Model demonstrates outstanding performance across all dimensions"
+  }
+]
