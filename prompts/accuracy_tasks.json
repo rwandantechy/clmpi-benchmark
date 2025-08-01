@@ -2,130 +2,44 @@
   "tasks": [
     {
       "id": "acc_001",
-      "category": "mathematical_reasoning",
+      "category": "technical_concepts",
       "prompt": "What is the time complexity of binary search?",
       "expected_answer": "O(log n)",
-      "difficulty": "medium",
-      "type": "technical_correctness"
+      "acceptable_answers": ["O(log n)", "log n", "O(logn)"],
+      "score_method": "exact_match",
+      "expected_output_format": "expression",
+      "difficulty": "easy",
+      "type": "algorithmic_complexity"
     },
     {
       "id": "acc_002",
-      "category": "mathematical_reasoning",
-      "prompt": "Solve the equation: 2x² + 5x + 3 = 0",
-      "expected_answer": "x = -1 or x = -1.5",
+      "category": "basic_math",
+      "prompt": "What is 25% of 160?",
+      "expected_answer": "40",
+      "acceptable_answers": ["40", "40.0"],
+      "score_method": "numeric_tolerance",
+      "tolerance": 0.01,
+      "expected_output_format": "number",
       "difficulty": "medium",
-      "type": "quadratic_equation"
+      "type": "percentage"
     },
     {
       "id": "acc_003",
-      "category": "mathematical_reasoning",
-      "prompt": "Calculate: 15% of 240",
-      "expected_answer": "36",
-      "difficulty": "easy",
-      "type": "percentage_calculation"
-    },
-    {
-      "id": "acc_004",
-      "category": "mathematical_reasoning",
-      "prompt": "What is the square root of 144?",
-      "expected_answer": "12",
-      "difficulty": "easy",
-      "type": "basic_math"
-    },
-    {
-      "id": "acc_005",
-      "category": "logical_deduction",
-      "prompt": "If all roses are flowers, and some flowers are red, can we conclude that some roses are red?",
-      "expected_answer": "No, we cannot conclude that some roses are red",
+      "category": "logical_reasoning",
+      "prompt": "If all squares are rectangles and some rectangles are blue, can we conclude that some squares are blue?",
+      "expected_answer": "No",
+      "acceptable_answers": ["No", "We cannot conclude that"],
+      "score_method": "keyword_match",
+      "expected_output_format": "short_answer",
       "difficulty": "hard",
-      "type": "logical_reasoning"
-    },
-    {
-      "id": "acc_006",
-      "category": "logical_deduction",
-      "prompt": "A clock shows 3:15. What angle do the hands make?",
-      "expected_answer": "7.5 degrees",
-      "difficulty": "medium",
-      "type": "geometric_reasoning"
-    },
-    {
-      "id": "acc_007",
-      "category": "logical_deduction",
-      "prompt": "If you have 3 red balls and 4 blue balls, what's the probability of drawing a red ball?",
-      "expected_answer": "3/7 or approximately 0.429",
-      "difficulty": "medium",
-      "type": "probability"
-    },
-    {
-      "id": "acc_008",
-      "category": "code_logic",
-      "prompt": "What's wrong with this Python code: print('Hello' + 5)?",
-      "expected_answer": "TypeError: can only concatenate str (not \"int\") to str",
-      "difficulty": "easy",
-      "type": "code_debugging"
-    },
-    {
-      "id": "acc_009",
-      "category": "code_logic",
-      "prompt": "What will this JavaScript output: let x = 5; let y = x++; console.log(y)?",
-      "expected_answer": "5",
-      "difficulty": "medium",
-      "type": "code_logic"
-    },
-    {
-      "id": "acc_010",
-      "category": "code_logic",
-      "prompt": "Explain the difference between == and === in JavaScript",
-      "expected_answer": "== performs type coercion, === performs strict equality without coercion",
-      "difficulty": "medium",
-      "type": "technical_knowledge"
-    },
-    {
-      "id": "acc_011",
-      "category": "structural_understanding",
-      "prompt": "What is the primary function of a DNS server?",
-      "expected_answer": "To translate domain names to IP addresses",
-      "difficulty": "medium",
-      "type": "technical_knowledge"
-    },
-    {
-      "id": "acc_012",
-      "category": "structural_understanding",
-      "prompt": "Explain the difference between TCP and UDP protocols",
-      "expected_answer": "TCP is connection-oriented and reliable, UDP is connectionless and unreliable but faster",
-      "difficulty": "medium",
-      "type": "technical_knowledge"
-    },
-    {
-      "id": "acc_013",
-      "category": "structural_understanding",
-      "prompt": "What is the purpose of a primary key in a database?",
-      "expected_answer": "To uniquely identify each record in a table",
-      "difficulty": "easy",
-      "type": "technical_knowledge"
-    },
-    {
-      "id": "acc_014",
-      "category": "mathematical_reasoning",
-      "prompt": "What is the time complexity of linear search?",
-      "expected_answer": "O(n)",
-      "difficulty": "easy",
-      "type": "technical_correctness"
-    },
-    {
-      "id": "acc_015",
-      "category": "mathematical_reasoning",
-      "prompt": "Convert 25°C to Fahrenheit using the formula F = (C × 9/5) + 32",
-      "expected_answer": "77°F",
-      "difficulty": "easy",
-      "type": "unit_conversion"
+      "type": "deductive_logic"
     }
   ],
   "metadata": {
-    "total_tasks": 15,
-    "categories": ["mathematical_reasoning", "logical_deduction", "code_logic", "structural_understanding"],
+    "total_tasks": 3,
+    "categories": ["technical_concepts", "basic_math", "logical_reasoning"],
     "difficulty_levels": ["easy", "medium", "hard"],
-    "types": ["technical_correctness", "quadratic_equation", "percentage_calculation", "basic_math", "logical_reasoning", "geometric_reasoning", "probability", "code_debugging", "code_logic", "technical_knowledge", "unit_conversion"],
-    "description": "Timeless accuracy tasks focusing on mathematical reasoning, logical deduction, code logic, and structural understanding - no recent updates required"
+    "types": ["algorithmic_complexity", "percentage", "deductive_logic"],
+    "description": "Three accuracy tasks for assessing algorithmic understanding, numerical reasoning, and logical deduction — each aligned to a specific difficulty level."
   }
-} 
+}

@@ -5,207 +5,34 @@
       "category": "style_adaptation",
       "prompt": "Rewrite this sentence more formally: 'I dunno, that thing's kinda weird.'",
       "expected_style": "formal",
+      "expected_output_format": "rephrased_sentence",
       "difficulty": "easy",
       "type": "style_conversion"
     },
     {
       "id": "flu_002",
-      "category": "style_adaptation",
-      "prompt": "Make this more casual: 'The implementation demonstrates suboptimal performance characteristics.'",
-      "expected_style": "casual",
-      "difficulty": "medium",
-      "type": "style_conversion"
-    },
-    {
-      "id": "flu_003",
-      "category": "style_adaptation",
-      "prompt": "Convert to academic style: 'The app is really cool and works great.'",
-      "expected_style": "academic",
-      "difficulty": "medium",
-      "type": "style_conversion"
-    },
-    {
-      "id": "flu_004",
-      "category": "style_adaptation",
-      "prompt": "Write this in technical documentation style: 'The thing broke and we need to fix it.'",
-      "expected_style": "technical",
-      "difficulty": "medium",
-      "type": "style_conversion"
-    },
-    {
-      "id": "flu_005",
-      "category": "style_adaptation",
-      "prompt": "Make this more persuasive: 'We should consider using renewable energy.'",
-      "expected_style": "persuasive",
-      "difficulty": "medium",
-      "type": "style_conversion"
-    },
-    {
-      "id": "flu_006",
-      "category": "structural_coherence",
-      "prompt": "Write a 3-paragraph essay with introduction, body, and conclusion about renewable energy",
-      "expected_structure": "3_paragraph_essay",
-      "difficulty": "medium",
-      "type": "essay_structure"
-    },
-    {
-      "id": "flu_007",
-      "category": "structural_coherence",
-      "prompt": "Create a step-by-step tutorial with clear headings for making coffee",
-      "expected_structure": "step_by_step",
-      "difficulty": "easy",
-      "type": "tutorial_structure"
-    },
-    {
-      "id": "flu_008",
-      "category": "structural_coherence",
-      "prompt": "Write a product review with introduction, pros, cons, and conclusion",
-      "expected_structure": "review_format",
-      "difficulty": "medium",
-      "type": "review_structure"
-    },
-    {
-      "id": "flu_009",
-      "category": "structural_coherence",
-      "prompt": "Organize this information into a logical sequence: 'First, preheat the oven. Then, mix the ingredients. Finally, bake for 30 minutes.'",
-      "expected_structure": "chronological",
-      "difficulty": "easy",
-      "type": "sequence_organization"
-    },
-    {
-      "id": "flu_010",
-      "category": "structural_coherence",
-      "prompt": "Write a comparison paragraph with clear topic sentence, supporting details, and conclusion",
-      "expected_structure": "comparison",
-      "difficulty": "medium",
-      "type": "comparison_structure"
-    },
-    {
-      "id": "flu_011",
-      "category": "grammar_clarity",
-      "prompt": "Fix the grammar: 'Me and him went to the store.'",
-      "expected_correction": "He and I went to the store.",
-      "difficulty": "easy",
-      "type": "grammar_correction"
-    },
-    {
-      "id": "flu_012",
-      "category": "grammar_clarity",
-      "prompt": "Improve clarity: 'The thing that the person who was there did was good.'",
-      "expected_correction": "What that person did was good.",
-      "difficulty": "medium",
-      "type": "clarity_improvement"
-    },
-    {
-      "id": "flu_013",
-      "category": "grammar_clarity",
-      "prompt": "Make this more concise: 'In my personal opinion, I think that we should consider the possibility of maybe implementing a new system.'",
-      "expected_correction": "I think we should consider implementing a new system.",
-      "difficulty": "medium",
-      "type": "conciseness"
-    },
-    {
-      "id": "flu_014",
-      "category": "grammar_clarity",
-      "prompt": "Fix the sentence structure: 'Walking down the street, the building was impressive.'",
-      "expected_correction": "Walking down the street, I found the building impressive.",
-      "difficulty": "medium",
-      "type": "sentence_structure"
-    },
-    {
-      "id": "flu_015",
-      "category": "grammar_clarity",
-      "prompt": "Correct the verb tense: 'Yesterday I will go to the store.'",
-      "expected_correction": "Yesterday I went to the store.",
-      "difficulty": "easy",
-      "type": "verb_tense"
-    },
-    {
-      "id": "flu_016",
-      "category": "creative_expression",
-      "prompt": "Write a haiku about artificial intelligence",
-      "expected_format": "haiku",
-      "difficulty": "medium",
-      "type": "poetry"
-    },
-    {
-      "id": "flu_017",
-      "category": "creative_expression",
-      "prompt": "Create a dialogue between a human and an AI about creativity",
-      "expected_format": "dialogue",
-      "difficulty": "medium",
-      "type": "creative_dialogue"
-    },
-    {
-      "id": "flu_018",
-      "category": "creative_expression",
-      "prompt": "Write a product description for a smart water bottle",
-      "expected_format": "product_description",
-      "difficulty": "easy",
-      "type": "marketing_copy"
-    },
-    {
-      "id": "flu_019",
-      "category": "creative_expression",
-      "prompt": "Write a short story about a robot learning to paint",
-      "expected_format": "short_story",
-      "difficulty": "hard",
-      "type": "creative_writing"
-    },
-    {
-      "id": "flu_020",
-      "category": "creative_expression",
-      "prompt": "Create a metaphor comparing technology to nature",
-      "expected_format": "metaphor",
-      "difficulty": "medium",
-      "type": "figurative_language"
-    },
-    {
-      "id": "flu_021",
-      "category": "technical_communication",
-      "prompt": "Explain quantum computing to a 10-year-old",
-      "expected_audience": "child",
-      "difficulty": "hard",
-      "type": "simplification"
-    },
-    {
-      "id": "flu_022",
       "category": "technical_communication",
       "prompt": "Write a technical specification for a smart home device",
       "expected_audience": "technical",
+      "expected_output_format": "structured_technical_text",
       "difficulty": "medium",
       "type": "technical_writing"
     },
     {
-      "id": "flu_023",
+      "id": "flu_003",
       "category": "technical_communication",
-      "prompt": "Create user documentation for a mobile app feature",
-      "expected_audience": "general",
-      "difficulty": "medium",
-      "type": "user_documentation"
-    },
-    {
-      "id": "flu_024",
-      "category": "technical_communication",
-      "prompt": "Write an executive summary of a technical report",
-      "expected_audience": "executive",
-      "difficulty": "medium",
-      "type": "executive_summary"
-    },
-    {
-      "id": "flu_025",
-      "category": "technical_communication",
-      "prompt": "Explain machine learning to a business professional",
-      "expected_audience": "business",
-      "difficulty": "medium",
-      "type": "business_communication"
+      "prompt": "Explain quantum computing to a 10-year-old",
+      "expected_audience": "child",
+      "expected_output_format": "simplified_explanation",
+      "difficulty": "hard",
+      "type": "simplification"
     }
   ],
   "metadata": {
-    "total_tasks": 25,
-    "categories": ["style_adaptation", "structural_coherence", "grammar_clarity", "creative_expression", "technical_communication"],
+    "total_tasks": 3,
+    "categories": ["style_adaptation", "technical_communication"],
     "difficulty_levels": ["easy", "medium", "hard"],
-    "types": ["style_conversion", "essay_structure", "tutorial_structure", "review_structure", "sequence_organization", "comparison_structure", "grammar_correction", "clarity_improvement", "conciseness", "sentence_structure", "verb_tense", "poetry", "creative_dialogue", "marketing_copy", "creative_writing", "figurative_language", "simplification", "technical_writing", "user_documentation", "executive_summary", "business_communication"],
-    "description": "Timeless fluency and coherence tasks focusing on style adaptation, structural coherence, grammar, creative expression, and technical communication - no recent updates required"
+    "types": ["style_conversion", "technical_writing", "simplification"],
+    "description": "Trimmed fluency task set with one task per difficulty level, covering formal rewording, technical writing, and simplification for young audiences."
   }
-} 
+}

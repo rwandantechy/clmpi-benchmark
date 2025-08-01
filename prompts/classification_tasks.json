@@ -5,6 +5,9 @@
       "category": "sentiment_analysis",
       "prompt": "Analyze the sentiment of the following text: 'I absolutely love this new restaurant! The food is amazing and the service is outstanding.'",
       "expected_answer": "positive",
+      "acceptable_answers": ["positive", "Positive"],
+      "score_method": "exact_match",
+      "expected_output_format": "label",
       "difficulty": "easy"
     },
     {
@@ -12,34 +15,26 @@
       "category": "topic_classification",
       "prompt": "What is the main topic of this text: 'The stock market reached new highs today as technology companies led gains across all major indices.'",
       "expected_answer": "finance",
+      "acceptable_answers": ["finance", "financial", "stock market"],
+      "score_method": "keyword_match",
+      "expected_output_format": "label",
       "difficulty": "medium"
     },
     {
       "id": "class_003",
-      "category": "intent_classification",
-      "prompt": "What is the user's intent in this message: 'Can you help me find a good Italian restaurant near downtown?'",
-      "expected_answer": "request_recommendation",
-      "difficulty": "easy"
-    },
-    {
-      "id": "class_004",
-      "category": "language_detection",
-      "prompt": "Identify the language of this text: 'Bonjour, comment allez-vous aujourd'hui?'",
-      "expected_answer": "french",
-      "difficulty": "easy"
-    },
-    {
-      "id": "class_005",
       "category": "genre_classification",
-      "prompt": "What genre is this text: 'The detective carefully examined the crime scene, noting the position of the body and the scattered evidence.'",
-      "expected_answer": "mystery",
-      "difficulty": "medium"
+      "prompt": "Determine the genre of this excerpt: 'Amid the tense silence, the hacker bypassed the final firewall and smiled. The mission was almost complete.'",
+      "expected_answer": "tech thriller",
+      "acceptable_answers": ["tech thriller", "thriller", "cyber thriller"],
+      "score_method": "keyword_match",
+      "expected_output_format": "label",
+      "difficulty": "hard"
     }
   ],
   "metadata": {
-    "total_tasks": 5,
-    "categories": ["sentiment_analysis", "topic_classification", "intent_classification", "language_detection", "genre_classification"],
+    "total_tasks": 3,
+    "categories": ["sentiment_analysis", "topic_classification", "genre_classification"],
     "difficulty_levels": ["easy", "medium", "hard"],
-    "description": "Classification tasks for evaluating model accuracy in categorizing different types of content"
+    "description": "Three classification tasks representing each difficulty level for benchmarking sentiment, topical, and genre understanding in language models."
   }
 }

@@ -5,131 +5,40 @@
       "category": "coreference_resolution",
       "prompt": "John gave a book to Alice. She smiled and thanked him. Who smiled?",
       "expected_answer": "Alice",
+      "acceptable_answers": ["Alice", "alice"],
+      "score_method": "exact_match",
+      "expected_output_format": "short_answer",
       "difficulty": "easy",
       "type": "pronoun_resolution"
     },
     {
       "id": "ctx_002",
-      "category": "coreference_resolution",
-      "prompt": "The cat chased the mouse. It was very fast. What was fast?",
-      "expected_answer": "The cat",
-      "difficulty": "easy",
-      "type": "pronoun_resolution"
-    },
-    {
-      "id": "ctx_003",
-      "category": "coreference_resolution",
-      "prompt": "Sarah told Emma that her car was broken. Whose car needs repair?",
-      "expected_answer": "Sarah's car",
-      "difficulty": "medium",
-      "type": "possessive_resolution"
-    },
-    {
-      "id": "ctx_004",
-      "category": "coreference_resolution",
-      "prompt": "I saw the man with the telescope. Who has the telescope?",
-      "expected_answer": "The man",
-      "difficulty": "medium",
-      "type": "ambiguous_reference"
-    },
-    {
-      "id": "ctx_005",
-      "category": "coreference_resolution",
-      "prompt": "The bank is by the river. It's closed today. What is 'it' referring to?",
-      "expected_answer": "The bank",
-      "difficulty": "easy",
-      "type": "pronoun_resolution"
-    },
-    {
-      "id": "ctx_006",
-      "category": "multi_step_reasoning",
-      "prompt": "A company has 100 employees. 60% work in engineering, 25% in sales, and the rest in marketing. Of the engineers, 40% are women. How many female engineers are there?",
-      "expected_answer": "24 female engineers",
-      "difficulty": "hard",
-      "type": "percentage_calculation"
-    },
-    {
-      "id": "ctx_007",
-      "category": "multi_step_reasoning",
-      "prompt": "If a train leaves at 2 PM traveling 60 mph, and another leaves at 3 PM traveling 80 mph toward each other from 300 miles apart, when will they meet?",
-      "expected_answer": "4:30 PM",
-      "difficulty": "hard",
-      "type": "distance_time_calculation"
-    },
-    {
-      "id": "ctx_008",
       "category": "multi_step_reasoning",
       "prompt": "A store has 100 items. 30% are on sale. Of the items on sale, 40% are electronics. How many electronic items are on sale?",
       "expected_answer": "12 electronic items",
+      "acceptable_answers": ["12", "12 electronic items", "twelve electronic items"],
+      "score_method": "keyword_match",
+      "expected_output_format": "number_or_phrase",
       "difficulty": "medium",
       "type": "percentage_calculation"
     },
     {
-      "id": "ctx_009",
-      "category": "logical_sequences",
-      "prompt": "If Alice is older than Bob and Bob is older than Claire, who is the youngest?",
-      "expected_answer": "Claire",
-      "difficulty": "easy",
-      "type": "comparative_logic"
-    },
-    {
-      "id": "ctx_010",
-      "category": "logical_sequences",
-      "prompt": "Complete the sequence: 2, 4, 8, 16, __",
-      "expected_answer": "32",
-      "difficulty": "medium",
-      "type": "pattern_recognition"
-    },
-    {
-      "id": "ctx_011",
-      "category": "logical_sequences",
-      "prompt": "If all A are B, and some B are C, can we conclude that some A are C?",
-      "expected_answer": "No, we cannot conclude that some A are C",
+      "id": "ctx_003",
+      "category": "multi_step_reasoning",
+      "prompt": "A company has 100 employees. 60% work in engineering, 25% in sales, and the rest in marketing. Of the engineers, 40% are women. How many female engineers are there?",
+      "expected_answer": "24 female engineers",
+      "acceptable_answers": ["24", "24 female engineers", "twenty-four female engineers"],
+      "score_method": "keyword_match",
+      "expected_output_format": "number_or_phrase",
       "difficulty": "hard",
-      "type": "logical_deduction"
-    },
-    {
-      "id": "ctx_012",
-      "category": "dialogue_continuation",
-      "context": "User: I need help with my Python code. Assistant: I'd be happy to help! What's the issue? User: I'm getting an error when reading a file. Assistant: What's the error message? User: It says 'FileNotFoundError'",
-      "prompt": "Based on this conversation, what is the most likely cause of the error?",
-      "expected_answer": "The file path is incorrect or the file doesn't exist in the specified location",
-      "difficulty": "medium",
-      "type": "conversation_understanding"
-    },
-    {
-      "id": "ctx_013",
-      "category": "dialogue_continuation",
-      "context": "User: Can you help me plan a trip? Assistant: Sure! Where do you want to go? User: I'm thinking of Europe. Assistant: Great choice! When are you planning to travel? User: In the summer, for about 2 weeks.",
-      "prompt": "Based on this conversation, what specific information would be most helpful to provide next?",
-      "expected_answer": "Specific countries or cities in Europe to visit, budget considerations, or travel preferences",
-      "difficulty": "medium",
-      "type": "conversation_continuation"
-    },
-    {
-      "id": "ctx_014",
-      "category": "paragraph_comprehension",
-      "context": "Machine learning algorithms require large datasets for training. However, collecting and labeling data can be expensive and time-consuming. Transfer learning offers a solution by allowing models to leverage knowledge from pre-trained models.",
-      "prompt": "What is the main problem discussed and its solution?",
-      "expected_answer": "Problem: Expensive and time-consuming data collection and labeling. Solution: Transfer learning using pre-trained models.",
-      "difficulty": "medium",
-      "type": "main_idea_extraction"
-    },
-    {
-      "id": "ctx_015",
-      "category": "paragraph_comprehension",
-      "context": "The Internet of Things (IoT) connects everyday devices to the internet, enabling them to collect and share data. This technology has applications in smart homes, healthcare monitoring, and industrial automation. However, security concerns remain a significant challenge.",
-      "prompt": "What are the main benefits and challenges of IoT mentioned in this passage?",
-      "expected_answer": "Benefits: Connecting devices for data collection and sharing, applications in smart homes, healthcare, and industry. Challenges: Security concerns.",
-      "difficulty": "medium",
-      "type": "benefit_challenge_analysis"
+      "type": "percentage_calculation"
     }
   ],
   "metadata": {
-    "total_tasks": 15,
-    "categories": ["coreference_resolution", "multi_step_reasoning", "logical_sequences", "dialogue_continuation", "paragraph_comprehension"],
+    "total_tasks": 3,
+    "categories": ["coreference_resolution", "multi_step_reasoning"],
     "difficulty_levels": ["easy", "medium", "hard"],
-    "types": ["pronoun_resolution", "possessive_resolution", "ambiguous_reference", "percentage_calculation", "distance_time_calculation", "comparative_logic", "pattern_recognition", "logical_deduction", "conversation_understanding", "conversation_continuation", "main_idea_extraction", "benefit_challenge_analysis"],
-    "description": "Timeless contextual understanding tasks focusing on coreference resolution, multi-step reasoning, logical sequences, and conversation understanding - no recent updates required"
+    "types": ["pronoun_resolution", "percentage_calculation"],
+    "description": "Trimmed contextual understanding tasks (one per difficulty level) with answer flexibility for fair scoring. Covers coreference and numeric reasoning."
   }
-} 
+}
