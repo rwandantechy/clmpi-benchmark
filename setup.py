@@ -17,12 +17,12 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="clmpi-benchmark",
     version="0.1.0",
-    author="CLMPI Benchmark Contributors",
-    author_email="your-email@domain.com",
+    author="Innocent Niyonziima",
+    author_email="niyonzima@cua.edu",
     description="Comprehensive Language Model Performance Index - A unified benchmarking framework for LLMs",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/clmpi-benchmark",
+    url="https://github.com/rwandantechy/clmpi-benchmark",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",

@@ -216,7 +216,7 @@ If you use this CLMPI implementation in your research, please cite both the orig
 ```bibtex
 @software{clmpi_benchmark_implementation,
   title={CLMPI Benchmark: Implementation of Comprehensive Language Model Performance Index},
-  author={Developer Implementation},
+  author={Niyonziima, Innocent},
   year={2024},
   url={https://github.com/rwandantechy/clmpi-benchmark},
   note={Based on Leon (2024) unified performance ranking metric}
@@ -225,7 +225,9 @@ If you use this CLMPI implementation in your research, please cite both the orig
 
 ## Contact
 
-For questions and contributions, please open an issue on GitHub or contact [your-email@domain.com].
+For questions and contributions, please open an issue on GitHub or contact:
+- **Email**: niyonzima@cua.edu
+- **LinkedIn**: [Innocent Niyonziima](https://www.linkedin.com/in/innocent-niyonziima/)
 
 ---
 
