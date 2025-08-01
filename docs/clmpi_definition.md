@@ -4,7 +4,7 @@
 
 ## Overview
 
-CLMPI is a unified performance ranking metric designed to comprehensively evaluate Large Language Models (LLMs) across multiple dimensions. The metric integrates both qualitative and quantitative assessments to provide a holistic comparison of LLM capabilities.
+CLMPI is a unified performance ranking metric designed to comprehensively evaluate Large Language Models (LLMs) across multiple dimensions. This implementation is based on the research by **Maikel Leon** (University of Miami, 2024) in "Benchmarking Large Language Models with a Unified Performance Ranking Metric." The metric integrates both qualitative and quantitative assessments to provide a holistic comparison of LLM capabilities.
 
 ## Core Components
 

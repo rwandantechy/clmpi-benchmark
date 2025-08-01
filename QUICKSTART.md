@@ -168,14 +168,30 @@ evaluation_weights:
 
 ## Citation
 
-If you use CLMPI in your research, please cite:
+This implementation is based on the research paper:
 
 ```bibtex
-@software{clmpi_benchmark,
-  title={CLMPI: Cognitive Language Model Performance Index},
-  author={Your Name},
+@article{leon2024benchmarking,
+  title={Benchmarking Large Language Models with a Unified Performance Ranking Metric},
+  author={Leon, Maikel},
+  journal={International Journal on Foundations of Computer Science & Technology},
+  volume={4},
+  number={4},
+  pages={15--25},
   year={2024},
-  url={https://github.com/yourusername/clmpi-benchmark}
+  publisher={University of Miami, Florida, USA}
+}
+```
+
+If you use this CLMPI implementation in your research, please cite both the original paper and this implementation:
+
+```bibtex
+@software{clmpi_benchmark_implementation,
+  title={CLMPI Benchmark: Implementation of Comprehensive Language Model Performance Index},
+  author={Developer Implementation},
+  year={2024},
+  url={https://github.com/rwandantechy/clmpi-benchmark},
+  note={Based on Leon (2024) unified performance ranking metric}
 }
 ```
 

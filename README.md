@@ -1,12 +1,12 @@
 # CLMPI Benchmark
 
-**Cognitive Language Model Performance Index**
+**Comprehensive Language Model Performance Index**
 
-A comprehensive benchmarking framework for evaluating AI language models across cognitive tasks and reasoning capabilities.
+A practical implementation of the unified performance ranking metric proposed by Maikel Leon (University of Miami, 2024). This framework provides a comprehensive benchmarking system for evaluating AI language models across cognitive tasks and reasoning capabilities.
 
 ## Overview
 
-CLMPI (Cognitive Language Model Performance Index) is a standardized evaluation framework designed to assess the cognitive performance of language models through systematic testing across multiple dimensions including classification, reasoning, and human-aligned evaluation metrics.
+CLMPI (Comprehensive Language Model Performance Index) is a practical implementation of the unified performance ranking metric proposed by Maikel Leon in "Benchmarking Large Language Models with a Unified Performance Ranking Metric" (2024). This framework provides a standardized evaluation system designed to assess the cognitive performance of language models through systematic testing across multiple dimensions including classification, reasoning, and human-aligned evaluation metrics.
 
 ## Features
 
@@ -85,16 +85,42 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Citation
 
-If you use CLMPI in your research, please cite:
+This implementation is based on the research paper:
 
 ```bibtex
-@software{clmpi_benchmark,
-  title={CLMPI: Cognitive Language Model Performance Index},
-  author={Your Name},
+@article{leon2024benchmarking,
+  title={Benchmarking Large Language Models with a Unified Performance Ranking Metric},
+  author={Leon, Maikel},
+  journal={International Journal on Foundations of Computer Science & Technology},
+  volume={4},
+  number={4},
+  pages={15--25},
   year={2024},
-  url={https://github.com/yourusername/clmpi-benchmark}
+  publisher={University of Miami, Florida, USA}
 }
 ```
+
+If you use this CLMPI implementation in your research, please cite both the original paper and this implementation:
+
+```bibtex
+@software{clmpi_benchmark_implementation,
+  title={CLMPI Benchmark: Implementation of Comprehensive Language Model Performance Index},
+  author={Developer Implementation},
+  year={2024},
+  url={https://github.com/rwandantechy/clmpi-benchmark},
+  note={Based on Leon (2024) unified performance ranking metric}
+}
+```
+
+## Attribution
+
+This implementation is based on the research paper:
+- **"Benchmarking Large Language Models with a Unified Performance Ranking Metric"**
+- **Author**: Maikel Leon
+- **Institution**: Department of Business Technology, Miami Herbert Business School, University of Miami, Florida, USA
+- **Journal**: International Journal on Foundations of Computer Science & Technology (IJFCST) Vol.4, No.4, July 2024
+
+This repository provides a practical implementation of the theoretical framework proposed in the original research.
 
 ## Contact
 
@@ -102,4 +128,4 @@ For questions and contributions, please open an issue on GitHub or contact [your
 
 ---
 
-**Note**: This is a research tool. Results may vary based on model versions, hardware configurations, and evaluation parameters.
+**Note**: This is a research tool implementing Maikel Leon's unified performance ranking metric. Results may vary based on model versions, hardware configurations, and evaluation parameters.

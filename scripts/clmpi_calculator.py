@@ -3,6 +3,9 @@ CLMPI Calculator - Core engine for Comprehensive Language Model Performance Inde
 
 This module implements the CLMPI formula and evaluation logic as described in:
 "Benchmarking Large Language Models with a Unified Performance Ranking Metric"
+by Maikel Leon (University of Miami, 2024)
+
+This is a practical implementation of the theoretical framework proposed in the research paper.
 """
 
 import json
