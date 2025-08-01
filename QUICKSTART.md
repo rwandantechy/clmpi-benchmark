@@ -14,7 +14,7 @@ This guide will help you quickly set up and run the CLMPI (Comprehensive Languag
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/clmpi-benchmark.git
+   git clone https://github.com/rwandantechy/clmpi-benchmark.git
    cd clmpi-benchmark
    ```
 

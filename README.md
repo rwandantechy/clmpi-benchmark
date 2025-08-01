@@ -34,7 +34,7 @@ clmpi-benchmark/
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/rwandantechy/clmpi-benchmark.git
    cd clmpi-benchmark
    ```
 
