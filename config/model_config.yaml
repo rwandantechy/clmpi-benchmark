@@ -1,124 +1,159 @@
-# CLMPI Model Configuration
-# Configuration file for model evaluation using the Comprehensive Language Model Performance Index
+# CLMPI Model Configuration for Edge Deployment
+# Configuration file for local benchmarking of open-source LLMs using Ollama
 
 # Global settings
 settings:
-  evaluation_mode: "automated"  # automated, human, hybrid
-  output_format: "json"  # json, csv, excel
+  evaluation_mode: "automated"
+  output_format: "json"
   save_intermediate_results: true
   max_retries: 3
-  timeout_seconds: 30
+  timeout_seconds: 60
+  ollama_host: "http://localhost:11434"
+  device: "macbook_pro_2019"
 
-# Model configurations
+# Model configurations for open-source LLMs via Ollama
 models:
-  gpt-4:
-    type: "openai"
-    model_name: "gpt-4"
-    api_key_env: "OPENAI_API_KEY"
+  phi3:mini:
+    type: "ollama"
+    ollama_name: "phi3:mini"
     max_tokens: 1000
     temperature: 0.1
     evaluation_weights:
       accuracy: 0.25
       contextual_understanding: 0.20
-      coherence: 0.20
-      fluency: 0.20
-      resource_efficiency: 0.15
+      fluency_coherence: 0.20
+      performance_efficiency: 0.35
+    expected_performance:
+      latency_ms: "< 2000"
+      memory_mb: "< 4000"
+      cpu_usage: "< 80%"
 
-  gpt-3.5-turbo:
-    type: "openai"
-    model_name: "gpt-3.5-turbo"
-    api_key_env: "OPENAI_API_KEY"
+  phi3:small:
+    type: "ollama"
+    ollama_name: "phi3:small"
     max_tokens: 1000
     temperature: 0.1
     evaluation_weights:
       accuracy: 0.25
       contextual_understanding: 0.20
-      coherence: 0.20
-      fluency: 0.20
-      resource_efficiency: 0.15
+      fluency_coherence: 0.20
+      performance_efficiency: 0.35
+    expected_performance:
+      latency_ms: "< 3000"
+      memory_mb: "< 6000"
+      cpu_usage: "< 85%"
 
-  claude-3-opus:
-    type: "anthropic"
-    model_name: "claude-3-opus-20240229"
-    api_key_env: "ANTHROPIC_API_KEY"
+  mistral:
+    type: "ollama"
+    ollama_name: "mistral"
     max_tokens: 1000
     temperature: 0.1
     evaluation_weights:
       accuracy: 0.25
       contextual_understanding: 0.20
-      coherence: 0.20
-      fluency: 0.20
-      resource_efficiency: 0.15
+      fluency_coherence: 0.20
+      performance_efficiency: 0.35
+    expected_performance:
+      latency_ms: "< 4000"
+      memory_mb: "< 8000"
+      cpu_usage: "< 90%"
 
-  llama-2-70b:
-    type: "local"
-    model_name: "llama-2-70b-chat"
-    model_path: "/path/to/llama-2-70b"
-    device: "cuda"  # cuda, cpu
+  llama2:7b-chat:
+    type: "ollama"
+    ollama_name: "llama2:7b-chat"
     max_tokens: 1000
     temperature: 0.1
     evaluation_weights:
       accuracy: 0.25
       contextual_understanding: 0.20
-      coherence: 0.20
-      fluency: 0.20
-      resource_efficiency: 0.15
+      fluency_coherence: 0.20
+      performance_efficiency: 0.35
+    expected_performance:
+      latency_ms: "< 5000"
+      memory_mb: "< 10000"
+      cpu_usage: "< 95%"
 
-  mistral-7b:
-    type: "local"
-    model_name: "mistral-7b-instruct"
-    model_path: "/path/to/mistral-7b"
-    device: "cuda"
+  gemma:2b:
+    type: "ollama"
+    ollama_name: "gemma:2b"
     max_tokens: 1000
     temperature: 0.1
     evaluation_weights:
       accuracy: 0.25
       contextual_understanding: 0.20
-      coherence: 0.20
-      fluency: 0.20
-      resource_efficiency: 0.15
+      fluency_coherence: 0.20
+      performance_efficiency: 0.35
+    expected_performance:
+      latency_ms: "< 1500"
+      memory_mb: "< 3000"
+      cpu_usage: "< 70%"
+
+  deepseek-coder:6.7b:
+    type: "ollama"
+    ollama_name: "deepseek-coder:6.7b"
+    max_tokens: 1000
+    temperature: 0.1
+    evaluation_weights:
+      accuracy: 0.25
+      contextual_understanding: 0.20
+      fluency_coherence: 0.20
+      performance_efficiency: 0.35
+    expected_performance:
+      latency_ms: "< 4000"
+      memory_mb: "< 8000"
+      cpu_usage: "< 90%"
 
 # Evaluation datasets
 datasets:
   accuracy:
-    - name: "factual_qa"
-      path: "datasets/factual_qa.json"
-      description: "Factual question-answer pairs"
-    - name: "math_problems"
-      path: "datasets/math_problems.json"
-      description: "Mathematical reasoning problems"
+    - name: "classification_tasks"
+      path: "prompts/classification_tasks.json"
+      description: "Sentiment analysis, topic classification, intent detection"
+    - name: "reasoning_tasks"
+      path: "prompts/reasoning_tasks.json"
+      description: "Mathematical and logical reasoning problems"
 
   contextual_understanding:
     - name: "multi_turn_conversations"
-      path: "datasets/multi_turn.json"
-      description: "Multi-turn conversation contexts"
-    - name: "document_qa"
-      path: "datasets/document_qa.json"
-      description: "Document-based question answering"
+      path: "prompts/contextual_tasks.json"
+      description: "Multi-turn dialogue evaluation"
+    - name: "long_context_processing"
+      path: "prompts/long_context_tasks.json"
+      description: "Extended context handling"
 
-  coherence:
-    - name: "story_generation"
-      path: "datasets/story_prompts.json"
-      description: "Story generation prompts"
-    - name: "essay_writing"
-      path: "datasets/essay_prompts.json"
-      description: "Essay writing prompts"
+  fluency_coherence:
+    - name: "text_quality"
+      path: "prompts/fluency_tasks.json"
+      description: "Grammatical and stylistic evaluation"
+    - name: "structural_coherence"
+      path: "prompts/coherence_tasks.json"
+      description: "Logical flow and organization"
 
-  fluency:
-    - name: "text_completion"
-      path: "datasets/text_completion.json"
-      description: "Text completion tasks"
-    - name: "translation"
-      path: "datasets/translation.json"
-      description: "Translation tasks"
+  performance_efficiency:
+    - name: "latency_benchmark"
+      path: "prompts/latency_tasks.json"
+      description: "Response time measurement"
+    - name: "resource_usage"
+      path: "prompts/resource_tasks.json"
+      description: "CPU and memory monitoring"
 
 # Evaluation parameters
 evaluation:
-  num_samples_per_task: 50
-  human_evaluators: 3  # Number of human evaluators for qualitative metrics
+  num_samples_per_task: 20  # Reduced for edge deployment testing
+  human_evaluators: 1  # Self-evaluation for edge deployment
   confidence_threshold: 0.8
   min_response_length: 10
   max_response_length: 500
+  sequential_execution: true  # Run models one at a time
+  memory_cleanup: true  # Clear memory between evaluations
+
+# Performance monitoring
+performance:
+  monitoring_interval: 1.0  # seconds
+  cpu_threshold: 95  # percentage
+  memory_threshold: 14000  # MB (16GB - 2GB buffer)
+  latency_timeout: 30  # seconds
+  token_throughput_tracking: true
 
 # Output configuration
 output:
@@ -127,10 +162,13 @@ output:
   save_processed_scores: true
   generate_visualizations: true
   create_summary_report: true
+  excel_scorebook: "evaluations/clmpi_scorebook.xlsx"
+  visualization_format: ["png", "svg"]
 
 # Logging configuration
 logging:
-  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   file: "evaluation.log"
   console: true
+  performance_log: "performance_metrics.log"

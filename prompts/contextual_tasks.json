@@ -1,0 +1,50 @@
+{
+  "tasks": [
+    {
+      "id": "context_001",
+      "category": "multi_turn_conversation",
+      "context": "User: Hi, I'm planning a trip to Japan. What should I know?\nAssistant: Japan is a fascinating country! When are you planning to visit?\nUser: I'm thinking of going in March.\nAssistant: March is a great time to visit Japan! You'll be able to see the cherry blossoms. How long will you stay?\nUser: About 10 days. I'm particularly interested in traditional culture.",
+      "prompt": "Based on our conversation, what specific traditional cultural experiences would you recommend for a 10-day trip to Japan in March?",
+      "expected_elements": ["cherry blossoms", "traditional culture", "10 days", "March timing"],
+      "difficulty": "medium"
+    },
+    {
+      "id": "context_002",
+      "category": "long_context_processing",
+      "context": "The following is a detailed technical document about machine learning:\n\nMachine learning is a subset of artificial intelligence that enables computers to learn and make decisions without being explicitly programmed. There are three main types of machine learning: supervised learning, unsupervised learning, and reinforcement learning.\n\nSupervised learning involves training a model on labeled data, where the correct answers are provided. Common algorithms include linear regression, decision trees, and neural networks. The model learns to map inputs to outputs based on the training examples.\n\nUnsupervised learning works with unlabeled data and focuses on finding hidden patterns or structures. Clustering algorithms like K-means and dimensionality reduction techniques like PCA are examples of unsupervised learning.\n\nReinforcement learning involves an agent learning to make decisions by interacting with an environment and receiving rewards or penalties. The agent learns optimal strategies through trial and error.\n\nDeep learning is a specialized form of machine learning that uses artificial neural networks with multiple layers. These networks can automatically learn hierarchical representations of data, making them particularly effective for tasks like image recognition, natural language processing, and speech recognition.",
+      "prompt": "What are the key differences between supervised and unsupervised learning, and when would you choose one over the other?",
+      "expected_elements": ["labeled vs unlabeled data", "training examples", "hidden patterns", "use cases"],
+      "difficulty": "hard"
+    },
+    {
+      "id": "context_003",
+      "category": "logical_flow",
+      "context": "A software development team is working on a new mobile app. The project timeline is 6 months, and they have a team of 5 developers. The app needs to support both iOS and Android platforms. The team has identified the following key features: user authentication, real-time messaging, file sharing, and push notifications. The backend will be built using Node.js and MongoDB.",
+      "prompt": "Given this project context, what would be the most critical technical challenges the team should address first, and why?",
+      "expected_elements": ["cross-platform development", "real-time features", "scalability", "timeline constraints"],
+      "difficulty": "medium"
+    },
+    {
+      "id": "context_004",
+      "category": "conversation_memory",
+      "context": "User: I need help with my Python code. I'm getting an error when trying to read a CSV file.\nAssistant: I'd be happy to help! What's the error message you're seeing?\nUser: It says 'FileNotFoundError: [Errno 2] No such file or directory'\nAssistant: This error means Python can't find the file you're trying to open. What's the file path you're using?\nUser: I'm using 'data.csv' as the filename.\nAssistant: The issue is likely that the file 'data.csv' isn't in the same directory as your Python script. You can either move the file to the same directory or provide the full path. What's the current working directory of your script?",
+      "prompt": "Based on our troubleshooting session, what are the two main solutions I suggested for fixing the FileNotFoundError, and which one would be easier to implement?",
+      "expected_elements": ["move file to same directory", "provide full path", "easier solution"],
+      "difficulty": "easy"
+    },
+    {
+      "id": "context_005",
+      "category": "complex_reasoning",
+      "context": "A company is analyzing customer feedback from their e-commerce platform. They've collected data showing that: 1) 60% of customers abandon their cart before checkout, 2) The average time spent on product pages is 2 minutes, 3) 80% of purchases are made on mobile devices, 4) Customer satisfaction scores are highest for products with detailed images and reviews, 5) The checkout process takes an average of 3 minutes to complete.",
+      "prompt": "Based on this customer behavior data, what specific improvements should the company prioritize to reduce cart abandonment and increase conversions?",
+      "expected_elements": ["mobile optimization", "checkout process", "product information", "user experience"],
+      "difficulty": "hard"
+    }
+  ],
+  "metadata": {
+    "total_tasks": 5,
+    "categories": ["multi_turn_conversation", "long_context_processing", "logical_flow", "conversation_memory", "complex_reasoning"],
+    "difficulty_levels": ["easy", "medium", "hard"],
+    "description": "Contextual understanding tasks for evaluating model's ability to maintain coherence across extended conversations and process long-form content"
+  }
+} 
