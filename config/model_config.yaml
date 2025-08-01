@@ -1,0 +1,136 @@
+# CLMPI Model Configuration
+# Configuration file for model evaluation using the Comprehensive Language Model Performance Index
+
+# Global settings
+settings:
+  evaluation_mode: "automated"  # automated, human, hybrid
+  output_format: "json"  # json, csv, excel
+  save_intermediate_results: true
+  max_retries: 3
+  timeout_seconds: 30
+
+# Model configurations
+models:
+  gpt-4:
+    type: "openai"
+    model_name: "gpt-4"
+    api_key_env: "OPENAI_API_KEY"
+    max_tokens: 1000
+    temperature: 0.1
+    evaluation_weights:
+      accuracy: 0.25
+      contextual_understanding: 0.20
+      coherence: 0.20
+      fluency: 0.20
+      resource_efficiency: 0.15
+
+  gpt-3.5-turbo:
+    type: "openai"
+    model_name: "gpt-3.5-turbo"
+    api_key_env: "OPENAI_API_KEY"
+    max_tokens: 1000
+    temperature: 0.1
+    evaluation_weights:
+      accuracy: 0.25
+      contextual_understanding: 0.20
+      coherence: 0.20
+      fluency: 0.20
+      resource_efficiency: 0.15
+
+  claude-3-opus:
+    type: "anthropic"
+    model_name: "claude-3-opus-20240229"
+    api_key_env: "ANTHROPIC_API_KEY"
+    max_tokens: 1000
+    temperature: 0.1
+    evaluation_weights:
+      accuracy: 0.25
+      contextual_understanding: 0.20
+      coherence: 0.20
+      fluency: 0.20
+      resource_efficiency: 0.15
+
+  llama-2-70b:
+    type: "local"
+    model_name: "llama-2-70b-chat"
+    model_path: "/path/to/llama-2-70b"
+    device: "cuda"  # cuda, cpu
+    max_tokens: 1000
+    temperature: 0.1
+    evaluation_weights:
+      accuracy: 0.25
+      contextual_understanding: 0.20
+      coherence: 0.20
+      fluency: 0.20
+      resource_efficiency: 0.15
+
+  mistral-7b:
+    type: "local"
+    model_name: "mistral-7b-instruct"
+    model_path: "/path/to/mistral-7b"
+    device: "cuda"
+    max_tokens: 1000
+    temperature: 0.1
+    evaluation_weights:
+      accuracy: 0.25
+      contextual_understanding: 0.20
+      coherence: 0.20
+      fluency: 0.20
+      resource_efficiency: 0.15
+
+# Evaluation datasets
+datasets:
+  accuracy:
+    - name: "factual_qa"
+      path: "datasets/factual_qa.json"
+      description: "Factual question-answer pairs"
+    - name: "math_problems"
+      path: "datasets/math_problems.json"
+      description: "Mathematical reasoning problems"
+
+  contextual_understanding:
+    - name: "multi_turn_conversations"
+      path: "datasets/multi_turn.json"
+      description: "Multi-turn conversation contexts"
+    - name: "document_qa"
+      path: "datasets/document_qa.json"
+      description: "Document-based question answering"
+
+  coherence:
+    - name: "story_generation"
+      path: "datasets/story_prompts.json"
+      description: "Story generation prompts"
+    - name: "essay_writing"
+      path: "datasets/essay_prompts.json"
+      description: "Essay writing prompts"
+
+  fluency:
+    - name: "text_completion"
+      path: "datasets/text_completion.json"
+      description: "Text completion tasks"
+    - name: "translation"
+      path: "datasets/translation.json"
+      description: "Translation tasks"
+
+# Evaluation parameters
+evaluation:
+  num_samples_per_task: 50
+  human_evaluators: 3  # Number of human evaluators for qualitative metrics
+  confidence_threshold: 0.8
+  min_response_length: 10
+  max_response_length: 500
+
+# Output configuration
+output:
+  base_directory: "models/outputs"
+  save_raw_responses: true
+  save_processed_scores: true
+  generate_visualizations: true
+  create_summary_report: true
+
+# Logging configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "evaluation.log"
+  console: true

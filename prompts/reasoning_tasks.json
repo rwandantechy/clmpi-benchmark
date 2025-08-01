@@ -1,0 +1,45 @@
+{
+  "tasks": [
+    {
+      "id": "reason_001",
+      "category": "logical_reasoning",
+      "prompt": "If all roses are flowers, and some flowers are red, can we conclude that some roses are red? Explain your reasoning.",
+      "expected_answer": "No, we cannot conclude that some roses are red. While all roses are flowers, and some flowers are red, the red flowers might not include any roses.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "reason_002",
+      "category": "mathematical_reasoning",
+      "prompt": "A train travels 120 miles in 2 hours. If it continues at the same speed, how long will it take to travel 300 miles?",
+      "expected_answer": "5 hours. The train travels at 60 mph (120 miles / 2 hours). To travel 300 miles at 60 mph: 300 / 60 = 5 hours.",
+      "difficulty": "medium"
+    },
+    {
+      "id": "reason_003",
+      "category": "causal_reasoning",
+      "prompt": "Why do leaves change color in the fall? Explain the scientific process.",
+      "expected_answer": "Leaves change color because chlorophyll production decreases as days get shorter and temperatures drop. This reveals other pigments like carotenoids (yellow/orange) and anthocyanins (red/purple) that were masked by the green chlorophyll.",
+      "difficulty": "hard"
+    },
+    {
+      "id": "reason_004",
+      "category": "analogical_reasoning",
+      "prompt": "Complete the analogy: Book is to reading as fork is to ____.",
+      "expected_answer": "eating",
+      "difficulty": "easy"
+    },
+    {
+      "id": "reason_005",
+      "category": "spatial_reasoning",
+      "prompt": "If you fold a piece of paper in half three times, how many layers will you have?",
+      "expected_answer": "8 layers. Each fold doubles the number of layers: 1→2→4→8.",
+      "difficulty": "medium"
+    }
+  ],
+  "metadata": {
+    "total_tasks": 5,
+    "categories": ["logical_reasoning", "mathematical_reasoning", "causal_reasoning", "analogical_reasoning", "spatial_reasoning"],
+    "difficulty_levels": ["easy", "medium", "hard"],
+    "description": "Reasoning tasks for evaluating model logical thinking and problem-solving capabilities"
+  }
+}
