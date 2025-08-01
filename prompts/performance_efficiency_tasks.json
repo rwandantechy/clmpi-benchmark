@@ -1,0 +1,263 @@
+{
+  "tasks": [
+    {
+      "id": "perf_001",
+      "category": "latency_testing",
+      "prompt": "What is 2 + 2?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "basic_math"
+    },
+    {
+      "id": "perf_002",
+      "category": "latency_testing",
+      "prompt": "Hello, how are you?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "greeting"
+    },
+    {
+      "id": "perf_003",
+      "category": "latency_testing",
+      "prompt": "What color is the sky?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "basic_fact"
+    },
+    {
+      "id": "perf_004",
+      "category": "latency_testing",
+      "prompt": "Yes or no: Is today Monday?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "binary_response"
+    },
+    {
+      "id": "perf_005",
+      "category": "latency_testing",
+      "prompt": "Single word answer: What is the capital of France?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "one_word"
+    },
+    {
+      "id": "perf_006",
+      "category": "memory_testing",
+      "prompt": "Explain the concept of machine learning in 3 sentences",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "concise_explanation"
+    },
+    {
+      "id": "perf_007",
+      "category": "memory_testing",
+      "prompt": "Write a short poem about technology",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "creative_short"
+    },
+    {
+      "id": "perf_008",
+      "category": "memory_testing",
+      "prompt": "Summarize the benefits of renewable energy in 50 words",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "constrained_summary"
+    },
+    {
+      "id": "perf_009",
+      "category": "memory_testing",
+      "prompt": "List 5 programming languages and their primary use cases",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "structured_list"
+    },
+    {
+      "id": "perf_010",
+      "category": "memory_testing",
+      "prompt": "Compare and contrast TCP and UDP protocols in 100 words",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "comparison"
+    },
+    {
+      "id": "perf_011",
+      "category": "throughput_testing",
+      "prompt": "Summarize this 500-word article about artificial intelligence in 50 words",
+      "expected_complexity": "high",
+      "difficulty": "hard",
+      "type": "compression_task"
+    },
+    {
+      "id": "perf_012",
+      "category": "throughput_testing",
+      "prompt": "Expand this 10-word prompt into a 200-word explanation: 'The future of transportation'",
+      "expected_complexity": "high",
+      "difficulty": "hard",
+      "type": "expansion_task"
+    },
+    {
+      "id": "perf_013",
+      "category": "throughput_testing",
+      "prompt": "Write a comprehensive guide to web development for beginners",
+      "expected_complexity": "high",
+      "difficulty": "hard",
+      "type": "comprehensive_guide"
+    },
+    {
+      "id": "perf_014",
+      "category": "throughput_testing",
+      "prompt": "Analyze the impact of social media on modern society in detail",
+      "expected_complexity": "high",
+      "difficulty": "hard",
+      "type": "detailed_analysis"
+    },
+    {
+      "id": "perf_015",
+      "category": "throughput_testing",
+      "prompt": "Create a detailed technical specification for a smart home automation system",
+      "expected_complexity": "high",
+      "difficulty": "hard",
+      "type": "technical_spec"
+    },
+    {
+      "id": "perf_016",
+      "category": "consistency_testing",
+      "prompt": "What is the time complexity of binary search?",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "repeated_question",
+      "repeat_count": 5
+    },
+    {
+      "id": "perf_017",
+      "category": "consistency_testing",
+      "prompt": "Explain the concept of recursion in programming",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "repeated_question",
+      "repeat_count": 3
+    },
+    {
+      "id": "perf_018",
+      "category": "consistency_testing",
+      "prompt": "What are the main differences between Python and JavaScript?",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "repeated_question",
+      "repeat_count": 3
+    },
+    {
+      "id": "perf_019",
+      "category": "scalability_testing",
+      "prompt": "Process this short text: 'Hello world'",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "minimal_input"
+    },
+    {
+      "id": "perf_020",
+      "category": "scalability_testing",
+      "prompt": "Simple calculation: 2 + 2",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "minimal_calculation"
+    },
+    {
+      "id": "perf_021",
+      "category": "scalability_testing",
+      "prompt": "Basic fact: What is the capital of France?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "minimal_fact"
+    },
+    {
+      "id": "perf_022",
+      "category": "edge_scenarios",
+      "prompt": "Emergency response: What's the nearest hospital?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "emergency_query"
+    },
+    {
+      "id": "perf_023",
+      "category": "edge_scenarios",
+      "prompt": "Quick decision: Should I take an umbrella today?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "quick_decision"
+    },
+    {
+      "id": "perf_024",
+      "category": "edge_scenarios",
+      "prompt": "Instant translation: 'Hello' in Spanish",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "instant_translation"
+    },
+    {
+      "id": "perf_025",
+      "category": "edge_scenarios",
+      "prompt": "Quick response: What's the weather like?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "quick_response"
+    },
+    {
+      "id": "perf_026",
+      "category": "edge_scenarios",
+      "prompt": "Fast calculation: 15% tip on $45.67",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "fast_calculation"
+    },
+    {
+      "id": "perf_027",
+      "category": "edge_scenarios",
+      "prompt": "Brief answer: What is machine learning?",
+      "expected_complexity": "minimal",
+      "difficulty": "easy",
+      "type": "brief_explanation"
+    },
+    {
+      "id": "perf_028",
+      "category": "resource_monitoring",
+      "prompt": "Help me find my lost phone using available apps",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "practical_assistance"
+    },
+    {
+      "id": "perf_029",
+      "category": "resource_monitoring",
+      "prompt": "Quick translation of a restaurant menu",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "practical_translation"
+    },
+    {
+      "id": "perf_030",
+      "category": "resource_monitoring",
+      "prompt": "Summarize a long email while I'm in a meeting",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "urgent_summary"
+    },
+    {
+      "id": "perf_031",
+      "category": "resource_monitoring",
+      "prompt": "Help me troubleshoot my smart home device",
+      "expected_complexity": "medium",
+      "difficulty": "medium",
+      "type": "troubleshooting"
+    }
+  ],
+  "metadata": {
+    "total_tasks": 31,
+    "categories": ["latency_testing", "memory_testing", "throughput_testing", "consistency_testing", "scalability_testing", "edge_scenarios", "resource_monitoring"],
+    "difficulty_levels": ["easy", "medium", "hard"],
+    "types": ["basic_math", "greeting", "basic_fact", "binary_response", "one_word", "concise_explanation", "creative_short", "constrained_summary", "structured_list", "comparison", "compression_task", "expansion_task", "comprehensive_guide", "detailed_analysis", "technical_spec", "repeated_question", "minimal_input", "minimal_calculation", "minimal_fact", "emergency_query", "quick_decision", "instant_translation", "quick_response", "fast_calculation", "brief_explanation", "practical_assistance", "practical_translation", "urgent_summary", "troubleshooting"],
+    "expected_complexity_levels": ["minimal", "medium", "high"],
+    "description": "Performance efficiency tasks for testing latency, memory usage, throughput, consistency, and scalability - designed for edge deployment evaluation"
+  }
+} 

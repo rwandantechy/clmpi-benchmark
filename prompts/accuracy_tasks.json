@@ -1,0 +1,131 @@
+{
+  "tasks": [
+    {
+      "id": "acc_001",
+      "category": "mathematical_reasoning",
+      "prompt": "What is the time complexity of binary search?",
+      "expected_answer": "O(log n)",
+      "difficulty": "medium",
+      "type": "technical_correctness"
+    },
+    {
+      "id": "acc_002",
+      "category": "mathematical_reasoning",
+      "prompt": "Solve the equation: 2x² + 5x + 3 = 0",
+      "expected_answer": "x = -1 or x = -1.5",
+      "difficulty": "medium",
+      "type": "quadratic_equation"
+    },
+    {
+      "id": "acc_003",
+      "category": "mathematical_reasoning",
+      "prompt": "Calculate: 15% of 240",
+      "expected_answer": "36",
+      "difficulty": "easy",
+      "type": "percentage_calculation"
+    },
+    {
+      "id": "acc_004",
+      "category": "mathematical_reasoning",
+      "prompt": "What is the square root of 144?",
+      "expected_answer": "12",
+      "difficulty": "easy",
+      "type": "basic_math"
+    },
+    {
+      "id": "acc_005",
+      "category": "logical_deduction",
+      "prompt": "If all roses are flowers, and some flowers are red, can we conclude that some roses are red?",
+      "expected_answer": "No, we cannot conclude that some roses are red",
+      "difficulty": "hard",
+      "type": "logical_reasoning"
+    },
+    {
+      "id": "acc_006",
+      "category": "logical_deduction",
+      "prompt": "A clock shows 3:15. What angle do the hands make?",
+      "expected_answer": "7.5 degrees",
+      "difficulty": "medium",
+      "type": "geometric_reasoning"
+    },
+    {
+      "id": "acc_007",
+      "category": "logical_deduction",
+      "prompt": "If you have 3 red balls and 4 blue balls, what's the probability of drawing a red ball?",
+      "expected_answer": "3/7 or approximately 0.429",
+      "difficulty": "medium",
+      "type": "probability"
+    },
+    {
+      "id": "acc_008",
+      "category": "code_logic",
+      "prompt": "What's wrong with this Python code: print('Hello' + 5)?",
+      "expected_answer": "TypeError: can only concatenate str (not \"int\") to str",
+      "difficulty": "easy",
+      "type": "code_debugging"
+    },
+    {
+      "id": "acc_009",
+      "category": "code_logic",
+      "prompt": "What will this JavaScript output: let x = 5; let y = x++; console.log(y)?",
+      "expected_answer": "5",
+      "difficulty": "medium",
+      "type": "code_logic"
+    },
+    {
+      "id": "acc_010",
+      "category": "code_logic",
+      "prompt": "Explain the difference between == and === in JavaScript",
+      "expected_answer": "== performs type coercion, === performs strict equality without coercion",
+      "difficulty": "medium",
+      "type": "technical_knowledge"
+    },
+    {
+      "id": "acc_011",
+      "category": "structural_understanding",
+      "prompt": "What is the primary function of a DNS server?",
+      "expected_answer": "To translate domain names to IP addresses",
+      "difficulty": "medium",
+      "type": "technical_knowledge"
+    },
+    {
+      "id": "acc_012",
+      "category": "structural_understanding",
+      "prompt": "Explain the difference between TCP and UDP protocols",
+      "expected_answer": "TCP is connection-oriented and reliable, UDP is connectionless and unreliable but faster",
+      "difficulty": "medium",
+      "type": "technical_knowledge"
+    },
+    {
+      "id": "acc_013",
+      "category": "structural_understanding",
+      "prompt": "What is the purpose of a primary key in a database?",
+      "expected_answer": "To uniquely identify each record in a table",
+      "difficulty": "easy",
+      "type": "technical_knowledge"
+    },
+    {
+      "id": "acc_014",
+      "category": "mathematical_reasoning",
+      "prompt": "What is the time complexity of linear search?",
+      "expected_answer": "O(n)",
+      "difficulty": "easy",
+      "type": "technical_correctness"
+    },
+    {
+      "id": "acc_015",
+      "category": "mathematical_reasoning",
+      "prompt": "Convert 25°C to Fahrenheit using the formula F = (C × 9/5) + 32",
+      "expected_answer": "77°F",
+      "difficulty": "easy",
+      "type": "unit_conversion"
+    }
+  ],
+  "metadata": {
+    "total_tasks": 15,
+    "categories": ["mathematical_reasoning", "logical_deduction", "code_logic", "structural_understanding"],
+    "difficulty_levels": ["easy", "medium", "hard"],
+    "types": ["technical_correctness", "quadratic_equation", "percentage_calculation", "basic_math", "logical_reasoning", "geometric_reasoning", "probability", "code_debugging", "code_logic", "technical_knowledge", "unit_conversion"],
+    "description": "Timeless accuracy tasks focusing on mathematical reasoning, logical deduction, code logic, and structural understanding - no recent updates required"
+  }
+} 

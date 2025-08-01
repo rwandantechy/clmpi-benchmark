@@ -22,9 +22,8 @@ class CLMPIScores:
     """Data class to store individual CLMPI component scores"""
     accuracy: float  # 0-1 (percentage)
     contextual_understanding: float  # 0-5 scale
-    coherence: float  # 0-5 scale
-    fluency: float  # 0-5 scale
-    resource_efficiency: float  # Calculated efficiency score
+    fluency_coherence: float  # 0-5 scale
+    performance_efficiency: float  # Calculated efficiency score
 
 
 @dataclass
@@ -32,9 +31,8 @@ class CLMPIWeights:
     """Data class to store CLMPI component weights"""
     accuracy: float = 0.25
     contextual_understanding: float = 0.20
-    coherence: float = 0.20
-    fluency: float = 0.20
-    resource_efficiency: float = 0.15
+    fluency_coherence: float = 0.20
+    performance_efficiency: float = 0.35
 
 
 class CLMPICalculator:
@@ -60,9 +58,8 @@ class CLMPICalculator:
         total_weight = sum([
             self.weights.accuracy,
             self.weights.contextual_understanding,
-            self.weights.coherence,
-            self.weights.fluency,
-            self.weights.resource_efficiency
+            self.weights.fluency_coherence,
+            self.weights.performance_efficiency
         ])
         
         if not np.isclose(total_weight, 1.0, atol=1e-6):
@@ -100,9 +97,8 @@ class CLMPICalculator:
         clmpi = (
             self.weights.accuracy * scores.accuracy +
             self.weights.contextual_understanding * scores.contextual_understanding +
-            self.weights.coherence * scores.coherence +
-            self.weights.fluency * scores.fluency +
-            self.weights.resource_efficiency * scores.resource_efficiency
+            self.weights.fluency_coherence * scores.fluency_coherence +
+            self.weights.performance_efficiency * scores.performance_efficiency
         )
         
         return clmpi
@@ -269,16 +265,14 @@ class CLMPICalculator:
             "component_scores": {
                 "accuracy": scores.accuracy,
                 "contextual_understanding": scores.contextual_understanding,
-                "coherence": scores.coherence,
-                "fluency": scores.fluency,
-                "resource_efficiency": scores.resource_efficiency
+                "fluency_coherence": scores.fluency_coherence,
+                "performance_efficiency": scores.performance_efficiency
             },
             "weights_used": {
                 "accuracy": self.weights.accuracy,
                 "contextual_understanding": self.weights.contextual_understanding,
-                "coherence": self.weights.coherence,
-                "fluency": self.weights.fluency,
-                "resource_efficiency": self.weights.resource_efficiency
+                "fluency_coherence": self.weights.fluency_coherence,
+                "performance_efficiency": self.weights.performance_efficiency
             },
             "interpretation": self._interpret_score(clmpi_score)
         }
@@ -333,9 +327,8 @@ def example_usage():
     scores = CLMPIScores(
         accuracy=0.85,  # 85% correct answers
         contextual_understanding=4.2,  # Good context integration
-        coherence=4.0,  # Well-structured responses
-        fluency=4.5,  # High linguistic quality
-        resource_efficiency=0.32  # Calculated efficiency score
+        fluency_coherence=4.0,  # Well-structured and fluent responses
+        performance_efficiency=0.32  # Calculated efficiency score
     )
     
     # Calculate CLMPI score
