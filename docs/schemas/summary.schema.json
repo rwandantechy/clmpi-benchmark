@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CLMPI Benchmark Summary Schema",
+  "description": "Schema for CLMPI benchmark run summary files",
+  "type": "object",
+  "required": ["run_name", "timestamp", "label", "seed", "hardware_info", "config_used", "results"],
+  "properties": {
+    "run_name": {
+      "type": "string",
+      "description": "Name of the benchmark run"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}_\\d{6}$",
+      "description": "Timestamp in YYYY-MM-DD_HHMMSS format"
+    },
+    "label": {
+      "type": "string",
+      "description": "User-provided label for the run"
+    },
+    "seed": {
+      "type": "integer",
+      "description": "Random seed used for reproducibility"
+    },
+    "hardware_info": {
+      "type": "object",
+      "required": ["cpu_model", "cpu_cores", "memory_gb", "os", "python_version"],
+      "properties": {
+        "cpu_model": {
+          "type": "string",
+          "description": "CPU model identifier"
+        },
+        "cpu_cores": {
+          "type": "string",
+          "description": "Number of CPU cores"
+        },
+        "memory_gb": {
+          "type": "string",
+          "description": "Total memory in GB"
+        },
+        "os": {
+          "type": "string",
+          "description": "Operating system and version"
+        },
+        "python_version": {
+          "type": "string",
+          "description": "Python version used"
+        }
+      }
+    },
+    "config_used": {
+      "type": "object",
+      "required": ["model_config", "evaluation_weights"],
+      "properties": {
+        "model_config": {
+          "type": "string",
+          "description": "String representation of model configuration"
+        },
+        "evaluation_weights": {
+          "type": "object",
+          "required": ["accuracy", "contextual_understanding", "coherence", "fluency", "performance_efficiency"],
+          "properties": {
+            "accuracy": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Weight for accuracy component"
+            },
+            "contextual_understanding": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Weight for contextual understanding component"
+            },
+            "coherence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Weight for coherence component"
+            },
+            "fluency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Weight for fluency component"
+            },
+            "performance_efficiency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Weight for performance efficiency component"
+            }
+          }
+        }
+      }
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["model_name", "evaluation_timestamp", "component_scores", "clmpi_score_01", "clmpi_score_100"],
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "description": "Name of the evaluated model"
+          },
+          "evaluation_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO timestamp of evaluation"
+          },
+          "responses": {
+            "type": "object",
+            "description": "Raw model responses by dimension"
+          },
+          "component_scores": {
+            "type": "object",
+            "required": ["accuracy", "contextual_understanding", "coherence", "fluency", "performance_efficiency"],
+            "properties": {
+              "accuracy": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Accuracy score (0-1)"
+              },
+              "contextual_understanding": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 5,
+                "description": "Contextual understanding score (0-5)"
+              },
+              "coherence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 5,
+                "description": "Coherence score (0-5)"
+              },
+              "fluency": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 5,
+                "description": "Fluency score (0-5)"
+              },
+              "performance_efficiency": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Performance efficiency score (raw)"
+              }
+            }
+          },
+          "performance_metrics": {
+            "type": "object",
+            "description": "Detailed performance metrics"
+          },
+          "clmpi_score_01": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "CLMPI score on 0-1 scale"
+          },
+          "clmpi_score_100": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "CLMPI score on 0-100 scale"
+          }
+        }
+      }
+    }
+  }
+}

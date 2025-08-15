@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: "CLMPI Benchmark: Comprehensive Language Model Performance Index"
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Niyonziima"
+    given-names: "Innocent"
+    email: "niyonzima@cua.edu"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+  - family-names: "Leon"
+    given-names: "Maikel"
+    affiliation: "University of Miami"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+repository-code: "https://github.com/rwandantechy/clmpi-benchmark"
+url: "https://github.com/rwandantechy/clmpi-benchmark"
+abstract: "A practical implementation of the Comprehensive Language Model Performance Index (CLMPI) framework for evaluating open-source Large Language Models across 5 dimensions: accuracy, contextual understanding, coherence, fluency, and performance efficiency."
+keywords:
+  - "language models"
+  - "benchmarking"
+  - "evaluation"
+  - "performance metrics"
+  - "edge deployment"
+license: "MIT"
+version: "0.2.0"
+date-released: 2024-12-19

@@ -1,174 +1,64 @@
-# CLMPI Model Configuration for Edge Deployment
-# Configuration file for local benchmarking of open-source LLMs using Ollama
+# CLMPI Model Configuration
+# Defines models to evaluate and their parameters
 
-# Global settings
-settings:
-  evaluation_mode: "automated"
-  output_format: "json"
-  save_intermediate_results: true
-  max_retries: 3
-  timeout_seconds: 60
-  ollama_host: "http://localhost:11434"
-  device: "macbook_pro_2019"
+# Global Evaluation Weights (must sum to 1.0)
+# ACC: Accuracy - factual correctness [0,1]
+# CON: Contextual Understanding - multi-turn conversations [0,1] 
+# COH: Coherence - logical flow [0,1]
+# FLU: Fluency - language quality [0,1]
+# EFF: Performance Efficiency - resource usage [0,1]
+evaluation_weights:
+  accuracy: 0.25          # 25% - Factual correctness
+  contextual_understanding: 0.20  # 20% - Multi-turn conversations
+  coherence: 0.20         # 20% - Logical flow and structure
+  fluency: 0.20           # 20% - Language quality
+  performance_efficiency: 0.15   # 15% - Resource efficiency
 
-# Model configurations for open-source LLMs via Ollama
+# Prompt Sets to Enable
+# Each maps to a specific evaluation dimension
+prompt_sets:
+  accuracy:
+    - "classification_tasks.json"
+    - "reasoning_tasks.json"
+  contextual_understanding:
+    - "contextual_tasks.json"
+  coherence:
+    - "contextual_tasks.json"  # Multi-turn conversations test coherence
+  fluency:
+    - "classification_tasks.json"  # All responses evaluated for fluency
+  performance_efficiency:
+    - "classification_tasks.json"  # All prompts used for efficiency measurement
+
+# Model Definitions
+# Add/remove models here. All models must be available via Ollama
 models:
   phi3:mini:
-    type: "ollama"
     ollama_name: "phi3:mini"
     max_tokens: 1000
     temperature: 0.1
-    evaluation_weights:
-      accuracy: 0.25
-      contextual_understanding: 0.20
-      fluency_coherence: 0.20
-      performance_efficiency: 0.35
-    expected_performance:
-      latency_ms: "< 2000"
-      memory_mb: "< 4000"
-      cpu_usage: "< 80%"
-
-  phi3:small:
-    type: "ollama"
-    ollama_name: "phi3:small"
-    max_tokens: 1000
-    temperature: 0.1
-    evaluation_weights:
-      accuracy: 0.25
-      contextual_understanding: 0.20
-      fluency_coherence: 0.20
-      performance_efficiency: 0.35
-    expected_performance:
-      latency_ms: "< 3000"
-      memory_mb: "< 6000"
-      cpu_usage: "< 85%"
-
+    timeout_seconds: 30
+    
   mistral:
-    type: "ollama"
     ollama_name: "mistral"
     max_tokens: 1000
     temperature: 0.1
-    evaluation_weights:
-      accuracy: 0.25
-      contextual_understanding: 0.20
-      fluency_coherence: 0.20
-      performance_efficiency: 0.35
-    expected_performance:
-      latency_ms: "< 4000"
-      memory_mb: "< 8000"
-      cpu_usage: "< 90%"
-
+    timeout_seconds: 45
+    
   llama2:7b-chat:
-    type: "ollama"
     ollama_name: "llama2:7b-chat"
     max_tokens: 1000
     temperature: 0.1
-    evaluation_weights:
-      accuracy: 0.25
-      contextual_understanding: 0.20
-      fluency_coherence: 0.20
-      performance_efficiency: 0.35
-    expected_performance:
-      latency_ms: "< 5000"
-      memory_mb: "< 10000"
-      cpu_usage: "< 95%"
-
+    timeout_seconds: 60
+    
   gemma:2b:
-    type: "ollama"
     ollama_name: "gemma:2b"
     max_tokens: 1000
     temperature: 0.1
-    evaluation_weights:
-      accuracy: 0.25
-      contextual_understanding: 0.20
-      fluency_coherence: 0.20
-      performance_efficiency: 0.35
-    expected_performance:
-      latency_ms: "< 1500"
-      memory_mb: "< 3000"
-      cpu_usage: "< 70%"
+    timeout_seconds: 20
 
-  deepseek-coder:6.7b:
-    type: "ollama"
-    ollama_name: "deepseek-coder:6.7b"
-    max_tokens: 1000
-    temperature: 0.1
-    evaluation_weights:
-      accuracy: 0.25
-      contextual_understanding: 0.20
-      fluency_coherence: 0.20
-      performance_efficiency: 0.35
-    expected_performance:
-      latency_ms: "< 4000"
-      memory_mb: "< 8000"
-      cpu_usage: "< 90%"
-
-# Evaluation datasets
-datasets:
-  accuracy:
-    - name: "classification_tasks"
-      path: "prompts/classification_tasks.json"
-      description: "Sentiment analysis, topic classification, intent detection"
-    - name: "reasoning_tasks"
-      path: "prompts/reasoning_tasks.json"
-      description: "Mathematical and logical reasoning problems"
-
-  contextual_understanding:
-    - name: "multi_turn_conversations"
-      path: "prompts/contextual_tasks.json"
-      description: "Multi-turn dialogue evaluation"
-    - name: "long_context_processing"
-      path: "prompts/long_context_tasks.json"
-      description: "Extended context handling"
-
-  fluency_coherence:
-    - name: "text_quality"
-      path: "prompts/fluency_tasks.json"
-      description: "Grammatical and stylistic evaluation"
-    - name: "structural_coherence"
-      path: "prompts/coherence_tasks.json"
-      description: "Logical flow and organization"
-
-  performance_efficiency:
-    - name: "latency_benchmark"
-      path: "prompts/latency_tasks.json"
-      description: "Response time measurement"
-    - name: "resource_usage"
-      path: "prompts/resource_tasks.json"
-      description: "CPU and memory monitoring"
-
-# Evaluation parameters
+# Evaluation Parameters
 evaluation:
-  num_samples_per_task: 20  # Reduced for edge deployment testing
-  human_evaluators: 1  # Self-evaluation for edge deployment
-  confidence_threshold: 0.8
-  min_response_length: 10
-  max_response_length: 500
-  sequential_execution: true  # Run models one at a time
-  memory_cleanup: true  # Clear memory between evaluations
-
-# Performance monitoring
-performance:
-  monitoring_interval: 1.0  # seconds
-  cpu_threshold: 95  # percentage
-  memory_threshold: 14000  # MB (16GB - 2GB buffer)
-  latency_timeout: 30  # seconds
-  token_throughput_tracking: true
-
-# Output configuration
-output:
-  base_directory: "models/outputs"
+  samples_per_task: 5      # Number of prompts per task type
+  random_seed: 42          # Fixed seed for reproducibility
   save_raw_responses: true
-  save_processed_scores: true
   generate_visualizations: true
-  create_summary_report: true
-  excel_scorebook: "evaluations/clmpi_scorebook.xlsx"
-  visualization_format: ["png", "svg"]
-
-# Logging configuration
-logging:
-  level: "INFO"
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  file: "evaluation.log"
-  console: true
-  performance_log: "performance_metrics.log"

@@ -1,0 +1,32 @@
+# Default Device Configuration for CLMPI Benchmark
+# This file defines hardware specifications and runtime parameters
+
+device:
+  name: "MacBook Pro 2019"
+  os: "macOS"
+  cpu_model: "Intel Core i5"
+  cpu_cores: 8
+  memory_gb: 16
+  storage_type: "SSD"
+  
+# Runtime Configuration
+runtime:
+  ollama_host: "http://localhost:11434"
+  max_concurrent_models: 1  # Run models sequentially for fair comparison
+  memory_buffer_mb: 2048    # Reserve 2GB for system
+  cpu_reservation_percent: 20  # Reserve 20% CPU for system
+  
+# Performance Thresholds
+thresholds:
+  max_latency_seconds: 30
+  max_memory_mb: 14000      # 16GB - 2GB buffer
+  max_cpu_percent: 95
+  min_response_length: 10
+  max_response_length: 500
+
+# Evaluation Settings
+evaluation:
+  timeout_seconds: 60
+  max_retries: 3
+  save_intermediate: true
+  cleanup_between_runs: true
