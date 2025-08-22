@@ -1,3 +1,3 @@
 # CLMPI Efficiency Metric Configuration
-dataset: prompts/accuracy_tasks_curated.json
+dataset: prompts/coherence.json
 profile: deterministic

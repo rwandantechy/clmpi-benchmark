@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-CLMPI Contextual Understanding Step Evaluation Script
-Evaluates contextual understanding metric independently for stepwise CLMPI evaluation
+CLMPI Efficiency Step Evaluation Script
+Evaluates efficiency metric independently for stepwise CLMPI evaluation
 """
 
 import argparse
@@ -11,6 +11,9 @@ import time
 import logging
 from pathlib import Path
 from datetime import datetime
+
+import sys
+sys.path.append(str(Path(__file__).parent.parent))
 
 from enhanced_clmpi_calculator import EnhancedCLMPICalculator
 from ollama_runner import OllamaRunner
@@ -57,8 +60,8 @@ def find_latest_run_directory() -> Path:
         return run_dir
 
 
-def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
-    """Run contextual understanding evaluation for a single model"""
+def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
+    """Run efficiency evaluation for a single model"""
     
     # Setup logging
     logging.basicConfig(
@@ -68,7 +71,7 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
     logger = logging.getLogger(__name__)
     
     # Load metric config
-    metric_config = load_metric_config("context")
+    metric_config = load_metric_config("efficiency")
     dataset = load_dataset(metric_config["dataset"])
     
     # Load generation profile
@@ -82,69 +85,77 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
     calculator = EnhancedCLMPICalculator()
     ollama_runner = OllamaRunner("http://localhost:11434")
     
-    # Generate responses
-    conversations = dataset.get("conversations", [])[:5]  # Limit for demo
-    responses = []
-    contexts = []
-    gold_answers = []
+    # Generate responses and measure efficiency
+    questions = dataset.get("questions", [])[:5]  # Limit for demo
+    efficiency_results = []
     
-    for conv_data in conversations:
-        context = conv_data["context"]
-        question = conv_data["question"]
-        correct_answer = conv_data["correct_answer"]
-        
-        prompt = f"Context: {context}\n\nQuestion: {question}"
+    for question_data in questions:
+        question = question_data["question"]
         
         try:
-            response = ollama_runner.generate_response(model_name, prompt, profile)
-            responses.append(response)
-            contexts.append(context)
-            gold_answers.append(correct_answer)
+            # Measure efficiency
+            efficiency_result = calculator.measure_efficiency(
+                model_name, question, profile, ollama_runner
+            )
+            efficiency_results.append(efficiency_result)
             
             if verbose:
-                logger.info(f"Context: {context}")
-                logger.info(f"Q: {question}")
-                logger.info(f"A: {response}")
-                logger.info(f"Expected: {correct_answer}")
+                logger.info(f"Question: {question}")
+                logger.info(f"Latency: {efficiency_result.latency_seconds:.4f}s")
+                logger.info(f"CPU: {efficiency_result.cpu_usage_percent:.1f}%")
+                logger.info(f"Memory: {efficiency_result.memory_used_mb:.1f}MB")
+                logger.info(f"Raw Efficiency: {efficiency_result.raw_efficiency:.3f}")
         
         except Exception as e:
-            logger.error(f"Error generating response for conversation: {e}")
-            responses.append("")
-            contexts.append(context)
-            gold_answers.append(correct_answer)
+            logger.error(f"Error measuring efficiency for question: {e}")
+            # Create a dummy result to maintain consistency
+            from enhanced_clmpi_calculator import EfficiencyResult
+            dummy_result = EfficiencyResult(
+                latency_seconds=1.0,
+                cpu_usage_percent=0.0,
+                memory_used_mb=0.0,
+                raw_efficiency=0.0,
+                normalized_efficiency=0.0
+            )
+            efficiency_results.append(dummy_result)
     
-    # Calculate contextual understanding
-    context_result = calculator.evaluate_contextual_understanding(responses, contexts, gold_answers)
+    # Normalize efficiency scores
+    normalized_scores = calculator.normalize_efficiency_scores(efficiency_results)
+    for i, norm_score in enumerate(normalized_scores):
+        efficiency_results[i].normalized_efficiency = norm_score
+    
+    # Calculate average efficiency
+    avg_efficiency = sum(normalized_scores) / len(normalized_scores) if normalized_scores else 0.0
     
     # Find or create run directory
     run_dir = find_latest_run_directory()
-    metric_dir = run_dir / "context"
+    metric_dir = run_dir / "efficiency"
     metric_dir.mkdir(exist_ok=True)
     
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
-        for i, (response, context, gold, conv_data) in enumerate(zip(responses, contexts, gold_answers, conversations)):
+        for i, (result, question_data) in enumerate(zip(efficiency_results, questions)):
             detail = {
-                "conversation_id": conv_data.get("id", f"ctx_{i+1}"),
-                "context": context,
-                "question": conv_data["question"],
-                "response": response,
-                "gold_answer": gold,
-                "exact_match": 1 if response.strip().lower() == gold.strip().lower() else 0,
-                "context_similarity": context_result.context_similarity
+                "question_id": question_data.get("id", f"eff_{i+1}"),
+                "question": question_data["question"],
+                "latency_seconds": result.latency_seconds,
+                "cpu_usage_percent": result.cpu_usage_percent,
+                "memory_used_mb": result.memory_used_mb,
+                "raw_efficiency": result.raw_efficiency,
+                "normalized_efficiency": result.normalized_efficiency
             }
             f.write(json.dumps(detail) + "\n")
     
     # Save summary
     summary = {
-        "metric": "contextual_understanding",
+        "metric": "efficiency",
         "model": model_name,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "exact_match": context_result.exact_match,
-        "f1_score": context_result.f1_score,
-        "context_similarity": context_result.context_similarity,
-        "combined_score": context_result.combined_score,
-        "total_conversations": len(conversations),
+        "avg_efficiency": avg_efficiency,
+        "avg_latency_seconds": sum(r.latency_seconds for r in efficiency_results) / len(efficiency_results),
+        "avg_cpu_percent": sum(r.cpu_usage_percent for r in efficiency_results) / len(efficiency_results),
+        "avg_memory_mb": sum(r.memory_used_mb for r in efficiency_results) / len(efficiency_results),
+        "total_questions": len(questions),
         "generation_profile": metric_config["profile"],
         "dataset_path": metric_config["dataset"]
     }
@@ -153,18 +164,18 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
         json.dump(summary, f, indent=2)
     
     # Print single line summary
-    print(f"[CTX] {model_name} context={context_result.combined_score:.3f}")
+    print(f"[EFF] {model_name} efficiency={avg_efficiency:.3f}")
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
-        logger.info(f"Exact Match: {context_result.exact_match:.3f}")
-        logger.info(f"F1 Score: {context_result.f1_score:.3f}")
-        logger.info(f"Context Similarity: {context_result.context_similarity:.3f}")
-        logger.info(f"Combined Score: {context_result.combined_score:.3f}")
+        logger.info(f"Average Efficiency: {avg_efficiency:.3f}")
+        logger.info(f"Average Latency: {summary['avg_latency_seconds']:.3f}s")
+        logger.info(f"Average CPU: {summary['avg_cpu_percent']:.1f}%")
+        logger.info(f"Average Memory: {summary['avg_memory_mb']:.1f}MB")
     
     return {
-        "metric": "contextual_understanding",
-        "score": context_result.combined_score,
+        "metric": "efficiency",
+        "score": avg_efficiency,
         "run_dir": str(run_dir),
         "metric_dir": str(metric_dir)
     }
@@ -173,12 +184,12 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
 def main():
     """Main function with CLI argument parsing"""
     parser = argparse.ArgumentParser(
-        description='Run CLMPI contextual understanding evaluation step',
+        description='Run CLMPI efficiency evaluation step',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/step_context.py --model phi3:mini
-  python scripts/step_context.py --model phi3:mini --verbose
+  python scripts/step_efficiency.py --model phi3:mini
+  python scripts/step_efficiency.py --model phi3:mini --verbose
         """
     )
     
@@ -190,7 +201,7 @@ Examples:
     args = parser.parse_args()
     
     try:
-        result = run_context_evaluation(args.model, args.verbose)
+        result = run_efficiency_evaluation(args.model, args.verbose)
         return 0
     except Exception as e:
         print(f"Error: {e}")

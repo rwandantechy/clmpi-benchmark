@@ -37,11 +37,11 @@ class TestSmokeEvaluation:
                     'performance_efficiency': 0.15
                 },
                 'prompt_sets': {
-                    'accuracy': ['accuracy_tasks_curated.json'],
-                    'contextual_understanding': ['contextual_tasks_curated.json'],
-                    'coherence': ['coherence_tasks.json'],
-                    'fluency': ['fluency_tasks.json'],
-                    'performance_efficiency': ['accuracy_tasks_curated.json']
+                            'accuracy': ['accuracy.json'],
+        'contextual_understanding': ['context.json'],
+        'coherence': ['coherence.json'],
+        'fluency': ['fluency.json'],
+        'performance_efficiency': ['coherence.json']
                 },
                 'models': {
                     'test_model': {

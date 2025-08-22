@@ -36,25 +36,25 @@ max_tokens: 1000
 
 ### 2. Curated Expert-Validated Datasets
 
-#### Accuracy Dataset (`accuracy_tasks_curated.json`)
+#### Accuracy Dataset (`accuracy.json`)
 - **Source**: Expert-validated factual questions
 - **Structure**: Question + correct answer + acceptable variations
 - **Categories**: Geography, science, history, math, general knowledge
 - **Validation**: Each question verified by domain experts
 
-#### Contextual Understanding Dataset (`contextual_tasks_curated.json`)
+#### Contextual Understanding Dataset (`context.json`)
 - **Source**: Multi-turn conversations with context
 - **Structure**: Context + question + gold answer
 - **Types**: Conversation, narrative, instruction
 - **Validation**: Expert-validated answers
 
-#### Coherence Dataset (`coherence_tasks.json`)
+#### Coherence Dataset (`coherence.json`)
 - **Source**: Dedicated coherence evaluation prompts
 - **Structure**: Open-ended prompts requiring logical flow
 - **Types**: Narrative, argument, explanation, instruction
 - **Validation**: No reference text - evaluates internal consistency
 
-#### Fluency Dataset (`fluency_tasks.json`)
+#### Fluency Dataset (`fluency.json`)
 - **Source**: Surface quality evaluation prompts
 - **Structure**: Descriptive, narrative, explanatory tasks
 - **Types**: Descriptive, narrative, explanatory, conversational

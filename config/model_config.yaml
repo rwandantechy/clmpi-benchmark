@@ -18,15 +18,15 @@ evaluation_weights:
 # Each maps to a specific evaluation dimension with curated datasets
 prompt_sets:
   accuracy:
-    - "accuracy_tasks_curated.json"  # Expert-validated factual questions
+    - "accuracy.json"  # Expert-validated factual questions
   contextual_understanding:
-    - "contextual_tasks_curated.json"  # Multi-turn contextual tasks
+    - "context.json"  # Multi-turn contextual tasks
   coherence:
-    - "coherence_tasks.json"  # Logical flow evaluation
+    - "coherence.json"  # Logical flow evaluation
   fluency:
-    - "fluency_tasks.json"  # Surface quality evaluation
+    - "fluency.json"  # Surface quality evaluation
   performance_efficiency:
-    - "accuracy_tasks_curated.json"  # Use accuracy tasks for efficiency measurement
+    - "coherence.json"  # Use coherence tasks for efficiency measurement
 
 # Model Definitions
 # Add models here as needed. All models must be available via Ollama

@@ -123,10 +123,10 @@ def test_datasets():
     print("Testing curated datasets...")
     
     dataset_files = [
-        "prompts/accuracy_tasks_curated.json",
-        "prompts/contextual_tasks_curated.json",
-        "prompts/coherence_tasks.json",
-        "prompts/fluency_tasks.json"
+        "prompts/accuracy.json",
+        "prompts/context.json",
+        "prompts/coherence.json",
+        "prompts/fluency.json"
     ]
     
     for dataset_file in dataset_files:

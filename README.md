@@ -39,11 +39,11 @@ ls -l results/latest/
 ### Stepwise Evaluation (Individual Metrics)
 ```bash
 # Run each metric individually
-python scripts/step_accuracy.py --model phi3:mini
-python scripts/step_context.py --model phi3:mini
-python scripts/step_coherence.py --model phi3:mini
-python scripts/step_fluency.py --model phi3:mini
-python scripts/step_efficiency.py --model phi3:mini
+python scripts/runners/step_accuracy.py --model phi3:mini
+python scripts/runners/step_context.py --model phi3:mini
+python scripts/runners/step_coherence.py --model phi3:mini
+python scripts/runners/step_fluency.py --model phi3:mini
+python scripts/runners/step_efficiency.py --model phi3:mini
 
 # Combine into final CLMPI score
 python scripts/combine_clmpi.py --model phi3:mini --detailed

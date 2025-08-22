@@ -30,11 +30,11 @@ def test_smoke_enhanced():
                 'performance_efficiency': 0.15
             },
             'prompt_sets': {
-                'accuracy': ['accuracy_tasks_curated.json'],
-                'contextual_understanding': ['contextual_tasks_curated.json'],
-                'coherence': ['coherence_tasks.json'],
-                'fluency': ['fluency_tasks.json'],
-                'performance_efficiency': ['accuracy_tasks_curated.json']
+                        'accuracy': ['accuracy.json'],
+        'contextual_understanding': ['context.json'],
+        'coherence': ['coherence.json'],
+        'fluency': ['fluency.json'],
+        'performance_efficiency': ['coherence.json']
             },
             'models': {
                 'test_model': {
@@ -134,7 +134,7 @@ def test_smoke_enhanced():
         # Copy the actual prompt files
         import shutil
         source_prompts = Path(__file__).parent.parent / 'prompts'
-        for prompt_file in ['accuracy_tasks_curated.json', 'contextual_tasks_curated.json', 'coherence_tasks.json', 'fluency_tasks.json']:
+        for prompt_file in ['accuracy.json', 'context.json', 'coherence.json', 'fluency.json']:
             shutil.copy2(source_prompts / prompt_file, prompts_dir / prompt_file)
         
         # Mock the ollama runner to avoid actual model calls

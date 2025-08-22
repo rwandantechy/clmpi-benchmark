@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-CLMPI Coherence Step Evaluation Script
-Evaluates coherence metric independently for stepwise CLMPI evaluation
+CLMPI Fluency Step Evaluation Script
+Evaluates fluency metric independently for stepwise CLMPI evaluation
 """
 
 import argparse
@@ -11,6 +11,9 @@ import time
 import logging
 from pathlib import Path
 from datetime import datetime
+
+import sys
+sys.path.append(str(Path(__file__).parent.parent))
 
 from enhanced_clmpi_calculator import EnhancedCLMPICalculator
 from ollama_runner import OllamaRunner
@@ -57,8 +60,8 @@ def find_latest_run_directory() -> Path:
         return run_dir
 
 
-def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
-    """Run coherence evaluation for a single model"""
+def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
+    """Run fluency evaluation for a single model"""
     
     # Setup logging
     logging.basicConfig(
@@ -68,7 +71,7 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
     logger = logging.getLogger(__name__)
     
     # Load metric config
-    metric_config = load_metric_config("coherence")
+    metric_config = load_metric_config("fluency")
     dataset = load_dataset(metric_config["dataset"])
     
     # Load generation profile
@@ -101,35 +104,35 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
             logger.error(f"Error generating response for prompt: {e}")
             responses.append("")
     
-    # Calculate coherence
-    coherence_result = calculator.evaluate_coherence(responses)
+    # Calculate fluency
+    fluency_result = calculator.evaluate_fluency(responses)
     
     # Find or create run directory
     run_dir = find_latest_run_directory()
-    metric_dir = run_dir / "coherence"
+    metric_dir = run_dir / "fluency"
     metric_dir.mkdir(exist_ok=True)
     
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
         for i, (response, prompt_data) in enumerate(zip(responses, prompts)):
             detail = {
-                "prompt_id": prompt_data.get("id", f"coh_{i+1}"),
+                "prompt_id": prompt_data.get("id", f"flu_{i+1}"),
                 "prompt": prompt_data["prompt"],
                 "response": response,
-                "coherence_score": coherence_result.detailed_scores[i] if i < len(coherence_result.detailed_scores) else 0.0,
-                "sentence_similarity": coherence_result.sentence_similarity,
-                "repetition_penalty": coherence_result.repetition_penalty
+                "fluency_score": fluency_result.detailed_scores[i] if i < len(fluency_result.detailed_scores) else 0.0,
+                "grammar_score": fluency_result.grammar_score,
+                "perplexity_score": fluency_result.perplexity_score
             }
             f.write(json.dumps(detail) + "\n")
     
     # Save summary
     summary = {
-        "metric": "coherence",
+        "metric": "fluency",
         "model": model_name,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "coherence_score": coherence_result.coherence_score,
-        "sentence_similarity": coherence_result.sentence_similarity,
-        "repetition_penalty": coherence_result.repetition_penalty,
+        "fluency_score": fluency_result.fluency_score,
+        "grammar_score": fluency_result.grammar_score,
+        "perplexity_score": fluency_result.perplexity_score,
         "total_prompts": len(prompts),
         "generation_profile": metric_config["profile"],
         "dataset_path": metric_config["dataset"]
@@ -139,17 +142,17 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
         json.dump(summary, f, indent=2)
     
     # Print single line summary
-    print(f"[COH] {model_name} coherence={coherence_result.coherence_score:.3f}")
+    print(f"[FLU] {model_name} fluency={fluency_result.fluency_score:.3f}")
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
-        logger.info(f"Coherence Score: {coherence_result.coherence_score:.3f}")
-        logger.info(f"Sentence Similarity: {coherence_result.sentence_similarity:.3f}")
-        logger.info(f"Repetition Penalty: {coherence_result.repetition_penalty:.3f}")
+        logger.info(f"Fluency Score: {fluency_result.fluency_score:.3f}")
+        logger.info(f"Grammar Score: {fluency_result.grammar_score:.3f}")
+        logger.info(f"Perplexity Score: {fluency_result.perplexity_score:.3f}")
     
     return {
-        "metric": "coherence",
-        "score": coherence_result.coherence_score,
+        "metric": "fluency",
+        "score": fluency_result.fluency_score,
         "run_dir": str(run_dir),
         "metric_dir": str(metric_dir)
     }
@@ -158,12 +161,12 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
 def main():
     """Main function with CLI argument parsing"""
     parser = argparse.ArgumentParser(
-        description='Run CLMPI coherence evaluation step',
+        description='Run CLMPI fluency evaluation step',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/step_coherence.py --model phi3:mini
-  python scripts/step_coherence.py --model phi3:mini --verbose
+  python scripts/step_fluency.py --model phi3:mini
+  python scripts/step_fluency.py --model phi3:mini --verbose
         """
     )
     
@@ -175,7 +178,7 @@ Examples:
     args = parser.parse_args()
     
     try:
-        result = run_coherence_evaluation(args.model, args.verbose)
+        result = run_fluency_evaluation(args.model, args.verbose)
         return 0
     except Exception as e:
         print(f"Error: {e}")

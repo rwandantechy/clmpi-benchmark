@@ -1,3 +1,3 @@
 # CLMPI Fluency Metric Configuration
-dataset: prompts/fluency_tasks.json
+dataset: prompts/fluency.json
 profile: creative

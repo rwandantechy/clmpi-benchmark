@@ -12,15 +12,15 @@ evaluation_weights:
 # Prompt Sets to Enable
 prompt_sets:
   accuracy:
-    - "accuracy_tasks_curated.json"
+    - "accuracy.json"
   contextual_understanding:
-    - "contextual_tasks_curated.json"
+    - "context.json"
   coherence:
-    - "coherence_tasks.json"
+    - "coherence.json"
   fluency:
-    - "fluency_tasks.json"
+    - "fluency.json"
   performance_efficiency:
-    - "accuracy_tasks_curated.json"
+    - "coherence.json"
 
 # Model Definitions
 # Add your models here after pulling them with Ollama
