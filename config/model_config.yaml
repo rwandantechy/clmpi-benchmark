@@ -32,10 +32,9 @@ prompt_sets:
 # Add models here as needed. All models must be available via Ollama
 # Generation settings are standardized via generation_config.yaml
 models:
-  # Example: Add your models here
-  # my_model:
-  #   ollama_name: "my_model"
-  #   timeout_seconds: 30
+  phi3_3_8b:
+    ollama_name: "phi3:3.8b"
+    timeout_seconds: 30
 
 # Evaluation Parameters
 evaluation:

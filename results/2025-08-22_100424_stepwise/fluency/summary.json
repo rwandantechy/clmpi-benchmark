@@ -1,0 +1,11 @@
+{
+  "metric": "fluency",
+  "model": "phi3:3.8b",
+  "timestamp": "2025-08-22 10:15:31",
+  "fluency_score": 0.3558113553113553,
+  "grammar_score": 0.38,
+  "perplexity_score": 0.31952838827838825,
+  "total_prompts": 5,
+  "generation_profile": "creative",
+  "dataset_path": "prompts/fluency.json"
+}

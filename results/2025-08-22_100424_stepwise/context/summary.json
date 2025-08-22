@@ -1,0 +1,12 @@
+{
+  "metric": "contextual_understanding",
+  "model": "phi3:3.8b",
+  "timestamp": "2025-08-22 10:06:29",
+  "exact_match": 0.0,
+  "f1_score": 0.02090687097589997,
+  "context_similarity": 0.6665355417529331,
+  "combined_score": 0.02090687097589997,
+  "total_conversations": 5,
+  "generation_profile": "deterministic",
+  "dataset_path": "prompts/context.json"
+}
