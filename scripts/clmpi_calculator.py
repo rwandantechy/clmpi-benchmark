@@ -404,6 +404,9 @@ class CLMPICalculator:
         """
         Normalize efficiency scores using min-max normalization
         
+        Formula: eff_norm = (eff_raw - eff_min) / (eff_max - eff_min)
+        Where: eff_raw = 1 / (latency_seconds + memory_mb/100)
+        
         Args:
             efficiency_results: List of efficiency results
             
@@ -417,11 +420,20 @@ class CLMPICalculator:
         min_score = min(raw_scores)
         max_score = max(raw_scores)
         
+        # Handle edge cases
         if max_score == min_score:
             return [0.5] * len(raw_scores)  # Neutral scores if all equal
         
-        normalized = [(score - min_score) / (max_score - min_score) for score in raw_scores]
-        return normalized
+        if max_score == 0:
+            return [0.0] * len(raw_scores)  # All zero scores
+        
+        # Normalize scores
+        try:
+            normalized = [(score - min_score) / (max_score - min_score) for score in raw_scores]
+            return normalized
+        except ZeroDivisionError:
+            self.logger.warning("Division by zero in efficiency normalization, using neutral scores")
+            return [0.5] * len(raw_scores)
     
     def calculate_clmpi(self, accuracy_result: AccuracyResult,
                        contextual_result: ContextualResult,
@@ -456,11 +468,11 @@ class CLMPICalculator:
             self.weights['performance_efficiency'] * efficiency_score
         )
         
-        clmpi_100 = clmpi_01 * 100
+        clmpi_25 = clmpi_01 * 25  # Paper uses 0-25 range
         
         return {
             'clmpi_01': clmpi_01,
-            'clmpi_100': clmpi_100,
+            'clmpi_25': clmpi_25,
             'component_scores': {
                 'accuracy': accuracy_norm,
                 'contextual_understanding': contextual_norm,

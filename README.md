@@ -17,7 +17,7 @@ CLMPI evaluates language models across 5 dimensions for edge deployment suitabil
 
 ## Quick Start
 
-### Complete Evaluation (All Metrics)
+### Stepwise Evaluation (Recommended)
 ```bash
 # 1) Install
 pip install -r requirements.txt
@@ -25,28 +25,28 @@ pip install -r requirements.txt
 # 2) Pull at least one model
 ollama pull phi3:mini
 
-# 3) Run the benchmark (recommended)
+# 3) Run each metric individually
+python scripts/runners/step_accuracy.py --model "phi3:mini"
+python scripts/runners/step_context.py --model "phi3:mini"
+python scripts/runners/step_coherence.py --model "phi3:mini"
+python scripts/runners/step_fluency.py --model "phi3:mini"
+python scripts/runners/step_efficiency.py --model "phi3:mini"
+
+# 4) Combine into final CLMPI score
+python scripts/combine_clmpi.py --model "phi3:mini"
+
+# 5) Inspect outputs
+ls -l results/latest/
+```
+
+### Complete Evaluation (Legacy)
+```bash
+# Run all metrics at once (legacy approach)
 python scripts/evaluate_models.py \
     --model-config config/model_config.yaml \
     --generation-config config/generation_config.yaml \
     --device-config config/device_default.yaml \
     --models phi3:mini
-
-# 4) Inspect outputs
-ls -l results/latest/
-```
-
-### Stepwise Evaluation (Individual Metrics)
-```bash
-# Run each metric individually
-python scripts/runners/step_accuracy.py --model phi3:mini
-python scripts/runners/step_context.py --model phi3:mini
-python scripts/runners/step_coherence.py --model phi3:mini
-python scripts/runners/step_fluency.py --model phi3:mini
-python scripts/runners/step_efficiency.py --model phi3:mini
-
-# Combine into final CLMPI score
-python scripts/combine_clmpi.py --model phi3:mini --detailed
 ```
 
 Note: Legacy scripts are deprecated; see the deprecation notice at the top of those files.
@@ -87,8 +87,8 @@ Edit `config/device_default.yaml` for your hardware.
 - **`results/<timestamp>_<name>/`** - Run results with timestamp
 - **`results/latest/`** - Symlink to most recent run
 - **`summary.json`** - Machine-readable results
-- **`evaluations/visualizations/`** - Radar and bar charts
-- **`evaluations/clmpi_scorebook.xlsx`** - Excel comparison
+- **`evaluations/visualizations/`** - Intuitive charts (horizontal bars, heatmaps, performance matrix)
+- **`evaluations/clmpi_scorebook.xlsx`** - Excel comparison with summary statistics
 
 ## Reproducibility
 

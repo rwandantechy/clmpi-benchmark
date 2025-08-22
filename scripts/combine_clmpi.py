@@ -57,13 +57,14 @@ def calculate_clmpi(metric_scores: Dict[str, float], weights: Dict[str, float]) 
     if abs(weight_sum - 1.0) > 1e-6:
         raise ValueError(f"Weights must sum to 1.0, got {weight_sum}")
     
-    # Calculate weighted CLMPI score
+    # Calculate weighted CLMPI score according to paper formula
+    # CLMPI = 25 * (0.25*ACC + 0.20*CON + 0.20*COH + 0.20*FLU + 0.15*EFF)
     clmpi_01 = sum(weights[metric] * score for metric, score in metric_scores.items())
-    clmpi_100 = clmpi_01 * 100
+    clmpi_25 = clmpi_01 * 25  # Paper uses 0-25 range
     
     return {
         "clmpi_01": clmpi_01,
-        "clmpi_100": clmpi_100,
+        "clmpi_25": clmpi_25,
         "component_scores": metric_scores.copy(),
         "weights_used": weights.copy()
     }
@@ -160,8 +161,43 @@ def combine_clmpi_scores(model_name: str, verbose: bool = False) -> dict:
     with open(clmpi_summary_path, "w") as f:
         json.dump(combined_summary, f, indent=2)
     
+    # Create run_info.json with device info, weights, and generation profiles
+    run_info = {
+        "run_type": "stepwise_clmpi",
+        "model": model_name,
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "evaluation_weights": weights,
+        "generation_profiles": {
+            "deterministic": {
+                "description": "Used for accuracy and contextual understanding",
+                "temperature": 0.0,
+                "top_p": 1.0,
+                "top_k": 1
+            },
+            "creative": {
+                "description": "Used for coherence and fluency",
+                "temperature": 0.7,
+                "top_p": 0.9,
+                "top_k": 40
+            }
+        },
+        "metric_configs": {
+            "accuracy": {"dataset": "prompts/accuracy.json", "profile": "deterministic"},
+            "context": {"dataset": "prompts/context.json", "profile": "deterministic"},
+            "coherence": {"dataset": "prompts/coherence.json", "profile": "creative"},
+            "fluency": {"dataset": "prompts/fluency.json", "profile": "creative"},
+            "efficiency": {"dataset": "prompts/coherence.json", "profile": "deterministic"}
+        },
+        "clmpi_formula": "CLMPI = 25 * (0.25*ACC + 0.20*CON + 0.20*COH + 0.20*FLU + 0.15*EFF)",
+        "paper_reference": "Benchmarking Large Language Models with a Unified Performance Ranking Metric by Maikel Leon (University of Miami, 2024)"
+    }
+    
+    run_info_path = run_dir / "run_info.json"
+    with open(run_info_path, "w") as f:
+        json.dump(run_info, f, indent=2)
+    
     # Print results
-    print(f"[CLMPI] {model_name} combined_score={clmpi_result['clmpi_01']:.3f} (0-1) / {clmpi_result['clmpi_100']:.1f} (0-100)")
+    print(f"[CLMPI] {model_name} combined_score={clmpi_result['clmpi_01']:.3f} (0-1) / {clmpi_result['clmpi_25']:.1f} (0-25)")
     
     if verbose:
         logger.info(f"Combined results saved to: {clmpi_summary_path}")
@@ -172,7 +208,7 @@ def combine_clmpi_scores(model_name: str, verbose: bool = False) -> dict:
     
     return {
         "clmpi_01": clmpi_result['clmpi_01'],
-        "clmpi_100": clmpi_result['clmpi_100'],
+        "clmpi_25": clmpi_result['clmpi_25'],
         "run_dir": str(run_dir),
         "summary_path": str(clmpi_summary_path)
     }
@@ -207,7 +243,7 @@ def print_detailed_summary(run_dir: Path, model_name: str):
         print("FINAL CLMPI SCORE:")
         print("-" * 40)
         print(f"CLMPI (0-1):  {clmpi_data['clmpi_scores']['clmpi_01']:.3f}")
-        print(f"CLMPI (0-100): {clmpi_data['clmpi_scores']['clmpi_100']:.1f}")
+        print(f"CLMPI (0-25): {clmpi_data['clmpi_scores']['clmpi_25']:.1f}")
     
     print("="*60)
 

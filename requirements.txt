@@ -12,6 +12,7 @@ requests==2.31.0
 # Evaluation dependencies
 language-tool-python==2.7.1  # For grammar checking in fluency evaluation
 scikit-learn==1.3.0  # For F1 score calculations
+seaborn==0.12.2  # For intuitive heatmap visualizations
 
 # Visualization (matplotlib only)
 matplotlib==3.7.2 

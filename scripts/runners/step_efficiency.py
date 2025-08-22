@@ -93,10 +93,16 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
         question = question_data["question"]
         
         try:
+            # Extract generation parameters from profile
+            max_tokens = profile.get("max_tokens", 1000)
+            temperature = profile.get("temperature", 0.1)
+            
+            # Create a wrapper function for efficiency measurement
+            def generate_with_ollama():
+                return ollama_runner.generate_response(model_name, question, max_tokens, temperature)
+            
             # Measure efficiency
-            efficiency_result = calculator.measure_efficiency(
-                model_name, question, profile, ollama_runner
-            )
+            efficiency_result = calculator.measure_efficiency(generate_with_ollama)
             efficiency_results.append(efficiency_result)
             
             if verbose:
@@ -146,15 +152,25 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
             }
             f.write(json.dumps(detail) + "\n")
     
+    # Calculate averages with error handling
+    try:
+        avg_latency = sum(r.latency_seconds for r in efficiency_results) / len(efficiency_results)
+        avg_cpu = sum(r.cpu_usage_percent for r in efficiency_results) / len(efficiency_results)
+        avg_memory = sum(r.memory_used_mb for r in efficiency_results) / len(efficiency_results)
+    except ZeroDivisionError:
+        avg_latency = 0.0
+        avg_cpu = 0.0
+        avg_memory = 0.0
+    
     # Save summary
     summary = {
         "metric": "efficiency",
         "model": model_name,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "avg_efficiency": avg_efficiency,
-        "avg_latency_seconds": sum(r.latency_seconds for r in efficiency_results) / len(efficiency_results),
-        "avg_cpu_percent": sum(r.cpu_usage_percent for r in efficiency_results) / len(efficiency_results),
-        "avg_memory_mb": sum(r.memory_used_mb for r in efficiency_results) / len(efficiency_results),
+        "avg_latency_seconds": avg_latency,
+        "avg_cpu_percent": avg_cpu,
+        "avg_memory_mb": avg_memory,
         "total_questions": len(questions),
         "generation_profile": metric_config["profile"],
         "dataset_path": metric_config["dataset"]

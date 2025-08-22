@@ -93,7 +93,13 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
         prompt = prompt_data["prompt"]
         
         try:
-            response = ollama_runner.generate_response(model_name, prompt, profile)
+            # Extract generation parameters from profile
+            max_tokens = profile.get("max_tokens", 1000)
+            temperature = profile.get("temperature", 0.1)
+            
+            response, metrics = ollama_runner.generate_response(
+                model_name, prompt, max_tokens, temperature
+            )
             responses.append(response)
             
             if verbose:

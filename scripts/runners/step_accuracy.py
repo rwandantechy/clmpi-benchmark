@@ -40,12 +40,24 @@ def load_dataset(dataset_path: str) -> dict:
         return json.load(f)
 
 
-def create_run_directory() -> Path:
-    """Create timestamped run directory"""
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    run_dir = Path("results") / f"{timestamp}_stepwise"
-    run_dir.mkdir(parents=True, exist_ok=True)
-    return run_dir
+def find_latest_run_directory() -> Path:
+    """Find the latest run directory, or create one if none exists"""
+    results_dir = Path("results")
+    if not results_dir.exists():
+        results_dir.mkdir()
+    
+    # Look for existing stepwise runs
+    stepwise_runs = list(results_dir.glob("*_stepwise"))
+    if stepwise_runs:
+        # Use the most recent one
+        latest = max(stepwise_runs, key=lambda p: p.stat().st_mtime)
+        return latest
+    else:
+        # Create new timestamped run directory
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+        run_dir = results_dir / f"{timestamp}_stepwise"
+        run_dir.mkdir(parents=True, exist_ok=True)
+        return run_dir
 
 
 def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
@@ -83,7 +95,13 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
         correct_answer = question_data["correct_answer"]
         
         try:
-            response = ollama_runner.generate_response(model_name, question, profile)
+            # Extract generation parameters from profile
+            max_tokens = profile.get("max_tokens", 1000)
+            temperature = profile.get("temperature", 0.1)
+            
+            response, metrics = ollama_runner.generate_response(
+                model_name, question, max_tokens, temperature
+            )
             responses.append(response)
             gold_answers.append(correct_answer)
             
@@ -100,8 +118,8 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Calculate accuracy
     accuracy_result = calculator.evaluate_accuracy(responses, gold_answers)
     
-    # Create run directory
-    run_dir = create_run_directory()
+    # Find or create run directory
+    run_dir = find_latest_run_directory()
     metric_dir = run_dir / "accuracy"
     metric_dir.mkdir(exist_ok=True)
     
