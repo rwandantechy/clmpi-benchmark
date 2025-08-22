@@ -1,4 +1,11 @@
+# DEPRECATED: Use scripts/enhanced_clmpi_calculator.py instead.
+# This file remains for historical reference only and is not maintained.
 """
+DEPRECATED: Use scripts/enhanced_clmpi_calculator.py
+
+This script is deprecated and will be removed in a future version.
+Use the enhanced calculator for better scoring methods and reproducibility.
+
 CLMPI Calculator - Core scoring engine for Comprehensive Language Model Performance Index
 
 This module implements the CLMPI formula with proper normalization as described in:

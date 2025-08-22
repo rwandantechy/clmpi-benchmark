@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "description": "Coherence evaluation tasks for testing logical flow and structural soundness",
+  "total_prompts": 10,
+  "coherence_types": ["narrative", "argument", "explanation", "instruction"],
+  "difficulty_levels": ["easy", "medium", "hard"],
+  "prompts": [
+    {
+      "id": "coh_001",
+      "coherence_type": "narrative",
+      "difficulty": "easy",
+      "prompt": "Write a short story about a cat who learns to swim. Make sure the events flow logically from one to the next.",
+      "min_sentences": 3,
+      "max_sentences": 6,
+      "evaluation_criteria": ["logical_sequence", "sentence_connectivity", "no_contradictions"]
+    },
+    {
+      "id": "coh_002",
+      "coherence_type": "argument",
+      "difficulty": "medium",
+      "prompt": "Explain why renewable energy is important for the future. Present your argument in a logical sequence.",
+      "min_sentences": 4,
+      "max_sentences": 8,
+      "evaluation_criteria": ["argument_structure", "logical_progression", "evidence_connection"]
+    },
+    {
+      "id": "coh_003",
+      "coherence_type": "explanation",
+      "difficulty": "medium",
+      "prompt": "Explain how photosynthesis works in plants. Break down the process into clear, connected steps.",
+      "min_sentences": 4,
+      "max_sentences": 7,
+      "evaluation_criteria": ["process_sequence", "cause_effect_relationships", "clarity"]
+    },
+    {
+      "id": "coh_004",
+      "coherence_type": "instruction",
+      "difficulty": "easy",
+      "prompt": "Write step-by-step instructions for making a sandwich. Each step should follow logically from the previous one.",
+      "min_sentences": 3,
+      "max_sentences": 6,
+      "evaluation_criteria": ["step_sequence", "logical_order", "completeness"]
+    },
+    {
+      "id": "coh_005",
+      "coherence_type": "narrative",
+      "difficulty": "hard",
+      "prompt": "Describe a day in the life of a time traveler. Ensure the narrative maintains logical consistency despite the time travel element.",
+      "min_sentences": 5,
+      "max_sentences": 10,
+      "evaluation_criteria": ["narrative_consistency", "logical_flow", "complexity_handling"]
+    }
+  ]
+}

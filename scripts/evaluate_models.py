@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
+# DEPRECATED: Use scripts/enhanced_evaluate_models.py instead.
+# This file remains for historical reference only and is not maintained.
 """
+DEPRECATED: Use scripts/enhanced_evaluate_models.py and scripts/enhanced_clmpi_calculator.py
+
+This script is deprecated and will be removed in a future version.
+Use the enhanced evaluation pipeline for better accuracy, reproducibility, and professional results.
+
 CLMPI Model Evaluation Script
 
 Main entry point for running CLMPI benchmarks on language models.

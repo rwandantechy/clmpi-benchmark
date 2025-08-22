@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "description": "Fluency evaluation tasks for testing surface quality and grammatical correctness",
+  "total_prompts": 10,
+  "fluency_types": ["descriptive", "narrative", "explanatory", "conversational"],
+  "difficulty_levels": ["easy", "medium", "hard"],
+  "prompts": [
+    {
+      "id": "flu_001",
+      "fluency_type": "descriptive",
+      "difficulty": "easy",
+      "prompt": "Describe a beautiful sunset in 3-4 sentences. Focus on clear, grammatically correct language.",
+      "min_sentences": 3,
+      "max_sentences": 4,
+      "evaluation_criteria": ["grammar", "sentence_structure", "vocabulary_usage"]
+    },
+    {
+      "id": "flu_002",
+      "fluency_type": "narrative",
+      "difficulty": "medium",
+      "prompt": "Write a brief story about a person who discovers a mysterious door. Use varied sentence structures and proper grammar.",
+      "min_sentences": 4,
+      "max_sentences": 6,
+      "evaluation_criteria": ["grammar", "sentence_variety", "flow"]
+    },
+    {
+      "id": "flu_003",
+      "fluency_type": "explanatory",
+      "difficulty": "medium",
+      "prompt": "Explain how a bicycle works in simple terms. Use clear, well-structured sentences.",
+      "min_sentences": 4,
+      "max_sentences": 7,
+      "evaluation_criteria": ["clarity", "grammar", "sentence_structure"]
+    },
+    {
+      "id": "flu_004",
+      "fluency_type": "conversational",
+      "difficulty": "easy",
+      "prompt": "Write a friendly email to a colleague about a project update. Use natural, conversational language.",
+      "min_sentences": 3,
+      "max_sentences": 5,
+      "evaluation_criteria": ["naturalness", "grammar", "tone"]
+    },
+    {
+      "id": "flu_005",
+      "fluency_type": "descriptive",
+      "difficulty": "hard",
+      "prompt": "Describe a complex machine or process in detail. Use sophisticated vocabulary while maintaining clarity and grammatical correctness.",
+      "min_sentences": 5,
+      "max_sentences": 8,
+      "evaluation_criteria": ["vocabulary_sophistication", "grammar", "clarity"]
+    }
+  ]
+}

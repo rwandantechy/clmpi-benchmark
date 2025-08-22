@@ -19,20 +19,24 @@ CLMPI evaluates language models across 5 dimensions for edge deployment suitabil
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Install Ollama models
-ollama pull phi3:mini
-ollama pull mistral
+# 2. Test system
+python scripts/test_enhanced_system.py
 
-# 3. Run benchmark
-python scripts/evaluate_models.py \
-    --config config/model_config.yaml \
-    --device config/device_default.yaml \
-    --models phi3:mini mistral \
-    --output results/edge_demo
+# 3. Pull your model via Ollama
+ollama pull <your_model_name>
 
-# 4. View results
-ls results/edge_demo/
-cat results/edge_demo/summary.json
+# 4. Add model to config/model_config.yaml
+# 5. Run evaluation
+python scripts/enhanced_evaluate_models.py \
+    --model-config config/model_config.yaml \
+    --generation-config config/generation_config.yaml \
+    --device-config config/device_default.yaml \
+    --models <your_model_name> \
+    --label evaluation
+
+# 6. View results
+ls results/$(date +%Y-%m-%d)_*_evaluation/
+cat results/latest/summary.json
 ```
 
 ## Configure
@@ -49,13 +53,22 @@ evaluation_weights:
   performance_efficiency: 0.15
 ```
 
+**Note**: Weights are edge-focused with efficiency at 15% for on-device viability.
+
 Edit `config/device_default.yaml` for your hardware.
 
 ### Add Models
 
-1. Pull via Ollama: `ollama pull <model_name>`
-2. Add to `config/model_config.yaml`
-3. Run benchmark
+1. Pull your model: `ollama pull <your_model_name>`
+2. Copy `docs/examples/model_config_example.yaml` to `config/model_config.yaml` and edit for your models:
+   ```yaml
+   models:
+     your_model_name:
+       ollama_name: "your_model_name"
+       timeout_seconds: 30
+   ```
+3. Run evaluation
+4. Remove model from config after use if desired
 
 ## Outputs
 

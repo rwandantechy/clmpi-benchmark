@@ -1,0 +1,38 @@
+# CLMPI Model Configuration Example
+# Copy this file to model_config.yaml and add your models
+
+# Global Evaluation Weights (must sum to 1.0)
+evaluation_weights:
+  accuracy: 0.25
+  contextual_understanding: 0.20
+  coherence: 0.20
+  fluency: 0.20
+  performance_efficiency: 0.15
+
+# Prompt Sets to Enable
+prompt_sets:
+  accuracy:
+    - "accuracy_tasks_curated.json"
+  contextual_understanding:
+    - "contextual_tasks_curated.json"
+  coherence:
+    - "coherence_tasks.json"
+  fluency:
+    - "fluency_tasks.json"
+  performance_efficiency:
+    - "accuracy_tasks_curated.json"
+
+# Model Definitions
+# Add your models here after pulling them with Ollama
+models:
+  # Example: Add your model like this
+  # my_model:
+  #   ollama_name: "my_model"
+  #   timeout_seconds: 30
+
+# Evaluation Parameters
+evaluation:
+  samples_per_task: 5
+  random_seed: 42
+  save_raw_responses: true
+  generate_visualizations: true

@@ -59,4 +59,4 @@
 - Ollama integration for local model evaluation
 - Basic scoring system for 5 dimensions
 - Configuration system for models and devices
-- Example evaluation results for phi:latest model
+- Example evaluation results for demonstration models

@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "description": "Curated factual questions with expert-validated answers for CLMPI accuracy evaluation",
+  "total_questions": 20,
+  "categories": ["geography", "science", "history", "math", "general_knowledge"],
+  "difficulty_levels": ["easy", "medium", "hard"],
+  "questions": [
+    {
+      "id": "acc_001",
+      "category": "geography",
+      "difficulty": "easy",
+      "question": "What is the capital of France?",
+      "correct_answer": "Paris",
+      "acceptable_answers": ["Paris", "paris"],
+      "explanation": "Paris is the capital and largest city of France"
+    },
+    {
+      "id": "acc_002",
+      "category": "science",
+      "difficulty": "easy",
+      "question": "What is the chemical symbol for gold?",
+      "correct_answer": "Au",
+      "acceptable_answers": ["Au", "au"],
+      "explanation": "Au comes from the Latin word 'aurum'"
+    },
+    {
+      "id": "acc_003",
+      "category": "math",
+      "difficulty": "easy",
+      "question": "What is 15 + 27?",
+      "correct_answer": "42",
+      "acceptable_answers": ["42", "forty-two", "Forty-two"],
+      "explanation": "Basic arithmetic addition"
+    },
+    {
+      "id": "acc_004",
+      "category": "history",
+      "difficulty": "medium",
+      "question": "In what year did World War II end?",
+      "correct_answer": "1945",
+      "acceptable_answers": ["1945", "nineteen forty-five"],
+      "explanation": "WWII ended in 1945 with the surrender of Germany and Japan"
+    },
+    {
+      "id": "acc_005",
+      "category": "science",
+      "difficulty": "medium",
+      "question": "What is the largest planet in our solar system?",
+      "correct_answer": "Jupiter",
+      "acceptable_answers": ["Jupiter", "jupiter"],
+      "explanation": "Jupiter is the largest planet by mass and volume"
+    },
+    {
+      "id": "acc_006",
+      "category": "geography",
+      "difficulty": "medium",
+      "question": "What is the longest river in the world?",
+      "correct_answer": "Nile",
+      "acceptable_answers": ["Nile", "nile", "The Nile"],
+      "explanation": "The Nile River is approximately 6,650 km long"
+    },
+    {
+      "id": "acc_007",
+      "category": "math",
+      "difficulty": "medium",
+      "question": "What is the square root of 144?",
+      "correct_answer": "12",
+      "acceptable_answers": ["12", "twelve"],
+      "explanation": "12 × 12 = 144"
+    },
+    {
+      "id": "acc_008",
+      "category": "general_knowledge",
+      "difficulty": "easy",
+      "question": "How many days are in a leap year?",
+      "correct_answer": "366",
+      "acceptable_answers": ["366", "three hundred sixty-six"],
+      "explanation": "Leap years have 366 days instead of 365"
+    },
+    {
+      "id": "acc_009",
+      "category": "science",
+      "difficulty": "hard",
+      "question": "What is the atomic number of carbon?",
+      "correct_answer": "6",
+      "acceptable_answers": ["6", "six"],
+      "explanation": "Carbon has 6 protons, giving it atomic number 6"
+    },
+    {
+      "id": "acc_010",
+      "category": "history",
+      "difficulty": "hard",
+      "question": "Who was the first President of the United States?",
+      "correct_answer": "George Washington",
+      "acceptable_answers": ["George Washington", "Washington"],
+      "explanation": "George Washington served as the first U.S. President from 1789-1797"
+    }
+  ]
+}

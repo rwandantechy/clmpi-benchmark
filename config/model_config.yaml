@@ -15,46 +15,27 @@ evaluation_weights:
   performance_efficiency: 0.15   # 15% - Resource efficiency
 
 # Prompt Sets to Enable
-# Each maps to a specific evaluation dimension
+# Each maps to a specific evaluation dimension with curated datasets
 prompt_sets:
   accuracy:
-    - "classification_tasks.json"
-    - "reasoning_tasks.json"
+    - "accuracy_tasks_curated.json"  # Expert-validated factual questions
   contextual_understanding:
-    - "contextual_tasks.json"
+    - "contextual_tasks_curated.json"  # Multi-turn contextual tasks
   coherence:
-    - "contextual_tasks.json"  # Multi-turn conversations test coherence
+    - "coherence_tasks.json"  # Logical flow evaluation
   fluency:
-    - "classification_tasks.json"  # All responses evaluated for fluency
+    - "fluency_tasks.json"  # Surface quality evaluation
   performance_efficiency:
-    - "classification_tasks.json"  # All prompts used for efficiency measurement
+    - "accuracy_tasks_curated.json"  # Use accuracy tasks for efficiency measurement
 
 # Model Definitions
-# Add/remove models here. All models must be available via Ollama
+# Add models here as needed. All models must be available via Ollama
+# Generation settings are standardized via generation_config.yaml
 models:
-  phi3:mini:
-    ollama_name: "phi3:mini"
-    max_tokens: 1000
-    temperature: 0.1
-    timeout_seconds: 30
-    
-  mistral:
-    ollama_name: "mistral"
-    max_tokens: 1000
-    temperature: 0.1
-    timeout_seconds: 45
-    
-  llama2:7b-chat:
-    ollama_name: "llama2:7b-chat"
-    max_tokens: 1000
-    temperature: 0.1
-    timeout_seconds: 60
-    
-  gemma:2b:
-    ollama_name: "gemma:2b"
-    max_tokens: 1000
-    temperature: 0.1
-    timeout_seconds: 20
+  # Example: Add your models here
+  # my_model:
+  #   ollama_name: "my_model"
+  #   timeout_seconds: 30
 
 # Evaluation Parameters
 evaluation:

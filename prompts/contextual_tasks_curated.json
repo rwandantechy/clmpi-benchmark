@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "description": "Multi-turn contextual understanding tasks with expert-validated answers",
+  "total_conversations": 10,
+  "context_types": ["conversation", "narrative", "instruction"],
+  "difficulty_levels": ["easy", "medium", "hard"],
+  "conversations": [
+    {
+      "id": "ctx_001",
+      "context_type": "conversation",
+      "difficulty": "easy",
+      "context": "Alice has 5 apples. Bob gives her 3 more apples.",
+      "question": "How many apples does Alice have now?",
+      "correct_answer": "8",
+      "acceptable_answers": ["8", "eight", "Eight"],
+      "explanation": "5 + 3 = 8 apples"
+    },
+    {
+      "id": "ctx_002",
+      "context_type": "narrative",
+      "difficulty": "medium",
+      "context": "John is a doctor who works at City Hospital. He specializes in cardiology and has been practicing for 15 years. Today, he saw 12 patients in the morning and 8 patients in the afternoon.",
+      "question": "How many patients did John see today?",
+      "correct_answer": "20",
+      "acceptable_answers": ["20", "twenty", "Twenty"],
+      "explanation": "12 morning + 8 afternoon = 20 patients"
+    },
+    {
+      "id": "ctx_003",
+      "context_type": "instruction",
+      "difficulty": "medium",
+      "context": "To make a cake, you need 2 cups of flour, 1 cup of sugar, and 3 eggs. You have 6 cups of flour, 4 cups of sugar, and 9 eggs.",
+      "question": "How many cakes can you make with these ingredients?",
+      "correct_answer": "3",
+      "acceptable_answers": ["3", "three", "Three"],
+      "explanation": "Limited by eggs: 9 eggs ÷ 3 eggs per cake = 3 cakes"
+    },
+    {
+      "id": "ctx_004",
+      "context_type": "conversation",
+      "difficulty": "hard",
+      "context": "A train leaves Station A at 2:00 PM traveling at 60 mph. Another train leaves Station B at 2:30 PM traveling at 80 mph toward Station A. The stations are 200 miles apart.",
+      "question": "At what time will the two trains meet?",
+      "correct_answer": "3:30 PM",
+      "acceptable_answers": ["3:30 PM", "3:30", "3:30pm"],
+      "explanation": "Complex relative motion calculation"
+    },
+    {
+      "id": "ctx_005",
+      "context_type": "narrative",
+      "difficulty": "easy",
+      "context": "Sarah bought a book for $15 and a pen for $3. She paid with a $20 bill.",
+      "question": "How much change did Sarah receive?",
+      "correct_answer": "2",
+      "acceptable_answers": ["2", "two", "$2", "2 dollars"],
+      "explanation": "$20 - $15 - $3 = $2 change"
+    }
+  ]
+}

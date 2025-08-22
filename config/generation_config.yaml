@@ -1,0 +1,37 @@
+# CLMPI Generation Configuration
+# Standardized decoding settings for fair model comparison
+version: "1.0.0"
+
+# Generation profiles for different evaluation types
+generation_profiles:
+  deterministic:
+    temperature: 0.0
+    top_p: 1.0
+    top_k: 1
+    max_tokens: 1000
+    use_for: ["accuracy", "contextual_understanding"]
+    description: "Deterministic generation for factual tasks"
+    
+  creative:
+    temperature: 0.7
+    top_p: 0.9
+    top_k: 40
+    max_tokens: 1000
+    use_for: ["coherence", "fluency"]
+    description: "Creative generation for quality evaluation"
+
+# Model-specific overrides (if needed)
+model_overrides:
+  # Add model-specific overrides here if needed
+  # Example:
+  # "my_model":
+  #   max_tokens: 800
+
+# Validation rules
+validation:
+  min_temperature: 0.0
+  max_temperature: 1.0
+  min_top_p: 0.1
+  max_top_p: 1.0
+  min_top_k: 1
+  max_top_k: 100
