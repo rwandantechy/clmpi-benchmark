@@ -157,6 +157,9 @@ class TestSmokeEvaluation:
             assert 'model_name' in results[0]
             assert results[0]['model_name'] == 'test_model'
             
+            # Save results to files
+            run_dir = evaluator.save_enhanced_results(results, "smoke_test")
+            
             # Check that output files were created
             run_dirs = list(output_dir.glob('*_smoke_test'))
             assert len(run_dirs) > 0

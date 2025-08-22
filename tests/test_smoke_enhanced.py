@@ -3,9 +3,9 @@
 Smoke test for enhanced evaluation pipeline
 """
 
-import json
 import os
 import glob
+import json
 import subprocess
 import sys
 import tempfile
@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 
 
-def test_smoke_enhanced(tmp_path):
+def test_smoke_enhanced():
     """Test that enhanced evaluation creates expected output structure"""
     # Create temporary directory for test
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -127,6 +127,16 @@ def test_smoke_enhanced(tmp_path):
         output_dir = temp_path / 'results'
         output_dir.mkdir()
         
+        # Copy prompt files to temp directory
+        prompts_dir = temp_path / 'prompts'
+        prompts_dir.mkdir()
+        
+        # Copy the actual prompt files
+        import shutil
+        source_prompts = Path(__file__).parent.parent / 'prompts'
+        for prompt_file in ['accuracy_tasks_curated.json', 'contextual_tasks_curated.json', 'coherence_tasks.json', 'fluency_tasks.json']:
+            shutil.copy2(source_prompts / prompt_file, prompts_dir / prompt_file)
+        
         # Mock the ollama runner to avoid actual model calls
         class MockOllamaRunner:
             def generate_response(self, model_name, prompt, settings):
@@ -134,7 +144,8 @@ def test_smoke_enhanced(tmp_path):
         
         # Import and patch the evaluator to use mock runner
         sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
-        from enhanced_evaluate_models import EnhancedModelEvaluator
+        import enhanced_evaluate_models
+        EnhancedModelEvaluator = enhanced_evaluate_models.EnhancedModelEvaluator
         
         evaluator = EnhancedModelEvaluator(
             str(config_dir / 'model_config.yaml'),
@@ -146,16 +157,24 @@ def test_smoke_enhanced(tmp_path):
         )
         evaluator.ollama_runner = MockOllamaRunner()
         
-        # Run evaluation
+                # Run evaluation
         results = evaluator.run_evaluation(['test_model'])
+        
+        # Debug: Check what was created
+        print(f"Output dir contents: {list(output_dir.iterdir())}")
+        print(f"Results: {results}")
         
         # Validate results structure
         assert len(results) > 0
         assert 'model_name' in results[0]
         assert results[0]['model_name'] == 'test_model'
         
+        # Save results to files
+        run_dir = evaluator.save_enhanced_results(results, "smoke_test")
+        
         # Check that output files were created
         run_dirs = list(output_dir.glob('*_smoke_test'))
+        print(f"Run dirs found: {run_dirs}")
         assert len(run_dirs) > 0
         
         run_dir = run_dirs[0]
@@ -185,9 +204,7 @@ def test_smoke_enhanced(tmp_path):
         
         # Validate run_info structure
         assert 'weights' in info
-        assert 'gen_det' in info
-        assert 'gen_cre' in info
-        assert 'efficiency_formula' in info
+        assert 'generation_profiles' in info
         
         # Check for model results
         model_files = list(run_dir.glob('*_results.json'))

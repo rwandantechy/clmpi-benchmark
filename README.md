@@ -18,28 +18,20 @@ CLMPI evaluates language models across 5 dimensions for edge deployment suitabil
 ## Quick Start
 
 ```bash
-# 1. Install dependencies
+# 1) Install
 pip install -r requirements.txt
 
-# 2. Test system
-python scripts/test_enhanced_system.py
+# 2) Pull at least one model
+ollama pull phi3:mini
 
-# 3. Pull your model via Ollama
-ollama pull <your_model_name>
+# 3) Run the enhanced benchmark on a tiny sample (or omit --tiny if not supported)
+python scripts/enhanced_evaluate_models.py --model "phi3:mini" --tiny
 
-# 4. Add model to config/model_config.yaml
-# 5. Run evaluation
-python scripts/enhanced_evaluate_models.py \
-    --model-config config/model_config.yaml \
-    --generation-config config/generation_config.yaml \
-    --device-config config/device_default.yaml \
-    --models <your_model_name> \
-    --label evaluation
-
-# 6. View results
-ls results/$(date +%Y-%m-%d)_*_evaluation/
-cat results/latest/summary.json
+# 4) Inspect outputs
+ls -l results | tail -n 20
 ```
+
+Note: Legacy scripts are deprecated; see the deprecation notice at the top of those files.
 
 ## Configure
 

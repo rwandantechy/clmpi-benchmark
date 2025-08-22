@@ -495,9 +495,20 @@ class EnhancedCLMPICalculator:
                     f.write(json.dumps(detail) + '\n')
             
             # Save summary
+            if metric_name == 'accuracy':
+                average_score = result.f1_score
+            elif metric_name == 'contextual_understanding':
+                average_score = result.combined_score
+            elif metric_name == 'coherence':
+                average_score = result.coherence_score
+            elif metric_name == 'fluency':
+                average_score = result.fluency_score
+            else:
+                average_score = 0.0
+            
             summary = {
                 'metric': metric_name,
-                'average_score': getattr(result, f'{metric_name}_score', result.coherence_score if hasattr(result, 'coherence_score') else result.fluency_score),
+                'average_score': average_score,
                 'total_responses': len(result.responses)
             }
             with open(metric_dir / 'summary.json', 'w') as f:

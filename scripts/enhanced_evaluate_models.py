@@ -370,15 +370,12 @@ class EnhancedModelEvaluator:
         hardware_info = self.log_hardware_info()
         self.log_configuration_info()
         
-        # Resolve generation profiles
-        gen_det = load_generation_profile("deterministic")
-        gen_cre = load_generation_profile("creative")
-        
-        # TODO: ensure all metric runners use gen_det or gen_cre consistently and do not hardcode temperature/top_p/top_k
-        
-        print("=== RUN CONFIG ===")
-        print("Generation (deterministic):", gen_det)
-        print("Generation (creative):", gen_cre)
+        # Resolve generation profiles (do not hardcode temperature/top_p/top_k anywhere else)
+        gen_det = load_generation_profile("deterministic")  # for Accuracy, Context
+        gen_cre = load_generation_profile("creative")       # for Coherence, Fluency
+        print("=== RUN GENERATION PROFILES ===")
+        print("deterministic:", gen_det)
+        print("creative:", gen_cre)
         
         # Load curated datasets
         datasets = self.load_curated_datasets()
@@ -415,13 +412,28 @@ class EnhancedModelEvaluator:
         run_dir = self.output_dir / f"{timestamp}_{self.label}"
         run_dir.mkdir(parents=True, exist_ok=True)
         
+        def make_serializable(obj):
+            """Recursively convert dataclass objects to dictionaries"""
+            if hasattr(obj, '__dict__'):
+                return {k: make_serializable(v) for k, v in obj.__dict__.items()}
+            elif isinstance(obj, dict):
+                return {k: make_serializable(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [make_serializable(item) for item in obj]
+            else:
+                return obj
+        
         # Save individual model results
         for result in results:
             model_name = result['model_name']
             sanitized_name = sanitize_filename(model_name)
             model_file = run_dir / f"{sanitized_name}_results.json"
+            
+            # Convert all dataclass objects to dictionaries for JSON serialization
+            serializable_result = make_serializable(result)
+            
             with open(model_file, 'w') as f:
-                json.dump(result, f, indent=2)
+                json.dump(serializable_result, f, indent=2)
         
         # Save detailed results for each metric
         for result in results:
@@ -431,6 +443,9 @@ class EnhancedModelEvaluator:
                 self.calculator.save_detailed_results(result['clmpi_scores'], detailed_dir)
         
         # Create run banner with weights, device, and formulas
+        gen_det = load_generation_profile("deterministic")
+        gen_cre = load_generation_profile("creative")
+        
         run_info = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "device_config": self.device_config,
@@ -453,7 +468,7 @@ class EnhancedModelEvaluator:
                 'generation_config': str(self.generation_config),
                 'evaluation_weights': self.model_config.get('evaluation_weights', {})
             },
-            'results': results
+            'results': make_serializable(results)
         }
         
         summary_file = run_dir / "summary.json"
