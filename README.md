@@ -13,7 +13,7 @@ CLMPI evaluates language models across 5 dimensions for edge deployment suitabil
 - **Fluency** (20%) - Language quality
 - **Performance Efficiency** (15%) - Resource usage
 
-**Note**: Legacy scripts are deprecated. Use the enhanced pipeline for professional results.
+**Note**: Legacy scripts are deprecated. Use the main pipeline for professional results.
 
 ## Quick Start
 
@@ -25,8 +25,8 @@ pip install -r requirements.txt
 # 2) Pull at least one model
 ollama pull phi3:mini
 
-# 3) Run the enhanced benchmark (recommended)
-python scripts/enhanced_evaluate_models.py \
+# 3) Run the benchmark (recommended)
+python scripts/evaluate_models.py \
     --model-config config/model_config.yaml \
     --generation-config config/generation_config.yaml \
     --device-config config/device_default.yaml \

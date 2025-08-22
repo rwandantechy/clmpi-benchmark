@@ -1,6 +1,6 @@
-# DEPRECATED: Use scripts/enhanced_clmpi_calculator.py instead. Not maintained.
+# DEPRECATED: Use scripts/clmpi_calculator.py instead. Not maintained.
 """
-DEPRECATED: Use scripts/enhanced_clmpi_calculator.py
+DEPRECATED: Use scripts/clmpi_calculator.py
 
 This script is deprecated and will be removed in a future version.
 Use the enhanced calculator for better scoring methods and reproducibility.

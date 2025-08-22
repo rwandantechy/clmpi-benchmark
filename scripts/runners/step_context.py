@@ -15,7 +15,7 @@ from datetime import datetime
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
-from enhanced_clmpi_calculator import EnhancedCLMPICalculator
+from clmpi_calculator import CLMPICalculator
 from ollama_runner import OllamaRunner
 from generation import load_generation_profile
 
@@ -82,7 +82,7 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
         logger.info(f"Using profile: {metric_config['profile']} - {profile}")
     
     # Initialize components
-    calculator = EnhancedCLMPICalculator()
+    calculator = CLMPICalculator()
     ollama_runner = OllamaRunner("http://localhost:11434")
     
     # Generate responses

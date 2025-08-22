@@ -1,7 +1,7 @@
 .PHONY: tiny test clean
 
 tiny:
-	python scripts/enhanced_evaluate_models.py --models phi3:mini --label tiny_test
+	python scripts/evaluate_models.py --models phi3:mini --label tiny_test
 
 test:
 	pytest -q

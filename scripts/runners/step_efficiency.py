@@ -15,7 +15,7 @@ from datetime import datetime
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
-from enhanced_clmpi_calculator import EnhancedCLMPICalculator
+from clmpi_calculator import CLMPICalculator
 from ollama_runner import OllamaRunner
 from generation import load_generation_profile
 
@@ -82,7 +82,7 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
         logger.info(f"Using profile: {metric_config['profile']} - {profile}")
     
     # Initialize components
-    calculator = EnhancedCLMPICalculator()
+    calculator = CLMPICalculator()
     ollama_runner = OllamaRunner("http://localhost:11434")
     
     # Generate responses and measure efficiency
@@ -109,7 +109,7 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
         except Exception as e:
             logger.error(f"Error measuring efficiency for question: {e}")
             # Create a dummy result to maintain consistency
-            from enhanced_clmpi_calculator import EfficiencyResult
+            from clmpi_calculator import EfficiencyResult
             dummy_result = EfficiencyResult(
                 latency_seconds=1.0,
                 cpu_usage_percent=0.0,

@@ -1,5 +1,5 @@
 """
-Enhanced CLMPI Calculator with Proper Scoring Methods
+CLMPI Calculator with Proper Scoring Methods
 
 Implements rigorous scoring for each CLMPI dimension:
 - Accuracy: Exact Match + F1 against expert-validated answers
@@ -80,9 +80,9 @@ class EfficiencyResult:
     normalized_efficiency: float
 
 
-class EnhancedCLMPICalculator:
+class CLMPICalculator:
     """
-    Enhanced CLMPI calculator with proper scoring methods
+    CLMPI calculator with proper scoring methods
     """
     
     def __init__(self, weights: Optional[Dict[str, float]] = None):

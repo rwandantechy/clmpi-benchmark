@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced CLMPI Model Evaluation Script
+CLMPI Model Evaluation Script
 
 Implements rigorous benchmarking with:
 - Standardized generation settings
@@ -22,15 +22,15 @@ from typing import Dict, List, Any, Optional
 import random
 import numpy as np
 
-from enhanced_clmpi_calculator import EnhancedCLMPICalculator
+from clmpi_calculator import CLMPICalculator
 from ollama_runner import OllamaRunner
 from utils import sanitize_filename
 from generation import load_generation_profile, get_generation_settings_for_metric
 
 
-class EnhancedModelEvaluator:
+class ModelEvaluator:
     """
-    Enhanced evaluator with rigorous benchmarking methodology
+    Evaluator with rigorous benchmarking methodology
     """
     
     def __init__(self, model_config_path: str, generation_config_path: str, 
@@ -44,7 +44,7 @@ class EnhancedModelEvaluator:
         
         # Initialize calculator with weights from config
         weights = self.model_config.get('evaluation_weights', {})
-        self.calculator = EnhancedCLMPICalculator(weights)
+        self.calculator = CLMPICalculator(weights)
         self.ollama_runner = OllamaRunner(self.device_config['runtime']['ollama_host'])
         
         self.setup_logging()
@@ -158,7 +158,7 @@ class EnhancedModelEvaluator:
             gold_answers.append(question['correct_answer'])
             acceptable_answers.append(question.get('acceptable_answers', []))
         
-        # Evaluate using enhanced calculator
+        # Evaluate using calculator
         accuracy_result = self.calculator.evaluate_accuracy(
             responses, gold_answers, acceptable_answers
         )
@@ -199,7 +199,7 @@ class EnhancedModelEvaluator:
             contexts.append(conv['context'])
             gold_answers.append(conv['correct_answer'])
         
-        # Evaluate using enhanced calculator
+        # Evaluate using calculator
         contextual_result = self.calculator.evaluate_contextual_understanding(
             responses, contexts, gold_answers
         )
@@ -233,7 +233,7 @@ class EnhancedModelEvaluator:
             )
             responses.append(response)
         
-        # Evaluate using enhanced calculator
+        # Evaluate using calculator
         coherence_result = self.calculator.evaluate_coherence(responses)
         
         self.logger.info(f"Coherence Score: {coherence_result.coherence_score:.3f}")
@@ -265,7 +265,7 @@ class EnhancedModelEvaluator:
             )
             responses.append(response)
         
-        # Evaluate using enhanced calculator
+        # Evaluate using calculator
         fluency_result = self.calculator.evaluate_fluency(responses)
         
         self.logger.info(f"Fluency Score: {fluency_result.fluency_score:.3f}")
@@ -319,7 +319,7 @@ class EnhancedModelEvaluator:
     def evaluate_model(self, model_name: str, model_config: Dict, 
                       datasets: Dict[str, List[Dict]]) -> Dict:
         """Evaluate a single model across all dimensions"""
-        self.logger.info(f"Starting enhanced evaluation of {model_name}")
+        self.logger.info(f"Starting evaluation of {model_name}")
         
         results = {
             'model_name': model_name,
@@ -365,7 +365,7 @@ class EnhancedModelEvaluator:
         return results
     
     def run_evaluation(self, selected_models: Optional[List[str]] = None) -> List[Dict]:
-        """Run enhanced evaluation for specified models"""
+        """Run evaluation for specified models"""
         # Log hardware and configuration info
         hardware_info = self.log_hardware_info()
         self.log_configuration_info()
@@ -405,8 +405,8 @@ class EnhancedModelEvaluator:
         
         return results
     
-    def save_enhanced_results(self, results: List[Dict], run_name: str):
-        """Save enhanced results with granular logging"""
+    def save_results(self, results: List[Dict], run_name: str):
+        """Save results with granular logging"""
         # Create timestamped run directory
         timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         run_dir = self.output_dir / f"{timestamp}_{self.label}"
@@ -481,13 +481,13 @@ class EnhancedModelEvaluator:
             latest_link.unlink()
         latest_link.symlink_to(run_dir.name)
         
-        self.logger.info(f"Enhanced results saved to: {run_dir}")
+        self.logger.info(f"Results saved to: {run_dir}")
         return run_dir
     
-    def print_enhanced_summary(self, results: List[Dict], run_dir: Path):
-        """Print enhanced evaluation summary"""
+    def print_summary(self, results: List[Dict], run_dir: Path):
+        """Print evaluation summary"""
         print("\n" + "="*60)
-        print("ENHANCED CLMPI EVALUATION SUMMARY")
+        print("CLMPI EVALUATION SUMMARY")
         print("="*60)
         
         for result in results:
@@ -519,14 +519,14 @@ class EnhancedModelEvaluator:
 
 
 def main():
-    """Main function with enhanced CLI argument parsing"""
+    """Main function with CLI argument parsing"""
     parser = argparse.ArgumentParser(
-        description='Run enhanced CLMPI benchmark evaluation with rigorous methodology',
+        description='Run CLMPI benchmark evaluation with rigorous methodology',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/enhanced_evaluate_models.py --model-config config/model_config.yaml --generation-config config/generation_config.yaml --device-config config/device_default.yaml
-  python scripts/enhanced_evaluate_models.py --model-config config/model_config.yaml --generation-config config/generation_config.yaml --models phi3:mini mistral --label enhanced_demo
+  python scripts/evaluate_models.py --model-config config/model_config.yaml --generation-config config/generation_config.yaml --device-config config/device_default.yaml
+  python scripts/evaluate_models.py --model-config config/model_config.yaml --generation-config config/generation_config.yaml --models phi3:mini mistral --label demo
         """
     )
     
@@ -540,7 +540,7 @@ Examples:
                        help='Specific models to evaluate (default: all in config)')
     parser.add_argument('--output', type=str, default='results',
                        help='Output directory for results')
-    parser.add_argument('--label', type=str, default='enhanced_run',
+    parser.add_argument('--label', type=str, default='run',
                        help='Label for this run (used in folder naming)')
     parser.add_argument('--seed', type=int, default=42,
                        help='Random seed for reproducibility')
@@ -553,23 +553,23 @@ Examples:
             print(f"Error: Config file not found: {config_file}")
             return 1
     
-    # Run enhanced evaluation
+    # Run evaluation
     try:
-        evaluator = EnhancedModelEvaluator(
+        evaluator = ModelEvaluator(
             args.model_config, args.generation_config, args.device_config,
             args.output, args.label, args.seed
         )
         results = evaluator.run_evaluation(args.models)
         
         if results:
-            run_dir = evaluator.save_enhanced_results(results, "enhanced_benchmark_run")
-            evaluator.print_enhanced_summary(results, run_dir)
+            run_dir = evaluator.save_results(results, "benchmark_run")
+            evaluator.print_summary(results, run_dir)
         else:
             print("No results generated")
             return 1
             
     except Exception as e:
-        print(f"Error during enhanced evaluation: {e}")
+        print(f"Error during evaluation: {e}")
         return 1
     
     return 0

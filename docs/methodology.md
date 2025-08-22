@@ -1,8 +1,8 @@
-# Enhanced CLMPI Methodology
+# CLMPI Methodology
 
 ## Overview
 
-The Enhanced CLMPI (Comprehensive Language Model Performance Index) implements rigorous benchmarking methodology with standardized generation settings, curated expert-validated datasets, and transparent scoring formulas.
+The CLMPI (Comprehensive Language Model Performance Index) implements rigorous benchmarking methodology with standardized generation settings, curated expert-validated datasets, and transparent scoring formulas.
 
 ## Core Principles
 
@@ -232,7 +232,7 @@ results/YYYY-MM-DD_HHMMSS_label/
 
 ### Basic Run
 ```bash
-python scripts/enhanced_evaluate_models.py \
+python scripts/evaluate_models.py \
     --model-config config/model_config.yaml \
     --generation-config config/generation_config.yaml \
     --device-config config/device_default.yaml
@@ -240,7 +240,7 @@ python scripts/enhanced_evaluate_models.py \
 
 ### Specific Models
 ```bash
-python scripts/enhanced_evaluate_models.py \
+python scripts/evaluate_models.py \
     --model-config config/model_config.yaml \
     --generation-config config/generation_config.yaml \
     --device-config config/device_default.yaml \

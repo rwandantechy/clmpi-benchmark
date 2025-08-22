@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Enhanced CLMPI (Comprehensive Language Model Performance Index) provides a rigorous, reproducible benchmarking framework for evaluating language models across multiple dimensions.
+The CLMPI (Comprehensive Language Model Performance Index) provides a rigorous, reproducible benchmarking framework for evaluating language models across multiple dimensions.
 
 ## System Requirements
 
@@ -66,9 +66,9 @@ python scripts/evaluate_models.py \
     --output results/evaluation_run
 ```
 
-### Enhanced Evaluation
+### Complete Evaluation
 ```bash
-python scripts/enhanced_evaluate_models.py \
+python scripts/evaluate_models.py \
     --model-config config/model_config.yaml \
     --generation-config config/generation_config.yaml \
     --device-config config/device_default.yaml \
@@ -78,7 +78,7 @@ python scripts/enhanced_evaluate_models.py \
 
 ### System Validation
 ```bash
-python scripts/test_enhanced_system.py
+python scripts/test_system.py
 ```
 
 ## Output Structure
@@ -221,5 +221,5 @@ For technical support:
 ## Version Information
 
 - **CLMPI Version**: 1.0.0
-- **Enhanced System**: 1.0.0
+- **CLMPI System**: 1.0.0
 - **Last Updated**: 2024

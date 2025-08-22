@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Smoke test for enhanced evaluation pipeline
+Smoke test for evaluation pipeline
 """
 
 import sys
@@ -15,11 +15,11 @@ import yaml
 # Add scripts directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from enhanced_evaluate_models import EnhancedModelEvaluator
+from evaluate_models import ModelEvaluator
 
 
 class TestSmokeEvaluation:
-    """Smoke test for enhanced evaluation pipeline"""
+    """Smoke test for evaluation pipeline"""
     
     def test_smoke_evaluation_structure(self):
         """Test that evaluation creates expected output structure"""
@@ -139,7 +139,7 @@ class TestSmokeEvaluation:
                     return f"Mock response for: {prompt[:20]}..."
             
             # Patch the evaluator to use mock runner
-            evaluator = EnhancedModelEvaluator(
+            evaluator = ModelEvaluator(
                 str(config_dir / 'model_config.yaml'),
                 str(config_dir / 'generation_config.yaml'),
                 str(config_dir / 'device_config.yaml'),
@@ -158,7 +158,7 @@ class TestSmokeEvaluation:
             assert results[0]['model_name'] == 'test_model'
             
             # Save results to files
-            run_dir = evaluator.save_enhanced_results(results, "smoke_test")
+            run_dir = evaluator.save_results(results, "smoke_test")
             
             # Check that output files were created
             run_dirs = list(output_dir.glob('*_smoke_test'))

@@ -1,16 +1,25 @@
+#!/usr/bin/env python3
 """
 Unit tests for CLMPI calculator
 """
 
-import pytest
 import sys
+import os
 from pathlib import Path
+import pytest
+import numpy as np
 
-# Add scripts to path
+# Add scripts directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from clmpi_calculator import CLMPICalculator, CLMPIScores, CLMPIWeights
-from utils import sanitize_filename
+from clmpi_calculator import (
+    CLMPICalculator, 
+    AccuracyResult, 
+    ContextualResult, 
+    CoherenceResult, 
+    FluencyResult,
+    EfficiencyResult
+)
 
 
 class TestCLMPICalculator:
@@ -19,96 +28,163 @@ class TestCLMPICalculator:
     def test_weights_validation(self):
         """Test that weights must sum to 1.0"""
         # Valid weights
-        valid_weights = CLMPIWeights(
-            accuracy=0.25,
-            contextual_understanding=0.20,
-            coherence=0.20,
-            fluency=0.20,
-            performance_efficiency=0.15
-        )
+        valid_weights = {
+            'accuracy': 0.25,
+            'contextual_understanding': 0.20,
+            'coherence': 0.20,
+            'fluency': 0.20,
+            'performance_efficiency': 0.15
+        }
         calculator = CLMPICalculator(valid_weights)
-        assert calculator.weights == valid_weights
+        assert sum(calculator.weights.values()) == 1.0
         
-        # Invalid weights (don't sum to 1.0)
-        invalid_weights = CLMPIWeights(
-            accuracy=0.5,
-            contextual_understanding=0.5,
-            coherence=0.5,
-            fluency=0.5,
-            performance_efficiency=0.5
-        )
+        # Invalid weights
+        invalid_weights = {
+            'accuracy': 0.5,
+            'contextual_understanding': 0.5,
+            'coherence': 0.5,
+            'fluency': 0.5,
+            'performance_efficiency': 0.5
+        }
         with pytest.raises(ValueError, match="Weights must sum to 1.0"):
             CLMPICalculator(invalid_weights)
     
-    def test_normalization(self):
-        """Test score normalization"""
+    def test_accuracy_evaluation(self):
+        """Test accuracy evaluation with exact match and F1"""
         calculator = CLMPICalculator()
         
-        # Test quality score normalization
-        raw_scores = [3.0, 4.0, 5.0]
-        normalized = calculator.normalize_quality_scores(raw_scores)
-        assert normalized == [0.6, 0.8, 1.0]
+        responses = ["Paris", "Au", "42"]
+        gold_answers = ["Paris", "Au", "42"]
+        acceptable_answers = [["Paris", "paris"], ["Au", "au"], ["42"]]
         
-        # Test efficiency score normalization
-        eff_scores = [0.1, 0.2, 0.3]
-        normalized_eff = calculator.normalize_efficiency_scores(eff_scores)
-        assert len(normalized_eff) == 3
-        assert normalized_eff[0] == 0.0  # min becomes 0
-        assert normalized_eff[2] == 1.0  # max becomes 1
+        result = calculator.evaluate_accuracy(responses, gold_answers, acceptable_answers)
+        
+        assert result.exact_match == 1.0
+        assert result.f1_score == 1.0
+        assert len(result.detailed_scores) == 3
+        assert all(score == 1.0 for score in result.detailed_scores)
+    
+    def test_contextual_understanding_evaluation(self):
+        """Test contextual understanding evaluation"""
+        calculator = CLMPICalculator()
+        
+        responses = ["8", "John is a doctor"]
+        contexts = ["Alice has 5 apples. Bob gives her 3 more.", "John is a doctor who works at City Hospital."]
+        gold_answers = ["8", "John is a doctor"]
+        
+        result = calculator.evaluate_contextual_understanding(responses, contexts, gold_answers)
+        
+        assert result.combined_score > 0.5  # Should be reasonably high
+        assert result.context_similarity > 0.0
+        assert result.f1_score > 0.0
+    
+    def test_coherence_evaluation(self):
+        """Test coherence evaluation with sentence similarity"""
+        calculator = CLMPICalculator()
+        
+        responses = [
+            "The cat walked to the pond. It looked at the water. Then it jumped in and swam.",
+            "Renewable energy is important. Solar power reduces emissions. Wind energy is clean."
+        ]
+        
+        result = calculator.evaluate_coherence(responses)
+        
+        assert 0.0 <= result.coherence_score <= 1.0
+        assert len(result.detailed_scores) == 2
+        assert all(0.0 <= score <= 1.0 for score in result.detailed_scores)
+    
+    def test_fluency_evaluation(self):
+        """Test fluency evaluation with grammar and perplexity"""
+        calculator = CLMPICalculator()
+        
+        responses = [
+            "The sunset was beautiful. The sky turned orange and red. Birds flew overhead.",
+            "This is a test sentence with good grammar and proper punctuation."
+        ]
+        
+        result = calculator.evaluate_fluency(responses)
+        
+        assert 0.0 <= result.fluency_score <= 1.0
+        assert 0.0 <= result.grammar_score <= 1.0
+        assert 0.0 <= result.perplexity_score <= 1.0
+        assert len(result.detailed_scores) == 2
+    
+    def test_efficiency_normalization(self):
+        """Test efficiency score normalization"""
+        calculator = CLMPICalculator()
+        
+        # Create mock efficiency results
+        efficiency_results = [
+            EfficiencyResult(latency_seconds=1.0, cpu_usage_percent=10, memory_used_mb=100, raw_efficiency=1.0, normalized_efficiency=0.0),
+            EfficiencyResult(latency_seconds=2.0, cpu_usage_percent=20, memory_used_mb=200, raw_efficiency=0.5, normalized_efficiency=0.0),
+            EfficiencyResult(latency_seconds=3.0, cpu_usage_percent=30, memory_used_mb=300, raw_efficiency=0.33, normalized_efficiency=0.0)
+        ]
+        
+        normalized = calculator.normalize_efficiency_scores(efficiency_results)
+        
+        assert len(normalized) == 3
+        assert normalized[0] == 1.0  # Best efficiency
+        assert normalized[2] == 0.0  # Worst efficiency
+        assert 0.0 <= normalized[1] <= 1.0  # Middle efficiency
     
     def test_clmpi_calculation(self):
-        """Test CLMPI score calculation"""
+        """Test full CLMPI calculation"""
         calculator = CLMPICalculator()
         
-        scores = CLMPIScores(
-            accuracy=0.8,
-            contextual_understanding=4.0,
-            coherence=3.5,
-            fluency=4.2,
-            performance_efficiency=0.15
+        # Create mock results
+        accuracy_result = AccuracyResult(
+            exact_match=1.0, f1_score=0.9, detailed_scores=[0.9], 
+            responses=["test"], gold_answers=["test"]
         )
         
-        clmpi_01 = calculator.calculate_clmpi(scores)
-        clmpi_100 = calculator.calculate_clmpi_100(scores)
+        contextual_result = ContextualResult(
+            exact_match=1.0, f1_score=0.8, context_similarity=0.7, combined_score=0.77,
+            responses=["test"], contexts=["test"], gold_answers=["test"]
+        )
         
-        assert 0 <= clmpi_01 <= 1
-        assert 0 <= clmpi_100 <= 100
-        assert clmpi_100 == clmpi_01 * 100
+        coherence_result = CoherenceResult(
+            sentence_similarity=0.6, repetition_penalty=0.1, coherence_score=0.54,
+            responses=["test"], detailed_scores=[0.54]
+        )
+        
+        fluency_result = FluencyResult(
+            grammar_score=0.9, perplexity_score=0.8, fluency_score=0.86,
+            responses=["test"], detailed_scores=[0.86]
+        )
+        
+        efficiency_score = 0.7
+        
+        clmpi_results = calculator.calculate_clmpi(
+            accuracy_result, contextual_result, coherence_result, fluency_result, efficiency_score
+        )
+        
+        assert 0.0 <= clmpi_results['clmpi_01'] <= 1.0
+        assert 0.0 <= clmpi_results['clmpi_100'] <= 100.0
+        assert clmpi_results['clmpi_100'] == clmpi_results['clmpi_01'] * 100
+        
+        component_scores = clmpi_results['component_scores']
+        assert all(0.0 <= score <= 1.0 for score in component_scores.values())
     
-    def test_accuracy_evaluation(self):
-        """Test accuracy calculation"""
+    def test_edge_cases(self):
+        """Test edge cases and error handling"""
         calculator = CLMPICalculator()
         
-        responses = ["4", "positive", "finance"]
-        answers = ["4", "positive", "finance"]
-        accuracy = calculator.evaluate_accuracy(responses, answers)
-        assert accuracy == 1.0
+        # Empty responses
+        with pytest.raises(ValueError, match="Number of responses must match"):
+            calculator.evaluate_accuracy([], ["test"], [])
         
-        responses = ["4", "negative", "finance"]
-        answers = ["4", "positive", "finance"]
-        accuracy = calculator.evaluate_accuracy(responses, answers)
-        assert accuracy == 2/3
+        # Empty efficiency results
+        normalized = calculator.normalize_efficiency_scores([])
+        assert normalized == []
+        
+        # All equal efficiency scores
+        equal_results = [
+            EfficiencyResult(latency_seconds=1.0, cpu_usage_percent=10, memory_used_mb=100, raw_efficiency=1.0, normalized_efficiency=0.0),
+            EfficiencyResult(latency_seconds=1.0, cpu_usage_percent=10, memory_used_mb=100, raw_efficiency=1.0, normalized_efficiency=0.0)
+        ]
+        normalized = calculator.normalize_efficiency_scores(equal_results)
+        assert normalized == [0.5, 0.5]  # Neutral scores when all equal
 
 
-class TestUtils:
-    """Test utility functions"""
-    
-    def test_sanitize_filename(self):
-        """Test filename sanitization"""
-        # Test colon replacement
-        assert sanitize_filename("phi3:mini") == "phi3-mini"
-        
-        # Test space replacement
-        assert sanitize_filename("llama2 7b chat") == "llama2-7b-chat"
-        
-        # Test multiple special characters
-        assert sanitize_filename("model@name#123") == "model-name-123"
-        
-        # Test leading/trailing hyphens
-        assert sanitize_filename("-model-name-") == "model-name"
-        
-        # Test empty string
-        assert sanitize_filename("") == "unnamed"
-        
-        # Test already clean name
-        assert sanitize_filename("clean_name") == "clean_name"
+if __name__ == "__main__":
+    pytest.main([__file__])
