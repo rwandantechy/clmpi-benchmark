@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "description": "Curated factual questions with expert-validated answers for CLMPI accuracy evaluation",
-  "total_questions": 20,
+  "total_questions": 10,
   "categories": ["geography", "science", "history", "math", "general_knowledge"],
   "difficulty_levels": ["easy", "medium", "hard"],
   "questions": [

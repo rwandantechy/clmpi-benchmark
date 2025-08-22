@@ -96,11 +96,8 @@ class CLMPICalculator:
         self._validate_weights()
         self.logger = logging.getLogger(__name__)
         
-        # Initialize grammar checker if available
-        if GRAMMAR_CHECKER_AVAILABLE:
-            self.grammar_tool = language_tool_python.LanguageTool('en-US')
-        else:
-            self.grammar_tool = None
+        # Initialize grammar checker lazily (only when needed)
+        self.grammar_tool = None
     
     def _validate_weights(self):
         """Ensure weights sum to 1.0"""
@@ -288,11 +285,23 @@ class CLMPICalculator:
         
         for response in responses:
             # Grammar checking - store errors per token
+            if GRAMMAR_CHECKER_AVAILABLE and self.grammar_tool is None:
+                try:
+                    self.grammar_tool = language_tool_python.LanguageTool('en-US')
+                except Exception as e:
+                    self.logger.warning(f"Failed to initialize language tool: {e}")
+                    self.grammar_tool = None
+            
             if self.grammar_tool:
-                matches = self.grammar_tool.check(response)
-                tokens = len(response.split())
-                grammar_errors_per_token = len(matches) / tokens if tokens > 0 else 0.0
-                grammar_score = max(0, 1 - grammar_errors_per_token)
+                try:
+                    matches = self.grammar_tool.check(response)
+                    tokens = len(response.split())
+                    grammar_errors_per_token = len(matches) / tokens if tokens > 0 else 0.0
+                    grammar_score = max(0, 1 - grammar_errors_per_token)
+                except Exception as e:
+                    self.logger.warning(f"Grammar check failed: {e}")
+                    grammar_score = self._simple_grammar_check(response)
+                    grammar_errors_per_token = 1.0 - grammar_score
             else:
                 # Simplified grammar checking
                 grammar_score = self._simple_grammar_check(response)
