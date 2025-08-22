@@ -1,0 +1,3 @@
+# CLMPI Accuracy Metric Configuration
+dataset: prompts/accuracy_tasks_curated.json
+profile: deterministic

@@ -17,6 +17,7 @@ CLMPI evaluates language models across 5 dimensions for edge deployment suitabil
 
 ## Quick Start
 
+### Complete Evaluation (All Metrics)
 ```bash
 # 1) Install
 pip install -r requirements.txt
@@ -24,11 +25,28 @@ pip install -r requirements.txt
 # 2) Pull at least one model
 ollama pull phi3:mini
 
-# 3) Run the enhanced benchmark on a tiny sample (or omit --tiny if not supported)
-python scripts/enhanced_evaluate_models.py --model "phi3:mini" --tiny
+# 3) Run the enhanced benchmark (recommended)
+python scripts/enhanced_evaluate_models.py \
+    --model-config config/model_config.yaml \
+    --generation-config config/generation_config.yaml \
+    --device-config config/device_default.yaml \
+    --models phi3:mini
 
 # 4) Inspect outputs
-ls -l results | tail -n 20
+ls -l results/latest/
+```
+
+### Stepwise Evaluation (Individual Metrics)
+```bash
+# Run each metric individually
+python scripts/step_accuracy.py --model phi3:mini
+python scripts/step_context.py --model phi3:mini
+python scripts/step_coherence.py --model phi3:mini
+python scripts/step_fluency.py --model phi3:mini
+python scripts/step_efficiency.py --model phi3:mini
+
+# Combine into final CLMPI score
+python scripts/combine_clmpi.py --model phi3:mini --detailed
 ```
 
 Note: Legacy scripts are deprecated; see the deprecation notice at the top of those files.

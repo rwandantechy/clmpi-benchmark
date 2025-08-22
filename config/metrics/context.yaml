@@ -1,0 +1,3 @@
+# CLMPI Contextual Understanding Metric Configuration
+dataset: prompts/contextual_tasks_curated.json
+profile: deterministic

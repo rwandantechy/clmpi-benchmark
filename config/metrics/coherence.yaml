@@ -1,0 +1,3 @@
+# CLMPI Coherence Metric Configuration
+dataset: prompts/coherence_tasks.json
+profile: creative
