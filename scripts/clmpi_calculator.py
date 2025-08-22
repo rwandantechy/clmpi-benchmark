@@ -1,5 +1,4 @@
-# DEPRECATED: Use scripts/enhanced_clmpi_calculator.py instead.
-# This file remains for historical reference only and is not maintained.
+# DEPRECATED: Use scripts/enhanced_clmpi_calculator.py instead. Not maintained.
 """
 DEPRECATED: Use scripts/enhanced_clmpi_calculator.py
 

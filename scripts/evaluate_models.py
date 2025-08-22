@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-# DEPRECATED: Use scripts/enhanced_evaluate_models.py instead.
-# This file remains for historical reference only and is not maintained.
+# DEPRECATED: Use scripts/enhanced_evaluate_models.py instead. Not maintained.
 """
 DEPRECATED: Use scripts/enhanced_evaluate_models.py and scripts/enhanced_clmpi_calculator.py
 

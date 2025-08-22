@@ -13,6 +13,8 @@ CLMPI evaluates language models across 5 dimensions for edge deployment suitabil
 - **Fluency** (20%) - Language quality
 - **Performance Efficiency** (15%) - Resource usage
 
+**Note**: Legacy scripts are deprecated. Use the enhanced pipeline for professional results.
+
 ## Quick Start
 
 ```bash

@@ -374,6 +374,8 @@ class EnhancedModelEvaluator:
         gen_det = load_generation_profile("deterministic")
         gen_cre = load_generation_profile("creative")
         
+        # TODO: ensure all metric runners use gen_det or gen_cre consistently and do not hardcode temperature/top_p/top_k
+        
         print("=== RUN CONFIG ===")
         print("Generation (deterministic):", gen_det)
         print("Generation (creative):", gen_cre)
@@ -433,10 +435,8 @@ class EnhancedModelEvaluator:
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "device_config": self.device_config,
             "weights": self.model_config.get('evaluation_weights', {}),
-            "gen_det": load_generation_profile("deterministic"),
-            "gen_cre": load_generation_profile("creative"),
-            "efficiency_formula": "eff = min(1.0, K_latency / latency_sec) where K_latency = 3.0",
-            "notes": "Deterministic profile for Accuracy/Context; Creative profile for Coherence/Fluency."
+            "generation_profiles": {"deterministic": gen_det, "creative": gen_cre},
+            "notes": "Deterministic for Accuracy/Context; Creative for Coherence/Fluency."
         }
         with open(run_dir / "run_info.json", "w") as f:
             json.dump(run_info, f, indent=2)
