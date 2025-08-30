@@ -3,7 +3,7 @@
     "id": "eff_mmlu_001",
     "category": "resource_efficiency",
     "type": "span",
-    "prompt": "What is the chemical symbol for gold?\n\nReturn ONLY: {\"id\":\"eff_mmlu_001\",\"answer\":\"<value>\"} Do not explain.",
+    "prompt": "What is the chemical symbol for gold?\n\nAnswer in this format: {\"id\":\"eff_mmlu_001\",\"answer\":\"symbol\"}",
     "reference": ["au"],
     "source": "https://huggingface.co/datasets/mmlu"
   }

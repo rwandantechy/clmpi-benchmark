@@ -1,6 +1,6 @@
 # phi3:3.8b - Accuracy Responses
 
-**Evaluation Date**: 2025-08-30 00:50:26
+**Evaluation Date**: 2025-08-30 02:41:29
 **Metric**: Accuracy
 **Total Questions**: 1
 
@@ -10,26 +10,26 @@
 
 **Question/Prompt**: 
 ```
-If each car has 13 wheels and you buy 47 cars, how many wheels do you have in total?
+Calculate: 13 × 47 = ?
 
-Return ONLY: {"id":"acc_gsmhard_001","answer":"<value>"} Do not explain.
+Answer in this format: {"id":"acc_gsmhard_001","answer":"number"}
 ```
 
 **Model Response**: 
 ```
-
+{"id":"acc_gsmhard_0static_calculation_2023","answer":611}
 ```
 
 **Expected Answer**: 611
 
-**Score**: 0
+**Score**: 1.0
 
 **Evaluation Details**:
-- **Parsed Answer**: 
-- **Match Type**: no_match
-- **Parse Step**: no_extraction
+- **Parsed Answer**: 611
+- **Match Type**: string_exact
+- **Parse Step**: json_numeric
 - **Violations**: None
-- **Exact Match**: No
+- **Exact Match**: Yes
 
 ---
 

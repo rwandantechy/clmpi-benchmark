@@ -3,7 +3,7 @@
     "id": "acc_gsmhard_001",
     "category": "accuracy",
     "type": "numeric",
-    "prompt": "If each car has 13 wheels and you buy 47 cars, how many wheels do you have in total?\n\nReturn ONLY: {\"id\":\"acc_gsmhard_001\",\"answer\":\"<value>\"} Do not explain.",
+    "prompt": "Calculate: 13 × 47 = ?\n\nAnswer in this format: {\"id\":\"acc_gsmhard_001\",\"answer\":\"number\"}",
     "reference": ["611"],
     "source": "https://huggingface.co/datasets/reasoning-machines/gsm-hard"
   }

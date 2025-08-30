@@ -89,9 +89,11 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Generate responses
     prompts = dataset[:5]  # Limit for demo
     responses = []
+    gold_answers = []
     
     for prompt_data in prompts:
         prompt = prompt_data["prompt"]
+        correct_answer = prompt_data["correct"]  # Get the correct option
         
         try:
             # Extract generation parameters from profile
@@ -102,17 +104,20 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
                 model_name, prompt, max_tokens, temperature
             )
             responses.append(response)
+            gold_answers.append(correct_answer)
             
             if verbose:
                 logger.info(f"Prompt: {prompt}")
                 logger.info(f"Response: {response}")
+                logger.info(f"Expected: {correct_answer}")
         
         except Exception as e:
             logger.error(f"Error generating response for prompt: {e}")
             responses.append("")
+            gold_answers.append(correct_answer)
     
-    # Calculate coherence
-    coherence_result = calculator.evaluate_coherence(responses)
+    # Calculate coherence using accuracy evaluation for multiple choice
+    coherence_result = calculator.evaluate_accuracy(responses, gold_answers)
     
     # Find or create run directory
     run_dir = find_latest_run_directory()
@@ -122,7 +127,7 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Save responses in organized Markdown format
     response_file = save_responses_markdown(
         model_name, "coherence", prompts, responses, 
-        None, coherence_result.detailed_scores
+        gold_answers, coherence_result.detailed_scores
     )
     
     # Save detailed results
@@ -132,9 +137,9 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
                 "prompt_id": prompt_data.get("id", f"coh_{i+1}"),
                 "prompt": prompt_data["prompt"],
                 "response": response,
-                "coherence_score": coherence_result.detailed_scores[i] if i < len(coherence_result.detailed_scores) else 0.0,
-                "sentence_similarity": coherence_result.sentence_similarity,
-                "repetition_penalty": coherence_result.repetition_penalty
+                "gold_answer": gold_answers[i],
+                "exact_match": coherence_result.detailed_scores[i] if i < len(coherence_result.detailed_scores) else 0.0,
+                "f1_score": coherence_result.f1_score
             }
             f.write(json.dumps(detail) + "\n")
     
@@ -143,9 +148,8 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
         "metric": "coherence",
         "model": model_name,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "coherence_score": coherence_result.coherence_score,
-        "sentence_similarity": coherence_result.sentence_similarity,
-        "repetition_penalty": coherence_result.repetition_penalty,
+        "exact_match": coherence_result.exact_match,
+        "f1_score": coherence_result.f1_score,
         "total_prompts": len(prompts),
         "generation_profile": metric_config["profile"],
         "dataset_path": metric_config["dataset"]
@@ -155,18 +159,17 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
         json.dump(summary, f, indent=2)
     
     # Print single line summary
-    print(f"[COH] {model_name} coherence={coherence_result.coherence_score:.3f}")
+    print(f"[COH] {model_name} coherence={coherence_result.exact_match:.3f}")
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
         logger.info(f"Response file: {response_file}")
-        logger.info(f"Coherence Score: {coherence_result.coherence_score:.3f}")
-        logger.info(f"Sentence Similarity: {coherence_result.sentence_similarity:.3f}")
-        logger.info(f"Repetition Penalty: {coherence_result.repetition_penalty:.3f}")
+        logger.info(f"Exact Match: {coherence_result.exact_match:.3f}")
+        logger.info(f"F1 Score: {coherence_result.f1_score:.3f}")
     
     return {
         "metric": "coherence",
-        "score": coherence_result.coherence_score,
+        "score": coherence_result.exact_match,
         "run_dir": str(run_dir),
         "metric_dir": str(metric_dir)
     }

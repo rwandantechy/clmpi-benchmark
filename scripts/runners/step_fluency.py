@@ -89,9 +89,11 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Generate responses
     prompts = dataset[:5]  # Limit for demo
     responses = []
+    gold_answers = []
     
     for prompt_data in prompts:
         prompt = prompt_data["prompt"]
+        correct_answer = prompt_data["correct"]  # Get the correct option
         
         try:
             # Extract generation parameters from profile
@@ -102,17 +104,20 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
                 model_name, prompt, max_tokens, temperature
             )
             responses.append(response)
+            gold_answers.append(correct_answer)
             
             if verbose:
                 logger.info(f"Prompt: {prompt}")
                 logger.info(f"Response: {response}")
+                logger.info(f"Expected: {correct_answer}")
         
         except Exception as e:
             logger.error(f"Error generating response for prompt: {e}")
             responses.append("")
+            gold_answers.append(correct_answer)
     
-    # Calculate fluency
-    fluency_result = calculator.evaluate_fluency(responses)
+    # Calculate fluency using accuracy evaluation for multiple choice
+    fluency_result = calculator.evaluate_accuracy(responses, gold_answers)
     
     # Find or create run directory
     run_dir = find_latest_run_directory()
@@ -122,7 +127,7 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Save responses in organized Markdown format
     response_file = save_responses_markdown(
         model_name, "fluency", prompts, responses, 
-        None, fluency_result.detailed_scores
+        gold_answers, fluency_result.detailed_scores
     )
     
     # Save detailed results
@@ -132,9 +137,9 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
                 "prompt_id": prompt_data.get("id", f"flu_{i+1}"),
                 "prompt": prompt_data["prompt"],
                 "response": response,
-                "fluency_score": fluency_result.detailed_scores[i] if i < len(fluency_result.detailed_scores) else 0.0,
-                "grammar_score": fluency_result.grammar_score,
-                "perplexity_score": fluency_result.perplexity_score
+                "gold_answer": gold_answers[i],
+                "exact_match": fluency_result.detailed_scores[i] if i < len(fluency_result.detailed_scores) else 0.0,
+                "f1_score": fluency_result.f1_score
             }
             f.write(json.dumps(detail) + "\n")
     
@@ -143,9 +148,8 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
         "metric": "fluency",
         "model": model_name,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "fluency_score": fluency_result.fluency_score,
-        "grammar_score": fluency_result.grammar_score,
-        "perplexity_score": fluency_result.perplexity_score,
+        "exact_match": fluency_result.exact_match,
+        "f1_score": fluency_result.f1_score,
         "total_prompts": len(prompts),
         "generation_profile": metric_config["profile"],
         "dataset_path": metric_config["dataset"]
@@ -155,18 +159,17 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
         json.dump(summary, f, indent=2)
     
     # Print single line summary
-    print(f"[FLU] {model_name} fluency={fluency_result.fluency_score:.3f}")
+    print(f"[FLU] {model_name} fluency={fluency_result.exact_match:.3f}")
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
         logger.info(f"Response file: {response_file}")
-        logger.info(f"Fluency Score: {fluency_result.fluency_score:.3f}")
-        logger.info(f"Grammar Score: {fluency_result.grammar_score:.3f}")
-        logger.info(f"Perplexity Score: {fluency_result.perplexity_score:.3f}")
+        logger.info(f"Exact Match: {fluency_result.exact_match:.3f}")
+        logger.info(f"F1 Score: {fluency_result.f1_score:.3f}")
     
     return {
         "metric": "fluency",
-        "score": fluency_result.fluency_score,
+        "score": fluency_result.exact_match,
         "run_dir": str(run_dir),
         "metric_dir": str(metric_dir)
     }

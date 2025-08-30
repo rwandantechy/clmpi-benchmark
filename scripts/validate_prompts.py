@@ -71,8 +71,10 @@ def validate_prompt_item(item: Dict[str, Any], file_path: str) -> List[str]:
     
     # Check prompt format
     if "prompt" in item and "id" in item:
-        expected_format = f'Return ONLY: {{"id":"{item["id"]}","answer":"<value>"}} Do not explain.'
-        if expected_format not in item["prompt"]:
+        # Check for either old or new format
+        old_format = f'Return ONLY: {{"id":"{item["id"]}","answer":"<value>"}} Do not explain.'
+        new_format = f'Answer in this format: {{"id":"{item["id"]}","answer":'
+        if old_format not in item["prompt"] and new_format not in item["prompt"]:
             errors.append(f"Prompt must contain standardized return format in {file_path}")
     
     # Check reference format

@@ -146,7 +146,7 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
             detail = {
                 "conversation_id": conv_data.get("id", f"ctx_{i+1}"),
                 "context": context,
-                "question": conv_data["question"],
+                "question": question,
                 "response": response,
                 "gold_answer": gold,
                 "exact_match": 1 if response.strip().lower() == gold.strip().lower() else 0,

@@ -116,15 +116,15 @@ def combine_clmpi_scores(model_name: str, verbose: bool = False) -> dict:
         
         # Extract score based on metric type
         if folder_name == "accuracy":
-            metric_scores[weight_key] = summary.get("f1_score", 0.0)
+            metric_scores[weight_key] = summary.get("exact_match", 0.0)
         elif folder_name == "context":
-            metric_scores[weight_key] = summary.get("combined_score", 0.0)
+            metric_scores[weight_key] = summary.get("exact_match", 0.0)
         elif folder_name == "coherence":
-            metric_scores[weight_key] = summary.get("coherence_score", 0.0)
+            metric_scores[weight_key] = summary.get("exact_match", 0.0)
         elif folder_name == "fluency":
-            metric_scores[weight_key] = summary.get("fluency_score", 0.0)
+            metric_scores[weight_key] = summary.get("exact_match", 0.0)
         elif folder_name == "efficiency":
-            metric_scores[weight_key] = summary.get("avg_efficiency", 0.0)
+            metric_scores[weight_key] = summary.get("efficiency", 0.0)
     
     if missing_metrics:
         logger.warning(f"Missing metrics: {missing_metrics}")

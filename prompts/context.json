@@ -3,7 +3,7 @@
     "id": "ctx_squad_001",
     "category": "context",
     "type": "span",
-    "prompt": "Passage: 'The Eiffel Tower is a wrought-iron lattice tower located in Paris, France. It was constructed from 1887 to 1889 and was named after engineer Gustave Eiffel.'\nQuestion: Who was the Eiffel Tower named after?\n\nReturn ONLY: {\"id\":\"ctx_squad_001\",\"answer\":\"<value>\"} Do not explain.",
+    "prompt": "Passage: The Eiffel Tower is a wrought-iron lattice tower located in Paris, France. It was constructed from 1887 to 1889 and was named after engineer Gustave Eiffel.\n\nQuestion: Who was the Eiffel Tower named after?\n\nAnswer in this format: {\"id\":\"ctx_squad_001\",\"answer\":\"name\"}",
     "reference": ["gustave eiffel"],
     "source": "https://huggingface.co/datasets/squad"
   }

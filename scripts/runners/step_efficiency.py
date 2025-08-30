@@ -21,6 +21,18 @@ from ollama_runner import OllamaRunner
 from generation import load_generation_profile
 from logger import save_responses_markdown
 
+def load_dataset(dataset_path: str) -> dict:
+    """Load dataset from path"""
+    import json
+    from pathlib import Path
+    
+    path = Path(dataset_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Dataset not found: {dataset_path}")
+    
+    with open(path, 'r') as f:
+        return json.load(f)
+
 
 def load_metric_config(metric_name: str) -> dict:
     """Load metric configuration from config/metrics/"""
@@ -74,8 +86,8 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     logger = logging.getLogger(__name__)
     
     # Load efficiency task
-    dataset = load_efficiency_tasks()
-    task = dataset.get("tasks", [{}])[0]  # Just one task
+    dataset = load_dataset("prompts/efficiency_tasks.json")
+    task = dataset[0]  # Just one task
     prompt = task.get("prompt", "What is 15 + 27?")
     
     # Load generation profile

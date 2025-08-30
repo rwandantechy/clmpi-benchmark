@@ -3,7 +3,7 @@
     "id": "flu_cola_001",
     "category": "fluency",
     "type": "mc_single",
-    "prompt": "Is the following sentence grammatical?\n'The cat sat on the mat.'\n\nA) grammatical\nB) ungrammatical\n\nReturn ONLY: {\"id\":\"flu_cola_001\",\"answer\":\"<value>\"} Do not explain.",
+    "prompt": "Is the following sentence grammatical?\n'The cat sat on the mat.'\n\nA) grammatical\nB) ungrammatical\n\nAnswer in this format: {\"id\":\"flu_cola_001\",\"answer\":\"A|B\"}",
     "options": { 
       "A": "grammatical", 
       "B": "ungrammatical" 

@@ -1,0 +1,12 @@
+{
+  "metric": "efficiency",
+  "model": "phi3:3.8b",
+  "timestamp": "2025-08-30 02:46:01",
+  "efficiency": 0.1,
+  "latency_seconds": 5.07088828086853,
+  "cpu_usage_percent": 0.2,
+  "memory_used_mb": 1.05859375,
+  "success": true,
+  "generation_profile": "deterministic",
+  "dataset_path": "prompts/efficiency_tasks.json"
+}

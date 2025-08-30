@@ -159,6 +159,12 @@ class CLMPICalculator:
         
         # Common patterns for answer extraction
         patterns = [
+            # JSON patterns first (most specific)
+            (r'"answer"\s*:\s*"([^"]+)"', "json_answer"),  # {"answer": "value"}
+            (r'"answer"\s*:\s*(\d+)', "json_numeric"),  # {"answer": 300}
+            (r'"answer"\s*:\s*(\d+\.?\d*)', "json_decimal"),  # {"answer": 300.0}
+            
+            # Traditional patterns
             (r'answer[:\s]*(\d+)', "answer_prefix"),  # "Answer: 300"
             (r'answer[:\s]*\\boxed\{(\d+)\}', "answer_boxed"),  # "Answer: \boxed{300}"
             (r'answer[:\s]*(\d+\.?\d*)', "answer_decimal"),  # "Answer: 300.0"

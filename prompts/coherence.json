@@ -3,7 +3,7 @@
     "id": "coh_storycloze_001",
     "category": "coherence",
     "type": "mc_single",
-    "prompt": "A woman is at a restaurant. She orders a hamburger. The waiter brings her the hamburger.\nChoose the most coherent next sentence:\nA) She throws the hamburger on the floor.\nB) She eats the hamburger.\nC) She puts the hamburger in her purse.\nD) She gives the hamburger to the waiter.\n\nReturn ONLY: {\"id\":\"coh_storycloze_001\",\"answer\":\"<value>\"} Do not explain.",
+    "prompt": "A woman is at a restaurant. She orders a hamburger. The waiter brings her the hamburger.\n\nChoose the most coherent next sentence:\nA) She throws the hamburger on the floor.\nB) She eats the hamburger.\nC) She puts the hamburger in her purse.\nD) She gives the hamburger to the waiter.\n\nAnswer in this format: {\"id\":\"coh_storycloze_001\",\"answer\":\"A|B|C|D\"}",
     "options": {
       "A": "She throws the hamburger on the floor.",
       "B": "She eats the hamburger.",
