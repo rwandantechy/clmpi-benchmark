@@ -18,6 +18,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from clmpi_calculator import CLMPICalculator
 from ollama_runner import OllamaRunner
 from generation import load_generation_profile
+from logger import generate_accuracy_markdown, save_responses_markdown
 
 
 def load_metric_config(metric_name: str) -> dict:
@@ -58,6 +59,9 @@ def find_latest_run_directory() -> Path:
         run_dir = results_dir / f"{timestamp}_stepwise"
         run_dir.mkdir(parents=True, exist_ok=True)
         return run_dir
+
+
+
 
 
 def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
@@ -126,15 +130,40 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
         for i, (response, gold, question_data) in enumerate(zip(responses, gold_answers, questions)):
+            # Get audit information
+            audit_info = accuracy_result.audit_trail[i] if i < len(accuracy_result.audit_trail) else {}
+            
             detail = {
                 "question_id": question_data.get("id", f"acc_{i+1}"),
                 "question": question_data["question"],
                 "response": response,
                 "gold_answer": gold,
                 "score": accuracy_result.detailed_scores[i],
-                "exact_match": 1 if response.strip().lower() == gold.strip().lower() else 0
+                "exact_match": 1 if response.strip().lower() == gold.strip().lower() else 0,
+                # Audit trail information
+                "parsed_answer": audit_info.get("parsed_answer", ""),
+                "match_type": audit_info.get("match_type", ""),
+                "parse_step": audit_info.get("parse_step", ""),
+                "violations": audit_info.get("violations", []),
+                "clean_extracted": audit_info.get("clean_extracted", ""),
+                "clean_gold": audit_info.get("clean_gold", ""),
+                "is_exact_match": audit_info.get("is_exact_match", False)
             }
             f.write(json.dumps(detail) + "\n")
+    
+    # Generate and save Markdown log
+    markdown_content = generate_accuracy_markdown(
+        model_name, questions, responses, gold_answers, accuracy_result, dataset
+    )
+    
+    with open(metric_dir / "evaluation_report.md", "w") as f:
+        f.write(markdown_content)
+    
+    # Save responses in organized Markdown format
+    response_file = save_responses_markdown(
+        model_name, "accuracy", questions, responses, 
+        gold_answers, accuracy_result.detailed_scores, accuracy_result.audit_trail
+    )
     
     # Save summary
     summary = {
@@ -156,6 +185,8 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
+        logger.info(f"Markdown report: {metric_dir / 'evaluation_report.md'}")
+        logger.info(f"Response file: {response_file}")
         logger.info(f"Exact Match: {accuracy_result.exact_match:.3f}")
         logger.info(f"F1 Score: {accuracy_result.f1_score:.3f}")
     

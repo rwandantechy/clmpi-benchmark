@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 CLMPI Efficiency Step Evaluation Script
-Evaluates efficiency metric independently for stepwise CLMPI evaluation
+Simple performance measurement: time, CPU, memory
 """
 
 import argparse
@@ -9,6 +9,7 @@ import json
 import yaml
 import time
 import logging
+import psutil
 from pathlib import Path
 from datetime import datetime
 
@@ -30,11 +31,12 @@ def load_metric_config(metric_name: str) -> dict:
         return yaml.safe_load(f)
 
 
-def load_dataset(dataset_path: str) -> dict:
-    """Load dataset from path"""
+def load_efficiency_tasks() -> dict:
+    """Load efficiency tasks dataset"""
+    dataset_path = "prompts/efficiency_tasks.json"
     path = Path(dataset_path)
     if not path.exists():
-        raise FileNotFoundError(f"Dataset not found: {dataset_path}")
+        raise FileNotFoundError(f"Efficiency tasks dataset not found: {dataset_path}")
     
     with open(path, 'r') as f:
         return json.load(f)
@@ -61,7 +63,7 @@ def find_latest_run_directory() -> Path:
 
 
 def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
-    """Run efficiency evaluation for a single model"""
+    """Run simple efficiency evaluation - just measure time, CPU, memory"""
     
     # Setup logging
     logging.basicConfig(
@@ -70,68 +72,68 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     )
     logger = logging.getLogger(__name__)
     
-    # Load metric config
-    metric_config = load_metric_config("efficiency")
-    dataset = load_dataset(metric_config["dataset"])
+    # Load efficiency task
+    dataset = load_efficiency_tasks()
+    task = dataset.get("tasks", [{}])[0]  # Just one task
+    prompt = task.get("prompt", "What is 15 + 27?")
     
     # Load generation profile
-    profile = load_generation_profile(metric_config["profile"])
+    profile = load_generation_profile("deterministic")
     
     if verbose:
-        logger.info(f"Loaded dataset: {metric_config['dataset']}")
-        logger.info(f"Using profile: {metric_config['profile']} - {profile}")
+        logger.info(f"Testing efficiency with prompt: {prompt}")
+        logger.info(f"Using profile: deterministic")
     
     # Initialize components
-    calculator = CLMPICalculator()
     ollama_runner = OllamaRunner("http://localhost:11434")
     
-    # Generate responses and measure efficiency
-    questions = dataset.get("questions", [])[:5]  # Limit for demo
-    efficiency_results = []
-    
-    for question_data in questions:
-        question = question_data["question"]
+    try:
+        # Extract generation parameters
+        max_tokens = profile.get("max_tokens", 1000)
+        temperature = profile.get("temperature", 0.0)
         
-        try:
-            # Extract generation parameters from profile
-            max_tokens = profile.get("max_tokens", 1000)
-            temperature = profile.get("temperature", 0.1)
-            
-            # Create a wrapper function for efficiency measurement
-            def generate_with_ollama():
-                return ollama_runner.generate_response(model_name, question, max_tokens, temperature)
-            
-            # Measure efficiency
-            efficiency_result = calculator.measure_efficiency(generate_with_ollama)
-            efficiency_results.append(efficiency_result)
-            
-            if verbose:
-                logger.info(f"Question: {question}")
-                logger.info(f"Latency: {efficiency_result.latency_seconds:.4f}s")
-                logger.info(f"CPU: {efficiency_result.cpu_usage_percent:.1f}%")
-                logger.info(f"Memory: {efficiency_result.memory_used_mb:.1f}MB")
-                logger.info(f"Raw Efficiency: {efficiency_result.raw_efficiency:.3f}")
+        # Measure performance
+        process = psutil.Process()
+        initial_cpu = process.cpu_percent()
+        initial_memory = process.memory_info().rss / (1024 * 1024)  # MB
         
-        except Exception as e:
-            logger.error(f"Error measuring efficiency for question: {e}")
-            # Create a dummy result to maintain consistency
-            from clmpi_calculator import EfficiencyResult
-            dummy_result = EfficiencyResult(
-                latency_seconds=1.0,
-                cpu_usage_percent=0.0,
-                memory_used_mb=0.0,
-                raw_efficiency=0.0,
-                normalized_efficiency=0.0
-            )
-            efficiency_results.append(dummy_result)
+        start_time = time.time()
+        response, _ = ollama_runner.generate_response(model_name, prompt, max_tokens, temperature)
+        end_time = time.time()
+        
+        final_cpu = process.cpu_percent()
+        final_memory = process.memory_info().rss / (1024 * 1024)  # MB
+        
+        # Calculate metrics
+        latency = end_time - start_time
+        cpu_usage = (initial_cpu + final_cpu) / 2
+        memory_used = final_memory - initial_memory
+        
+        success = True
+        
+        if verbose:
+            logger.info(f"Response: {response}")
+            logger.info(f"Time: {latency:.3f}s")
+            logger.info(f"CPU: {cpu_usage:.1f}%")
+            logger.info(f"Memory: {memory_used:.1f}MB")
+        
+    except Exception as e:
+        logger.error(f"Error measuring efficiency: {e}")
+        latency = 30.0
+        cpu_usage = 0.0
+        memory_used = 0.0
+        response = ""
+        success = False
     
-    # Normalize efficiency scores
-    normalized_scores = calculator.normalize_efficiency_scores(efficiency_results)
-    for i, norm_score in enumerate(normalized_scores):
-        efficiency_results[i].normalized_efficiency = norm_score
-    
-    # Calculate average efficiency
-    avg_efficiency = sum(normalized_scores) / len(normalized_scores) if normalized_scores else 0.0
+    # Simple efficiency score based on time
+    if latency <= 1.0:
+        efficiency = 1.0
+    elif latency <= 3.0:
+        efficiency = 0.7
+    elif latency <= 5.0:
+        efficiency = 0.4
+    else:
+        efficiency = 0.1
     
     # Find or create run directory
     run_dir = find_latest_run_directory()
@@ -140,58 +142,48 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
-        for i, (result, question_data) in enumerate(zip(efficiency_results, questions)):
-            detail = {
-                "question_id": question_data.get("id", f"eff_{i+1}"),
-                "question": question_data["question"],
-                "latency_seconds": result.latency_seconds,
-                "cpu_usage_percent": result.cpu_usage_percent,
-                "memory_used_mb": result.memory_used_mb,
-                "raw_efficiency": result.raw_efficiency,
-                "normalized_efficiency": result.normalized_efficiency
-            }
-            f.write(json.dumps(detail) + "\n")
-    
-    # Calculate averages with error handling
-    try:
-        avg_latency = sum(r.latency_seconds for r in efficiency_results) / len(efficiency_results)
-        avg_cpu = sum(r.cpu_usage_percent for r in efficiency_results) / len(efficiency_results)
-        avg_memory = sum(r.memory_used_mb for r in efficiency_results) / len(efficiency_results)
-    except ZeroDivisionError:
-        avg_latency = 0.0
-        avg_cpu = 0.0
-        avg_memory = 0.0
+        detail = {
+            "task_id": "eff_001",
+            "prompt": prompt,
+            "response": response,
+            "latency_seconds": latency,
+            "cpu_usage_percent": cpu_usage,
+            "memory_used_mb": max(0, memory_used),
+            "efficiency": efficiency,
+            "success": success
+        }
+        f.write(json.dumps(detail) + "\n")
     
     # Save summary
     summary = {
         "metric": "efficiency",
         "model": model_name,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "avg_efficiency": avg_efficiency,
-        "avg_latency_seconds": avg_latency,
-        "avg_cpu_percent": avg_cpu,
-        "avg_memory_mb": avg_memory,
-        "total_questions": len(questions),
-        "generation_profile": metric_config["profile"],
-        "dataset_path": metric_config["dataset"]
+        "efficiency": efficiency,
+        "latency_seconds": latency,
+        "cpu_usage_percent": cpu_usage,
+        "memory_used_mb": max(0, memory_used),
+        "success": success,
+        "generation_profile": "deterministic",
+        "dataset_path": "prompts/efficiency_tasks.json"
     }
     
     with open(metric_dir / "summary.json", "w") as f:
         json.dump(summary, f, indent=2)
     
     # Print single line summary
-    print(f"[EFF] {model_name} efficiency={avg_efficiency:.3f}")
+    print(f"[EFF] {model_name} efficiency={efficiency:.3f}")
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
-        logger.info(f"Average Efficiency: {avg_efficiency:.3f}")
-        logger.info(f"Average Latency: {summary['avg_latency_seconds']:.3f}s")
-        logger.info(f"Average CPU: {summary['avg_cpu_percent']:.1f}%")
-        logger.info(f"Average Memory: {summary['avg_memory_mb']:.1f}MB")
+        logger.info(f"Efficiency: {efficiency:.3f}")
+        logger.info(f"Latency: {latency:.3f}s")
+        logger.info(f"CPU: {cpu_usage:.1f}%")
+        logger.info(f"Memory: {memory_used:.1f}MB")
     
     return {
         "metric": "efficiency",
-        "score": avg_efficiency,
+        "score": efficiency,
         "run_dir": str(run_dir),
         "metric_dir": str(metric_dir)
     }

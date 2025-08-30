@@ -15,18 +15,18 @@ evaluation_weights:
   performance_efficiency: 0.15   # 15% - Resource efficiency
 
 # Prompt Sets to Enable
-# Each maps to a specific evaluation dimension with curated datasets
+# Each maps to a specific evaluation dimension with principled benchmark datasets
 prompt_sets:
   accuracy:
-    - "accuracy.json"  # Expert-validated factual questions
+    - "accuracy.json"  # GSM8K mathematical reasoning
   contextual_understanding:
-    - "context.json"  # Multi-turn contextual tasks
+    - "context.json"  # SQuAD passage comprehension
   coherence:
-    - "coherence.json"  # Logical flow evaluation
+    - "coherence.json"  # HellaSwag sentence completion
   fluency:
-    - "fluency.json"  # Surface quality evaluation
+    - "fluency.json"  # CoLA grammatical acceptability
   performance_efficiency:
-    - "coherence.json"  # Use coherence tasks for efficiency measurement
+    - "efficiency_tasks.json"  # Computational complexity testing
 
 # Model Definitions
 # Add models here as needed. All models must be available via Ollama

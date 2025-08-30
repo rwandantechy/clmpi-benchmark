@@ -36,6 +36,7 @@ class AccuracyResult:
     detailed_scores: List[float]
     responses: List[str]
     gold_answers: List[str]
+    audit_trail: List[Dict[str, any]]  # New field for transparency
 
 
 @dataclass
@@ -105,10 +106,74 @@ class CLMPICalculator:
         if not np.isclose(total_weight, 1.0, atol=1e-6):
             raise ValueError(f"Weights must sum to 1.0, got {total_weight}")
     
+    def _extract_answer_from_response(self, response: str) -> Dict[str, any]:
+        """
+        Extract the actual answer from a model response, handling various formats
+        
+        Args:
+            response: Model response text
+            
+        Returns:
+            Dict with extracted answer and audit information
+        """
+        # Clean the response
+        response = response.strip()
+        original_response = response
+        
+        # Check for verbosity (simple heuristic)
+        violations = []
+        if len(response.split()) > 50:  # More than 50 words
+            violations.append("verbosity")
+        
+        # Common patterns for answer extraction
+        patterns = [
+            (r'answer[:\s]*(\d+)', "answer_prefix"),  # "Answer: 300"
+            (r'answer[:\s]*\\boxed\{(\d+)\}', "answer_boxed"),  # "Answer: \boxed{300}"
+            (r'answer[:\s]*(\d+\.?\d*)', "answer_decimal"),  # "Answer: 300.0"
+            (r'(\d+)\s*$', "end_number"),  # "300" at end
+            (r'(\d+\.?\d*)\s*$', "end_decimal"),  # "300.0" at end
+            (r'\\boxed\{(\d+)\}', "boxed_number"),  # "\boxed{300}"
+            (r'\\boxed\{(\d+\.?\d*)\}', "boxed_decimal"),  # "\boxed{300.0}"
+            (r'(\d+)\s*[pounds?|units?|items?]', "number_with_unit"),  # "300 pounds"
+            (r'(\d+\.?\d*)\s*[pounds?|units?|items?]', "decimal_with_unit"),  # "300.0 pounds"
+        ]
+        
+        for pattern, parse_step in patterns:
+            match = re.search(pattern, response, re.IGNORECASE)
+            if match:
+                extracted = match.group(1)
+                return {
+                    "parsed_answer": extracted,
+                    "parse_step": parse_step,
+                    "match_type": "regex_pattern",
+                    "violations": violations,
+                    "original_response": original_response
+                }
+        
+        # If no pattern matches, try to find the last number in the response
+        numbers = re.findall(r'\d+\.?\d*', response)
+        if numbers:
+            return {
+                "parsed_answer": numbers[-1],
+                "parse_step": "last_number_fallback",
+                "match_type": "numeric_extraction",
+                "violations": violations,
+                "original_response": original_response
+            }
+        
+        # If still no match, return the original response
+        return {
+            "parsed_answer": response,
+            "parse_step": "no_extraction",
+            "match_type": "string_exact",
+            "violations": violations,
+            "original_response": original_response
+        }
+    
     def evaluate_accuracy(self, responses: List[str], gold_answers: List[str], 
                          acceptable_answers: List[List[str]] = None) -> AccuracyResult:
         """
-        Evaluate accuracy using Exact Match and F1 scoring
+        Evaluate accuracy using Exact Match and F1 scoring with improved answer extraction
         
         Args:
             responses: Model responses
@@ -116,31 +181,44 @@ class CLMPICalculator:
             acceptable_answers: List of acceptable answer variations
             
         Returns:
-            AccuracyResult with detailed scores
+            AccuracyResult with detailed scores and audit trail
         """
         if len(responses) != len(gold_answers):
             raise ValueError("Number of responses must match number of gold answers")
         
         exact_matches = []
         f1_scores = []
+        audit_trail = []
         
         for i, (response, gold) in enumerate(zip(responses, gold_answers)):
-            # Clean response
-            clean_response = response.strip().lower()
+            # Extract the actual answer from the response with audit info
+            extraction_result = self._extract_answer_from_response(response)
+            extracted_answer = extraction_result["parsed_answer"]
+            
+            # Clean extracted answer and gold answer
+            clean_extracted = extracted_answer.strip().lower()
             clean_gold = gold.strip().lower()
+            
+            # Determine match type
+            if clean_extracted == clean_gold:
+                match_type = "string_exact"
+            elif extraction_result["match_type"] in ["regex_pattern", "numeric_extraction"]:
+                match_type = "numeric_equal"
+            else:
+                match_type = "no_match"
             
             # Check exact match
             if acceptable_answers and i < len(acceptable_answers):
                 # Check against acceptable answers
-                is_exact_match = any(clean_response == acc.strip().lower() 
+                is_exact_match = any(clean_extracted == acc.strip().lower() 
                                    for acc in acceptable_answers[i])
             else:
-                is_exact_match = clean_response == clean_gold
+                is_exact_match = clean_extracted == clean_gold
             
             exact_matches.append(1.0 if is_exact_match else 0.0)
             
             # Calculate F1 score (simplified - word overlap)
-            response_words = set(clean_response.split())
+            response_words = set(clean_extracted.split())
             gold_words = set(clean_gold.split())
             
             if not gold_words:
@@ -150,13 +228,30 @@ class CLMPICalculator:
                 recall = len(response_words & gold_words) / len(gold_words)
                 f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
                 f1_scores.append(f1)
+            
+            # Store audit information
+            audit_info = {
+                "question_id": f"acc_{i+1}",
+                "original_response": extraction_result["original_response"],
+                "parsed_answer": extracted_answer,
+                "gold_answer": gold,
+                "clean_extracted": clean_extracted,
+                "clean_gold": clean_gold,
+                "match_type": match_type,
+                "parse_step": extraction_result["parse_step"],
+                "violations": extraction_result["violations"],
+                "is_exact_match": is_exact_match,
+                "f1_score": f1_scores[-1]
+            }
+            audit_trail.append(audit_info)
         
         return AccuracyResult(
             exact_match=np.mean(exact_matches),
             f1_score=np.mean(f1_scores),
             detailed_scores=f1_scores,
             responses=responses,
-            gold_answers=gold_answers
+            gold_answers=gold_answers,
+            audit_trail=audit_trail
         )
     
     def evaluate_contextual_understanding(self, responses: List[str], 
