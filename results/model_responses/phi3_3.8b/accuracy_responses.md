@@ -1,41 +1,35 @@
 # phi3:3.8b - Accuracy Responses
 
-**Evaluation Date**: 2025-08-29 22:21:50
+**Evaluation Date**: 2025-08-30 00:50:26
 **Metric**: Accuracy
 **Total Questions**: 1
 
 ---
 
-## Question 1: acc_001
+## Question 1: acc_gsmhard_001
 
 **Question/Prompt**: 
 ```
-Janet's dogs eat 2 pounds of dog food each day. Janet has 5 dogs. How many pounds of dog food does Janet need to feed her dogs for 30 days?
+If each car has 13 wheels and you buy 47 cars, how many wheels do you have in total?
+
+Return ONLY: {"id":"acc_gsmhard_001","answer":"<value>"} Do not explain.
 ```
 
 **Model Response**: 
 ```
-To find out how much dog food Janet needs for all five dogs, we first calculate the daily consumption:
-
-2 pounds/dog * 5 dogs = 10 pounds per day.
-
-Then, multiply this by the number of days in a month to get the total amount needed:
-
-10 pounds/day * 30 days = 300 pounds for one month's supply. Answer: \boxed{300}.
-
 
 ```
 
-**Expected Answer**: 300
+**Expected Answer**: 611
 
-**Score**: 1.0
+**Score**: 0
 
 **Evaluation Details**:
-- **Parsed Answer**: 300
-- **Match Type**: string_exact
-- **Parse Step**: answer_boxed
-- **Violations**: verbosity
-- **Exact Match**: Yes
+- **Parsed Answer**: 
+- **Match Type**: no_match
+- **Parse Step**: no_extraction
+- **Violations**: None
+- **Exact Match**: No
 
 ---
 

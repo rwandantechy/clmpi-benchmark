@@ -1,12 +1,10 @@
-{
-  "version": "2.0.0",
-  "description": "Single efficiency evaluation task - neutral language test",
-  "total_tasks": 1,
-  "tasks": [
-    {
-      "id": "eff_001",
-      "prompt": "Hello, how are you?",
-      "expected_time": "0.5-3.0s"
-    }
-  ]
-}
+[
+  {
+    "id": "eff_mmlu_001",
+    "category": "resource_efficiency",
+    "type": "span",
+    "prompt": "What is the chemical symbol for gold?\n\nReturn ONLY: {\"id\":\"eff_mmlu_001\",\"answer\":\"<value>\"} Do not explain.",
+    "reference": ["au"],
+    "source": "https://huggingface.co/datasets/mmlu"
+  }
+]

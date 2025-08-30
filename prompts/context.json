@@ -1,20 +1,10 @@
-{
-  "version": "2.0.0",
-  "description": "Principled contextual understanding evaluation using SQuAD benchmark question",
-  "total_conversations": 1,
-  "source": "SQuAD (Stanford Question Answering Dataset)",
-  "reference": "Rajpurkar, P., et al. (2016). SQuAD: 100,000+ Questions for Machine Comprehension of Text. EMNLP 2016",
-  "conversations": [
-    {
-      "id": "ctx_001",
-      "context_type": "passage_comprehension",
-      "difficulty": "medium",
-      "context": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France. It was constructed from 1887 to 1889 as the centerpiece of the 1889 World's Fair. The tower is 324 meters tall, about the same height as an 81-story building, and the tallest structure in Paris. Its base is square, measuring 125 meters on each side. During its construction, the Eiffel Tower surpassed the Washington Monument to become the tallest man-made structure in the world, a title it held for 41 years until the Chrysler Building in New York City was finished in 1930.",
-      "question": "What was the original purpose of the Eiffel Tower?",
-      "correct_answer": "centerpiece of the 1889 World's Fair",
-      "acceptable_answers": ["centerpiece of the 1889 World's Fair", "World's Fair centerpiece", "1889 World's Fair", "centerpiece"],
-      "explanation": "The passage states it was constructed as the centerpiece of the 1889 World's Fair",
-      "benchmark_source": "SQuAD"
-    }
-  ]
-}
+[
+  {
+    "id": "ctx_squad_001",
+    "category": "context",
+    "type": "span",
+    "prompt": "Passage: 'The Eiffel Tower is a wrought-iron lattice tower located in Paris, France. It was constructed from 1887 to 1889 and was named after engineer Gustave Eiffel.'\nQuestion: Who was the Eiffel Tower named after?\n\nReturn ONLY: {\"id\":\"ctx_squad_001\",\"answer\":\"<value>\"} Do not explain.",
+    "reference": ["gustave eiffel"],
+    "source": "https://huggingface.co/datasets/squad"
+  }
+]

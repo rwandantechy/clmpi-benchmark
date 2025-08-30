@@ -90,13 +90,13 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
     ollama_runner = OllamaRunner("http://localhost:11434")
     
     # Generate responses
-    questions = dataset.get("questions", [])[:5]  # Limit for demo
+    questions = dataset[:5]  # Limit for demo
     responses = []
     gold_answers = []
     
     for question_data in questions:
-        question = question_data["question"]
-        correct_answer = question_data["correct_answer"]
+        question = question_data["prompt"]
+        correct_answer = question_data["reference"][0]  # Take first reference answer
         
         try:
             # Extract generation parameters from profile
@@ -135,7 +135,7 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
             
             detail = {
                 "question_id": question_data.get("id", f"acc_{i+1}"),
-                "question": question_data["question"],
+                "question": question_data["prompt"],
                 "response": response,
                 "gold_answer": gold,
                 "score": accuracy_result.detailed_scores[i],
@@ -153,7 +153,7 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
     
     # Generate and save Markdown log
     markdown_content = generate_accuracy_markdown(
-        model_name, questions, responses, gold_answers, accuracy_result, dataset
+        model_name, questions, responses, gold_answers, accuracy_result, {"name": "Standardized Accuracy Dataset"}
     )
     
     with open(metric_dir / "evaluation_report.md", "w") as f:

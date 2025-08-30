@@ -1,9 +1,9 @@
 {
   "metric": "accuracy",
   "model": "phi3:3.8b",
-  "timestamp": "2025-08-29 22:21:50",
-  "exact_match": 1.0,
-  "f1_score": 1.0,
+  "timestamp": "2025-08-30 00:50:26",
+  "exact_match": 0.0,
+  "f1_score": 0.0,
   "total_questions": 1,
   "generation_profile": "deterministic",
   "dataset_path": "prompts/accuracy.json"

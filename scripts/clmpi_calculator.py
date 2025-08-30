@@ -106,6 +106,38 @@ class CLMPICalculator:
         if not np.isclose(total_weight, 1.0, atol=1e-6):
             raise ValueError(f"Weights must sum to 1.0, got {total_weight}")
     
+    def _normalize_answer(self, answer: str) -> str:
+        """
+        Normalize an answer for comparison by removing punctuation, extra whitespace, etc.
+        
+        Args:
+            answer: Raw answer string
+            
+        Returns:
+            Normalized answer string
+        """
+        if not answer:
+            return ""
+        
+        # Convert to lowercase and strip whitespace
+        normalized = answer.lower().strip()
+        
+        # Remove common punctuation that doesn't affect meaning
+        normalized = re.sub(r'[.,;:!?]+$', '', normalized)  # Remove trailing punctuation
+        normalized = re.sub(r'^[.,;:!?]+', '', normalized)  # Remove leading punctuation
+        
+        # Remove extra whitespace
+        normalized = re.sub(r'\s+', ' ', normalized).strip()
+        
+        # Handle common number variations
+        # Remove "pounds", "units", "items" etc. after numbers
+        normalized = re.sub(r'\s+(pounds?|units?|items?|wheels?|cars?)$', '', normalized)
+        
+        # Normalize decimal numbers (611.0 -> 611)
+        normalized = re.sub(r'\.0+$', '', normalized)  # Remove trailing .0, .00, etc.
+        
+        return normalized
+    
     def _extract_answer_from_response(self, response: str) -> Dict[str, any]:
         """
         Extract the actual answer from a model response, handling various formats
@@ -195,9 +227,9 @@ class CLMPICalculator:
             extraction_result = self._extract_answer_from_response(response)
             extracted_answer = extraction_result["parsed_answer"]
             
-            # Clean extracted answer and gold answer
-            clean_extracted = extracted_answer.strip().lower()
-            clean_gold = gold.strip().lower()
+            # Normalize extracted answer and gold answer
+            clean_extracted = self._normalize_answer(extracted_answer)
+            clean_gold = self._normalize_answer(gold)
             
             # Determine match type
             if clean_extracted == clean_gold:
@@ -209,9 +241,9 @@ class CLMPICalculator:
             
             # Check exact match
             if acceptable_answers and i < len(acceptable_answers):
-                # Check against acceptable answers
-                is_exact_match = any(clean_extracted == acc.strip().lower() 
-                                   for acc in acceptable_answers[i])
+                # Check against acceptable answers (normalized)
+                normalized_acceptable = [self._normalize_answer(acc) for acc in acceptable_answers[i]]
+                is_exact_match = any(clean_extracted == acc for acc in normalized_acceptable)
             else:
                 is_exact_match = clean_extracted == clean_gold
             

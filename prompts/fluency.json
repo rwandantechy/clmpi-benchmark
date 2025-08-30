@@ -1,19 +1,15 @@
-{
-  "version": "2.0.0",
-  "description": "Principled fluency evaluation using CoLA benchmark prompt",
-  "total_prompts": 1,
-  "source": "CoLA (Corpus of Linguistic Acceptability)",
-  "reference": "Warstadt, A., et al. (2019). Neural Network Acceptability Judgments. TACL 2019",
-  "prompts": [
-    {
-      "id": "flu_001",
-      "fluency_type": "grammatical_acceptability",
-      "difficulty": "medium",
-      "prompt": "Write a grammatically correct sentence about the importance of education in modern society. Use varied sentence structures and proper grammar.",
-      "min_sentences": 2,
-      "max_sentences": 4,
-      "evaluation_criteria": ["grammar", "sentence_structure", "vocabulary_usage", "naturalness"],
-      "benchmark_source": "CoLA"
-    }
-  ]
-}
+[
+  {
+    "id": "flu_cola_001",
+    "category": "fluency",
+    "type": "mc_single",
+    "prompt": "Is the following sentence grammatical?\n'The cat sat on the mat.'\n\nA) grammatical\nB) ungrammatical\n\nReturn ONLY: {\"id\":\"flu_cola_001\",\"answer\":\"<value>\"} Do not explain.",
+    "options": { 
+      "A": "grammatical", 
+      "B": "ungrammatical" 
+    },
+    "correct": "A",
+    "reference": ["A"],
+    "source": "https://nyu-mll.github.io/CoLA/"
+  }
+]

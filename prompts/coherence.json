@@ -1,19 +1,17 @@
-{
-  "version": "2.0.0",
-  "description": "Principled coherence evaluation using HellaSwag benchmark prompt",
-  "total_prompts": 1,
-  "source": "HellaSwag (Harder Endings for Language Models)",
-  "reference": "Zellers, R., et al. (2019). HellaSwag: Can a Machine Really Finish Your Sentence? ACL 2019",
-  "prompts": [
-    {
-      "id": "coh_001",
-      "coherence_type": "sentence_completion",
-      "difficulty": "medium",
-      "prompt": "A person is cooking in the kitchen. They are preparing a meal and following a recipe. The person carefully measures ingredients and follows each step. Next,",
-      "min_sentences": 2,
-      "max_sentences": 4,
-      "evaluation_criteria": ["logical_sequence", "sentence_connectivity", "contextual_relevance", "no_contradictions"],
-      "benchmark_source": "HellaSwag"
-    }
-  ]
-}
+[
+  {
+    "id": "coh_storycloze_001",
+    "category": "coherence",
+    "type": "mc_single",
+    "prompt": "A woman is at a restaurant. She orders a hamburger. The waiter brings her the hamburger.\nChoose the most coherent next sentence:\nA) She throws the hamburger on the floor.\nB) She eats the hamburger.\nC) She puts the hamburger in her purse.\nD) She gives the hamburger to the waiter.\n\nReturn ONLY: {\"id\":\"coh_storycloze_001\",\"answer\":\"<value>\"} Do not explain.",
+    "options": {
+      "A": "She throws the hamburger on the floor.",
+      "B": "She eats the hamburger.",
+      "C": "She puts the hamburger in her purse.",
+      "D": "She gives the hamburger to the waiter."
+    },
+    "correct": "B",
+    "reference": ["B"],
+    "source": "https://tinyurl.com/rochester-narrative"
+  }
+]

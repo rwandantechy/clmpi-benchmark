@@ -87,7 +87,7 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
     ollama_runner = OllamaRunner("http://localhost:11434")
     
     # Generate responses
-    prompts = dataset.get("prompts", [])[:5]  # Limit for demo
+    prompts = dataset[:5]  # Limit for demo
     responses = []
     
     for prompt_data in prompts:

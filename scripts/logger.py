@@ -31,7 +31,7 @@ def save_responses_markdown(model_name: str, metric_name: str, questions: List[D
     
     for i, (question_data, response) in enumerate(zip(questions, responses)):
         question_id = question_data.get("id", f"{metric_name}_{i+1}")
-        question = question_data.get("question", question_data.get("prompt", ""))
+        question = question_data.get("prompt", "")
         
         # Get additional information if available
         gold_answer = gold_answers[i] if gold_answers and i < len(gold_answers) else "N/A"

@@ -87,15 +87,24 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
     ollama_runner = OllamaRunner("http://localhost:11434")
     
     # Generate responses
-    conversations = dataset.get("conversations", [])[:5]  # Limit for demo
+    conversations = dataset[:5]  # Limit for demo
     responses = []
     contexts = []
     gold_answers = []
     
     for conv_data in conversations:
-        context = conv_data["context"]
-        question = conv_data["question"]
-        correct_answer = conv_data["correct_answer"]
+        # Extract context and question from prompt
+        prompt = conv_data["prompt"]
+        # Simple parsing - assume format: "Passage: ...\nQuestion: ..."
+        parts = prompt.split("Question:")
+        if len(parts) == 2:
+            context = parts[0].replace("Passage:", "").strip()
+            question = parts[1].strip()
+        else:
+            context = prompt
+            question = prompt
+        
+        correct_answer = conv_data["reference"][0]  # Take first reference answer
         
         prompt = f"Context: {context}\n\nQuestion: {question}"
         
