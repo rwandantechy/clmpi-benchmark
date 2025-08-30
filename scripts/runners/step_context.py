@@ -18,6 +18,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from clmpi_calculator import CLMPICalculator
 from ollama_runner import OllamaRunner
 from generation import load_generation_profile
+from logger import save_responses_markdown
 
 
 def load_metric_config(metric_name: str) -> dict:
@@ -144,6 +145,12 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
             }
             f.write(json.dumps(detail) + "\n")
     
+    # Save responses in organized Markdown format
+    response_file = save_responses_markdown(
+        model_name, "context", conversations, responses, 
+        gold_answers, [context_result.context_similarity] * len(conversations)
+    )
+    
     # Save summary
     summary = {
         "metric": "contextual_understanding",
@@ -166,6 +173,7 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
+        logger.info(f"Response file: {response_file}")
         logger.info(f"Exact Match: {context_result.exact_match:.3f}")
         logger.info(f"F1 Score: {context_result.f1_score:.3f}")
         logger.info(f"Context Similarity: {context_result.context_similarity:.3f}")
