@@ -1,5 +1,5 @@
 # results & local junk
-results/*
+
 !results/.gitkeep
 
 # caches

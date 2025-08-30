@@ -1,0 +1,11 @@
+{
+  "metric": "coherence",
+  "model": "phi3:3.8b",
+  "timestamp": "2025-08-29 22:22:42",
+  "coherence_score": 0.09631972397929843,
+  "sentence_similarity": 0.09631972397929843,
+  "repetition_penalty": 0.1,
+  "total_prompts": 1,
+  "generation_profile": "creative",
+  "dataset_path": "prompts/coherence.json"
+}
