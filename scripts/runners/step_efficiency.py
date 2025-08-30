@@ -19,6 +19,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from clmpi_calculator import CLMPICalculator
 from ollama_runner import OllamaRunner
 from generation import load_generation_profile
+from logger import save_responses_markdown
 
 
 def load_metric_config(metric_name: str) -> dict:
@@ -140,6 +141,13 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     metric_dir = run_dir / "efficiency"
     metric_dir.mkdir(exist_ok=True)
     
+    # Save responses in organized Markdown format
+    task_data = [{"id": "eff_001", "prompt": prompt}]
+    response_file = save_responses_markdown(
+        model_name, "efficiency", task_data, [response], 
+        None, [efficiency]
+    )
+    
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
         detail = {
@@ -176,6 +184,7 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
+        logger.info(f"Response file: {response_file}")
         logger.info(f"Efficiency: {efficiency:.3f}")
         logger.info(f"Latency: {latency:.3f}s")
         logger.info(f"CPU: {cpu_usage:.1f}%")

@@ -18,6 +18,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from clmpi_calculator import CLMPICalculator
 from ollama_runner import OllamaRunner
 from generation import load_generation_profile
+from logger import save_responses_markdown
 
 
 def load_metric_config(metric_name: str) -> dict:
@@ -118,6 +119,12 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
     metric_dir = run_dir / "fluency"
     metric_dir.mkdir(exist_ok=True)
     
+    # Save responses in organized Markdown format
+    response_file = save_responses_markdown(
+        model_name, "fluency", prompts, responses, 
+        None, fluency_result.detailed_scores
+    )
+    
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
         for i, (response, prompt_data) in enumerate(zip(responses, prompts)):
@@ -152,6 +159,7 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
     
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
+        logger.info(f"Response file: {response_file}")
         logger.info(f"Fluency Score: {fluency_result.fluency_score:.3f}")
         logger.info(f"Grammar Score: {fluency_result.grammar_score:.3f}")
         logger.info(f"Perplexity Score: {fluency_result.perplexity_score:.3f}")
