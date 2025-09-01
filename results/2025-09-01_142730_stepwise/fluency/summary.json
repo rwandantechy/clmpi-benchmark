@@ -1,0 +1,11 @@
+{
+  "metric": "fluency",
+  "model": "llama3.1:8b",
+  "timestamp": "2025-09-01 14:50:17",
+  "exact_match": 0.95,
+  "f1_score": 0.95,
+  "fluency_score": 0.95,
+  "total_prompts": 1,
+  "generation_profile": "creative",
+  "dataset_path": "prompts/fluency.json"
+}

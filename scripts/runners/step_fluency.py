@@ -75,34 +75,44 @@ def extract_generated_text(response: str) -> str:
     return generated
 
 
-def simple_perplexity_estimate(text: str) -> float:
-    """Simple perplexity estimation using word frequency"""
+def simple_readability_score(text: str) -> float:
+    """
+    Simple, explainable readability score:
+    1. Sentence length (50%) - shorter sentences are more readable
+    2. Word complexity (50%) - simpler words are more readable
+    """
+    sentences = text.split('.')
     words = text.lower().split()
-    if len(words) < 2:
-        return 1.0
     
-    # Simple bigram model
-    bigrams = []
-    for i in range(len(words) - 1):
-        bigrams.append((words[i], words[i + 1]))
+    if not words:
+        return 0.0
     
-    # Count bigram frequencies
-    bigram_counts = {}
-    for bigram in bigrams:
-        bigram_counts[bigram] = bigram_counts.get(bigram, 0) + 1
+    # Rule 1: Sentence Length (50%)
+    avg_sentence_length = len(words) / max(len(sentences), 1)
+    if avg_sentence_length <= 10:
+        length_score = 1.0  # Very readable
+    elif avg_sentence_length <= 15:
+        length_score = 0.8  # Good
+    elif avg_sentence_length <= 20:
+        length_score = 0.6  # Moderate
+    else:
+        length_score = 0.4  # Complex
     
-    # Calculate simple perplexity
-    total_bigrams = len(bigrams)
-    if total_bigrams == 0:
-        return 1.0
+    # Rule 2: Word Complexity (50%)
+    complex_words = ['nevertheless', 'consequently', 'furthermore', 'subsequently', 'nevertheless']
+    complex_count = sum(1 for word in words if word in complex_words)
+    complexity_ratio = complex_count / len(words)
     
-    log_prob = 0
-    for bigram in bigrams:
-        prob = bigram_counts[bigram] / total_bigrams
-        log_prob += np.log(prob + 1e-10)  # Add small epsilon to avoid log(0)
+    if complexity_ratio == 0:
+        complexity_score = 1.0  # No complex words
+    elif complexity_ratio <= 0.1:
+        complexity_score = 0.8  # Few complex words
+    elif complexity_ratio <= 0.2:
+        complexity_score = 0.6  # Some complex words
+    else:
+        complexity_score = 0.4  # Many complex words
     
-    perplexity = np.exp(-log_prob / total_bigrams)
-    return perplexity
+    return 0.5 * length_score + 0.5 * complexity_score
 
 
 def simple_grammar_check(text: str) -> int:
@@ -147,11 +157,8 @@ def calculate_fluency_score(text: str) -> dict:
             "violations": violations
         }
     
-    # 1. Perplexity (60% weight)
-    perplexity = simple_perplexity_estimate(text)
-    perplexity_cap = 100
-    perplexity_capped = min(perplexity, perplexity_cap)
-    perplexity_score = 1 / (1 + perplexity_capped)
+    # 1. Readability (60% weight)
+    readability_score = simple_readability_score(text)
     
     # 2. Grammar errors (40% weight)
     grammar_errors = simple_grammar_check(text)
@@ -162,11 +169,11 @@ def calculate_fluency_score(text: str) -> dict:
     grammar_score = 1 - grammar_error_capped
     
     # Combined score
-    fluency_score = 0.6 * perplexity_score + 0.4 * grammar_score
+    fluency_score = 0.6 * readability_score + 0.4 * grammar_score
     
     return {
-        "perplexity": perplexity,
-        "perplexity_score": perplexity_score,
+        "readability": readability_score,
+        "readability_score": readability_score,
         "grammar_errors": grammar_errors,
         "grammar_score": grammar_score,
         "score": fluency_score,
@@ -212,9 +219,11 @@ def run_fluency_evaluation(model_name: str, verbose: bool = False) -> dict:
             # Extract generation parameters from profile
             max_tokens = profile.get("max_tokens", 1000)
             temperature = profile.get("temperature", 0.1)
+            top_p = profile.get("top_p", 1.0)
+            top_k = profile.get("top_k", 40)
             
             response, metrics = ollama_runner.generate_response(
-                model_name, prompt, max_tokens, temperature
+                model_name, prompt, max_tokens, temperature, top_p, top_k
             )
             responses.append(response)
             

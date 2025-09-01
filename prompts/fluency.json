@@ -3,7 +3,7 @@
     "id": "flu_cola_001",
     "category": "fluency",
     "type": "fluency_gen",
-    "prompt": "Rewrite this sentence to be more fluent:\n'The cat sat on the mat.'\n\nReturn ONLY: {\"id\":\"flu_cola_001\",\"answer\":\"<corrected_sentence>\"} Do not explain.",
+    "prompt": "Rewrite this sentence to be more fluent and natural:\n'The cat sat on the mat.'\n\nProvide ONLY the rewritten sentence in this format: {\"id\":\"flu_cola_001\",\"answer\":\"<rewritten_sentence>\"}",
     "source": "https://nyu-mll.github.io/CoLA/"
   }
 ]

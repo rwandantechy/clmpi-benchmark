@@ -109,7 +109,7 @@ def get_ollama_process_info() -> dict:
         return {"error": str(e)}
 
 
-def measure_model_performance(model_name: str, prompt: str, max_tokens: int, temperature: float) -> dict:
+def measure_model_performance(model_name: str, prompt: str, max_tokens: int, temperature: float, top_p: float = 1.0, top_k: int = 40) -> dict:
     """Measure actual model performance metrics"""
     
     # Get initial Ollama process state
@@ -128,7 +128,7 @@ def measure_model_performance(model_name: str, prompt: str, max_tokens: int, tem
     # Measure inference time
     start_time = time.time()
     try:
-        response, _ = ollama_runner.generate_response(model_name, prompt, max_tokens, temperature)
+        response, _ = ollama_runner.generate_response(model_name, prompt, max_tokens, temperature, top_p, top_k)
         end_time = time.time()
         success = True
     except Exception as e:
@@ -333,9 +333,11 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Extract generation parameters
     max_tokens = profile.get("max_tokens", 1000)
     temperature = profile.get("temperature", 0.0)
+    top_p = profile.get("top_p", 1.0)
+    top_k = profile.get("top_k", 40)
     
     # Measure actual model performance
-    performance_data = measure_model_performance(model_name, prompt, max_tokens, temperature)
+    performance_data = measure_model_performance(model_name, prompt, max_tokens, temperature, top_p, top_k)
     
     # Check answer accuracy
     expected_answers = task.get("reference", ["au"])  # Default to gold symbol

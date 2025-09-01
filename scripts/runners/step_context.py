@@ -112,9 +112,11 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
             # Extract generation parameters from profile
             max_tokens = profile.get("max_tokens", 1000)
             temperature = profile.get("temperature", 0.1)
+            top_p = profile.get("top_p", 1.0)
+            top_k = profile.get("top_k", 40)
             
             response, metrics = ollama_runner.generate_response(
-                model_name, prompt, max_tokens, temperature
+                model_name, prompt, max_tokens, temperature, top_p, top_k
             )
             responses.append(response)
             contexts.append(context)
@@ -143,13 +145,18 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
         for i, (response, context, gold, conv_data) in enumerate(zip(responses, contexts, gold_answers, conversations)):
+            # Extract answer from response using calculator method
+            extraction_result = calculator._extract_answer_from_response(response)
+            extracted_answer = extraction_result["parsed_answer"]
+            
             detail = {
                 "conversation_id": conv_data.get("id", f"ctx_{i+1}"),
                 "context": context,
                 "question": question,
                 "response": response,
+                "extracted_answer": extracted_answer,
                 "gold_answer": gold,
-                "exact_match": 1 if response.strip().lower() == gold.strip().lower() else 0,
+                "exact_match": 1 if calculator._normalize_answer(extracted_answer) == calculator._normalize_answer(gold) else 0,
                 "context_similarity": context_result.context_similarity
             }
             f.write(json.dumps(detail) + "\n")

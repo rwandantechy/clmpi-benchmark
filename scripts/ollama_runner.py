@@ -96,34 +96,47 @@ class OllamaRunner:
         self.logger.info("Performance monitoring stopped")
     
     def _monitor_performance(self):
-        """Background thread for monitoring system performance"""
-        process = psutil.Process()
+        """Background thread for monitoring Ollama process performance"""
         start_time = time.time()
         
         while self.monitoring_active:
             try:
-                # Get current memory usage
-                memory_info = process.memory_info()
-                memory_mb = memory_info.rss / 1024 / 1024
+                # Find Ollama processes
+                ollama_cpu_total = 0.0
+                ollama_memory_total = 0.0
+                ollama_process_count = 0
                 
-                # Get current CPU usage
-                cpu_percent = process.cpu_percent()
+                for proc in psutil.process_iter(['pid', 'name', 'memory_info', 'cpu_percent']):
+                    try:
+                        if 'ollama' in proc.info['name'].lower():
+                            # Get CPU usage (non-blocking)
+                            cpu_percent = proc.cpu_percent()
+                            memory_info = proc.memory_info()
+                            memory_mb = memory_info.rss / 1024 / 1024
+                            
+                            ollama_cpu_total += cpu_percent
+                            ollama_memory_total += memory_mb
+                            ollama_process_count += 1
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        continue
                 
                 # Record data point
                 self.performance_data.append({
                     'timestamp': time.time() - start_time,
-                    'memory_mb': memory_mb,
-                    'cpu_percent': cpu_percent
+                    'memory_mb': ollama_memory_total,
+                    'cpu_percent': ollama_cpu_total,
+                    'process_count': ollama_process_count
                 })
                 
-                time.sleep(0.1)  # Sample every 100ms
+                time.sleep(0.05)  # Sample every 50ms for better CPU capture
                 
             except Exception as e:
                 self.logger.error(f"Error in performance monitoring: {e}")
                 break
     
     def generate_response(self, model_name: str, prompt: str, 
-                         max_tokens: int = 1000, temperature: float = 0.1) -> Tuple[str, PerformanceMetrics]:
+                         max_tokens: int = 1000, temperature: float = 0.1, 
+                         top_p: float = 1.0, top_k: int = 40) -> Tuple[str, PerformanceMetrics]:
         """
         Generate response from Ollama model with performance monitoring
         
@@ -139,6 +152,9 @@ class OllamaRunner:
         # Start performance monitoring
         self.start_performance_monitoring()
         
+        # Small delay to ensure monitoring is active
+        time.sleep(0.1)
+        
         try:
             # Prepare request payload
             payload = {
@@ -147,7 +163,9 @@ class OllamaRunner:
                 "stream": False,
                 "options": {
                     "num_predict": max_tokens,
-                    "temperature": temperature
+                    "temperature": temperature,
+                    "top_p": top_p,
+                    "top_k": top_k
                 }
             }
             
@@ -176,18 +194,20 @@ class OllamaRunner:
                 latency_ms = (end_time - start_time) * 1000
                 tokens_per_second = token_count / (end_time - start_time) if (end_time - start_time) > 0 else 0
                 
-                # Get average memory and CPU usage
+                # Get peak memory and CPU usage during inference
                 if self.performance_data:
                     avg_memory = sum(p['memory_mb'] for p in self.performance_data) / len(self.performance_data)
+                    peak_cpu = max(p['cpu_percent'] for p in self.performance_data) if self.performance_data else 0
                     avg_cpu = sum(p['cpu_percent'] for p in self.performance_data) / len(self.performance_data)
                 else:
                     avg_memory = 0
+                    peak_cpu = 0
                     avg_cpu = 0
                 
                 metrics = PerformanceMetrics(
                     latency_ms=latency_ms,
                     memory_used_mb=avg_memory,
-                    cpu_usage_percent=avg_cpu,
+                    cpu_usage_percent=peak_cpu,  # Use peak CPU instead of average
                     token_count=token_count,
                     tokens_per_second=tokens_per_second,
                     timestamp=end_time

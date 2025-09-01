@@ -1,6 +1,6 @@
 # llama3.1:8b - Coherence Responses
 
-**Evaluation Date**: 2025-09-01 14:13:07
+**Evaluation Date**: 2025-09-01 14:44:54
 **Metric**: Coherence
 **Total Questions**: 1
 
@@ -19,12 +19,12 @@ Return ONLY: {"id":"coh_multispeaker_002","answer":"<sentence>"} Do not explain.
 
 **Model Response**: 
 ```
-{"id":"coh_multispeaker_002","answer":"But then, she hit the snooze button and overslept by an hour."}
+{"id":"coh_multispeaker_002","answer":"She poured herself a bowl of cereal and ate quickly, knowing she had to get to the testing room by 8am."}
 ```
 
-**Expected Answer**: Score: 0.367
+**Expected Answer**: Score: 0.835
 
-**Score**: 0.36666666666666664
+**Score**: 0.8345454545454545
 
 ---
 

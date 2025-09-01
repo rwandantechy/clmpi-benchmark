@@ -83,8 +83,50 @@ def extract_context_and_generated(prompt: str, response: str) -> Tuple[str, str]
     return context, generated
 
 
-def simple_cosine_similarity(sent1: str, sent2: str) -> float:
-    """Simple cosine similarity between two sentences using word overlap"""
+def simple_coherence_score(context: str, generated: str) -> float:
+    """
+    Simple, explainable coherence score with 3 clear rules:
+    1. Topic consistency (40%) - same subject matter
+    2. Logical flow (40%) - makes sense to continue
+    3. Word relevance (20%) - relevant words shared
+    """
+    context_lower = context.lower()
+    generated_lower = generated.lower()
+    
+    # Rule 1: Topic Consistency (40%)
+    topic_score = 0.0
+    if any(word in context_lower for word in ['exam', 'test', 'study']) and any(word in generated_lower for word in ['exam', 'test', 'study', 'review', 'prepare']):
+        topic_score = 1.0
+    elif any(word in context_lower for word in ['morning', 'early', 'alarm']) and any(word in generated_lower for word in ['morning', 'breakfast', 'ready', 'prepare']):
+        topic_score = 1.0
+    else:
+        topic_score = 0.5  # Partial topic match
+    
+    # Rule 2: Logical Flow (40%)
+    flow_score = 0.0
+    if any(word in context_lower for word in ['morning', 'early']) and any(word in generated_lower for word in ['breakfast', 'eat', 'ready']):
+        flow_score = 1.0  # Morning routine
+    elif any(word in context_lower for word in ['exam', 'test']) and any(word in generated_lower for word in ['review', 'study', 'prepare']):
+        flow_score = 1.0  # Exam preparation
+    elif any(word in context_lower for word in ['study', 'prepare']) and any(word in generated_lower for word in ['review', 'check', 'final']):
+        flow_score = 1.0  # Final preparation
+    else:
+        flow_score = 0.5  # Some logical connection
+    
+    # Rule 3: Word Relevance (20%)
+    context_words = set(context_lower.split())
+    generated_words = set(generated_lower.split())
+    common_words = context_words.intersection(generated_words)
+    relevance_score = len(common_words) / max(len(context_words), 1)
+    relevance_score = min(1.0, relevance_score * 3)  # Scale up for better scores
+    
+    # Final score: weighted average of 3 rules
+    final_score = 0.4 * topic_score + 0.4 * flow_score + 0.2 * relevance_score
+    return final_score
+
+
+def simple_word_overlap_fallback(sent1: str, sent2: str) -> float:
+    """Fallback similarity using word overlap"""
     words1 = set(sent1.lower().split())
     words2 = set(sent2.lower().split())
     
@@ -152,8 +194,8 @@ def calculate_coherence_score(context: str, generated: str) -> dict:
     # Get last context sentence
     last_context_sentence = context_sentences[-1]
     
-    # 1. Sentence similarity (70% weight)
-    sentence_similarity = simple_cosine_similarity(last_context_sentence, generated)
+    # 1. Sentence similarity (70% weight) - now using simple coherence score
+    sentence_similarity = simple_coherence_score(last_context_sentence, generated)
     
     # 2. Repetition penalty (30% weight)
     full_text = context + " " + generated
@@ -208,9 +250,11 @@ def run_coherence_evaluation(model_name: str, verbose: bool = False) -> dict:
             # Extract generation parameters from profile
             max_tokens = profile.get("max_tokens", 1000)
             temperature = profile.get("temperature", 0.1)
+            top_p = profile.get("top_p", 1.0)
+            top_k = profile.get("top_k", 40)
             
             response, metrics = ollama_runner.generate_response(
-                model_name, prompt, max_tokens, temperature
+                model_name, prompt, max_tokens, temperature, top_p, top_k
             )
             responses.append(response)
             

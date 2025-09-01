@@ -102,9 +102,11 @@ def run_accuracy_evaluation(model_name: str, verbose: bool = False) -> dict:
             # Extract generation parameters from profile
             max_tokens = profile.get("max_tokens", 1000)
             temperature = profile.get("temperature", 0.1)
+            top_p = profile.get("top_p", 1.0)
+            top_k = profile.get("top_k", 40)
             
             response, metrics = ollama_runner.generate_response(
-                model_name, question, max_tokens, temperature
+                model_name, question, max_tokens, temperature, top_p, top_k
             )
             responses.append(response)
             gold_answers.append(correct_answer)
