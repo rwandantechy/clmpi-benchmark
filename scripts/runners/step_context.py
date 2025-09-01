@@ -164,7 +164,7 @@ def run_context_evaluation(model_name: str, verbose: bool = False) -> dict:
     # Save responses in organized Markdown format
     response_file = save_responses_markdown(
         model_name, "context", conversations, responses, 
-        gold_answers, [context_result.context_similarity] * len(conversations)
+        gold_answers, [context_result.combined_score] * len(conversations)
     )
     
     # Save summary

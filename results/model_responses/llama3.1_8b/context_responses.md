@@ -1,6 +1,6 @@
 # llama3.1:8b - Context Responses
 
-**Evaluation Date**: 2025-09-01 14:49:58
+**Evaluation Date**: 2025-09-01 14:54:35
 **Metric**: Context
 **Total Questions**: 1
 
@@ -24,7 +24,7 @@ Answer in this format: {"id":"ctx_squad_001","answer":"name"}
 
 **Expected Answer**: gustave eiffel
 
-**Score**: 0.0
+**Score**: 1.0
 
 ---
 
