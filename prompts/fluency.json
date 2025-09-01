@@ -2,14 +2,8 @@
   {
     "id": "flu_cola_001",
     "category": "fluency",
-    "type": "mc_single",
-    "prompt": "Is the following sentence grammatical?\n'The cat sat on the mat.'\n\nA) grammatical\nB) ungrammatical\n\nAnswer in this format: {\"id\":\"flu_cola_001\",\"answer\":\"A|B\"}",
-    "options": { 
-      "A": "grammatical", 
-      "B": "ungrammatical" 
-    },
-    "correct": "A",
-    "reference": ["A"],
+    "type": "fluency_gen",
+    "prompt": "Rewrite this sentence to be more fluent:\n'The cat sat on the mat.'\n\nReturn ONLY: {\"id\":\"flu_cola_001\",\"answer\":\"<corrected_sentence>\"} Do not explain.",
     "source": "https://nyu-mll.github.io/CoLA/"
   }
 ]

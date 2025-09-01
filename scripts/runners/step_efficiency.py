@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 CLMPI Efficiency Step Evaluation Script
-Simple performance measurement: time, CPU, memory
+Measure actual Ollama model performance: model size, inference time, memory usage
 """
 
 import argparse
@@ -10,6 +10,8 @@ import yaml
 import time
 import logging
 import psutil
+import requests
+import subprocess
 from pathlib import Path
 from datetime import datetime
 
@@ -34,25 +36,197 @@ def load_dataset(dataset_path: str) -> dict:
         return json.load(f)
 
 
-def load_metric_config(metric_name: str) -> dict:
-    """Load metric configuration from config/metrics/"""
-    config_path = Path(f"config/metrics/{metric_name}.yaml")
-    if not config_path.exists():
-        raise FileNotFoundError(f"Metric config not found: {config_path}")
-    
-    with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
+def get_ollama_model_info(model_name: str) -> dict:
+    """Get model information from Ollama API"""
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/show",
+            json={"name": model_name},
+            timeout=10
+        )
+        if response.status_code == 200:
+            model_info = response.json()
+            
+            # Get actual model file size
+            if "modelfile" in model_info and "FROM" in model_info["modelfile"]:
+                # Extract the model path from the modelfile
+                modelfile_lines = model_info["modelfile"].split('\n')
+                for line in modelfile_lines:
+                    if line.startswith("FROM "):
+                        model_path = line.replace("FROM ", "").strip()
+                        if model_path.startswith("/"):
+                            try:
+                                import os
+                                if os.path.exists(model_path):
+                                    model_size_bytes = os.path.getsize(model_path)
+                                    model_size_mb = model_size_bytes / (1024 * 1024)
+                                    model_info["actual_size_mb"] = model_size_mb
+                                    model_info["actual_size_gb"] = model_size_mb / 1024
+                            except Exception as e:
+                                logging.warning(f"Error getting model file size: {e}")
+                        break
+            
+            return model_info
+        else:
+            logging.warning(f"Failed to get model info: {response.status_code}")
+            return {}
+    except Exception as e:
+        logging.warning(f"Error getting model info: {e}")
+        return {}
 
 
-def load_efficiency_tasks() -> dict:
-    """Load efficiency tasks dataset"""
-    dataset_path = "prompts/efficiency_tasks.json"
-    path = Path(dataset_path)
-    if not path.exists():
-        raise FileNotFoundError(f"Efficiency tasks dataset not found: {dataset_path}")
+def get_ollama_process_info() -> dict:
+    """Get Ollama process resource usage"""
+    try:
+        # Find Ollama process
+        ollama_processes = []
+        for proc in psutil.process_iter(['pid', 'name', 'memory_info', 'cpu_percent']):
+            try:
+                if 'ollama' in proc.info['name'].lower():
+                    ollama_processes.append(proc)
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+        
+        if not ollama_processes:
+            return {"error": "No Ollama processes found"}
+        
+        # Get the main Ollama process (usually the first one)
+        main_proc = ollama_processes[0]
+        
+        # Get memory and CPU info
+        memory_info = main_proc.memory_info()
+        cpu_percent = main_proc.cpu_percent()
+        
+        return {
+            "pid": main_proc.pid,
+            "memory_rss_mb": memory_info.rss / (1024 * 1024),
+            "memory_vms_mb": memory_info.vms / (1024 * 1024),
+            "cpu_percent": cpu_percent,
+            "process_count": len(ollama_processes)
+        }
+    except Exception as e:
+        logging.warning(f"Error getting Ollama process info: {e}")
+        return {"error": str(e)}
+
+
+def measure_model_performance(model_name: str, prompt: str, max_tokens: int, temperature: float) -> dict:
+    """Measure actual model performance metrics"""
     
-    with open(path, 'r') as f:
-        return json.load(f)
+    # Get initial Ollama process state
+    initial_ollama = get_ollama_process_info()
+    
+    # Get model info
+    model_info = get_ollama_model_info(model_name)
+    model_size_mb = model_info.get("actual_size_mb", 0)  # Use actual file size
+    if model_size_mb == 0:
+        # Fallback to API size if actual size not available
+        model_size_mb = model_info.get("size", 0) / (1024 * 1024) if model_info else 0
+    
+    # Initialize Ollama runner
+    ollama_runner = OllamaRunner("http://localhost:11434")
+    
+    # Measure inference time
+    start_time = time.time()
+    try:
+        response, _ = ollama_runner.generate_response(model_name, prompt, max_tokens, temperature)
+        end_time = time.time()
+        success = True
+    except Exception as e:
+        logging.error(f"Error during inference: {e}")
+        response = ""
+        end_time = start_time
+        success = False
+    
+    # Get final Ollama process state
+    final_ollama = get_ollama_process_info()
+    
+    # Calculate metrics
+    inference_time = end_time - start_time
+    
+    # Memory delta (if available)
+    memory_delta_mb = 0
+    if "error" not in initial_ollama and "error" not in final_ollama:
+        memory_delta_mb = final_ollama["memory_rss_mb"] - initial_ollama["memory_rss_mb"]
+    
+    # Peak memory (use final state as approximation)
+    peak_memory_mb = final_ollama.get("memory_rss_mb", 0) if "error" not in final_ollama else 0
+    
+    # CPU usage (average during inference)
+    cpu_usage = final_ollama.get("cpu_percent", 0) if "error" not in final_ollama else 0
+    
+    return {
+        "success": success,
+        "response": response,
+        "inference_time_seconds": inference_time,
+        "model_size_mb": model_size_mb,
+        "peak_memory_mb": peak_memory_mb,
+        "memory_delta_mb": memory_delta_mb,
+        "cpu_usage_percent": cpu_usage,
+        "ollama_processes": final_ollama.get("process_count", 0),
+        "model_info": model_info,
+        "initial_ollama_state": initial_ollama,
+        "final_ollama_state": final_ollama
+    }
+
+
+def calculate_efficiency_score(performance_data: dict, accuracy_score: float = 1.0) -> float:
+    """Calculate efficiency score based on performance metrics and accuracy"""
+    
+    if not performance_data["success"]:
+        return 0.0
+    
+    inference_time = performance_data["inference_time_seconds"]
+    model_size_mb = performance_data["model_size_mb"]
+    
+    # Time-based scoring (faster = better)
+    if inference_time <= 1.0:
+        time_score = 1.0
+    elif inference_time <= 3.0:
+        time_score = 0.8
+    elif inference_time <= 5.0:
+        time_score = 0.6
+    elif inference_time <= 10.0:
+        time_score = 0.4
+    else:
+        time_score = 0.2
+    
+    # Size-based scoring (smaller = better for edge)
+    if model_size_mb <= 1000:  # 1GB
+        size_score = 1.0
+    elif model_size_mb <= 3000:  # 3GB
+        size_score = 0.8
+    elif model_size_mb <= 7000:  # 7GB
+        size_score = 0.6
+    else:
+        size_score = 0.4
+    
+    # Base efficiency score (70% time, 30% size)
+    base_efficiency = 0.7 * time_score + 0.3 * size_score
+    
+    # Apply accuracy penalty: wrong answers get 0 efficiency
+    final_efficiency = base_efficiency * accuracy_score
+    
+    return final_efficiency
+
+
+def check_answer_accuracy(response: str, expected_answers: list) -> float:
+    """Check if the model's answer is correct"""
+    try:
+        # Try to parse JSON response
+        import json
+        parsed = json.loads(response.strip())
+        model_answer = parsed.get("answer", "").lower().strip()
+        
+        # Check against expected answers
+        for expected in expected_answers:
+            if expected.lower().strip() == model_answer:
+                return 1.0  # Correct answer
+        
+        return 0.0  # Wrong answer
+        
+    except (json.JSONDecodeError, KeyError, AttributeError):
+        # If response is not valid JSON or missing answer field
+        return 0.0
 
 
 def find_latest_run_directory() -> Path:
@@ -75,8 +249,66 @@ def find_latest_run_directory() -> Path:
         return run_dir
 
 
+def save_efficiency_responses_markdown(model_name: str, task_data: dict, performance_data: dict, 
+                                     efficiency: float, accuracy_score: float = 1.0) -> str:
+    """Save efficiency responses with detailed Ollama model metrics in Markdown format"""
+    
+    # Create model-specific directory
+    model_dir = Path("results/model_responses") / model_name.replace(":", "_")
+    model_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create markdown content
+    markdown_content = f"""# {model_name} - Efficiency Responses
+
+**Evaluation Date**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**Metric**: Efficiency
+**Total Questions**: 1
+
+---
+
+## Question 1: {task_data.get("id", "eff_001")}
+
+**Question/Prompt**: 
+```
+{task_data.get("prompt", "")}
+```
+
+**Model Response**: 
+```
+{performance_data.get("response", "")}
+```
+
+**Ollama Model Performance Metrics**:
+- **Inference Time**: {performance_data.get("inference_time_seconds", 0):.3f} seconds
+- **Model Size**: {performance_data.get("model_size_mb", 0):.1f} MB ({performance_data.get("model_size_mb", 0)/1024:.1f} GB)
+- **Peak Memory Usage**: {performance_data.get("peak_memory_mb", 0):.1f} MB
+- **Memory Delta**: {performance_data.get("memory_delta_mb", 0):.1f} MB
+- **CPU Usage**: {performance_data.get("cpu_usage_percent", 0):.1f}%
+- **Ollama Processes**: {performance_data.get("ollama_processes", 0)}
+
+**Answer Accuracy**: {accuracy_score:.3f} ({'Correct' if accuracy_score == 1.0 else 'Incorrect'})
+
+**Efficiency Score**: {efficiency:.3f}
+
+**Expected Answer**: {task_data.get("reference", ["au"])}
+
+**Score**: {efficiency:.3f}
+
+---
+"""
+    
+    # Save to file
+    filename = "efficiency_responses.md"
+    filepath = model_dir / filename
+    
+    with open(filepath, 'w') as f:
+        f.write(markdown_content)
+    
+    return str(filepath)
+
+
 def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
-    """Run simple efficiency evaluation - just measure time, CPU, memory"""
+    """Run efficiency evaluation measuring actual Ollama model performance"""
     
     # Setup logging
     logging.basicConfig(
@@ -94,83 +326,61 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     profile = load_generation_profile("deterministic")
     
     if verbose:
-        logger.info(f"Testing efficiency with prompt: {prompt}")
-        logger.info(f"Using profile: deterministic")
+        logger.info(f"Testing Ollama model efficiency: {model_name}")
+        logger.info(f"Prompt: {prompt}")
+        logger.info(f"Profile: deterministic")
     
-    # Initialize components
-    ollama_runner = OllamaRunner("http://localhost:11434")
+    # Extract generation parameters
+    max_tokens = profile.get("max_tokens", 1000)
+    temperature = profile.get("temperature", 0.0)
     
-    try:
-        # Extract generation parameters
-        max_tokens = profile.get("max_tokens", 1000)
-        temperature = profile.get("temperature", 0.0)
-        
-        # Measure performance
-        process = psutil.Process()
-        initial_cpu = process.cpu_percent()
-        initial_memory = process.memory_info().rss / (1024 * 1024)  # MB
-        
-        start_time = time.time()
-        response, _ = ollama_runner.generate_response(model_name, prompt, max_tokens, temperature)
-        end_time = time.time()
-        
-        final_cpu = process.cpu_percent()
-        final_memory = process.memory_info().rss / (1024 * 1024)  # MB
-        
-        # Calculate metrics
-        latency = end_time - start_time
-        cpu_usage = (initial_cpu + final_cpu) / 2
-        memory_used = final_memory - initial_memory
-        
-        success = True
-        
-        if verbose:
-            logger.info(f"Response: {response}")
-            logger.info(f"Time: {latency:.3f}s")
-            logger.info(f"CPU: {cpu_usage:.1f}%")
-            logger.info(f"Memory: {memory_used:.1f}MB")
-        
-    except Exception as e:
-        logger.error(f"Error measuring efficiency: {e}")
-        latency = 30.0
-        cpu_usage = 0.0
-        memory_used = 0.0
-        response = ""
-        success = False
+    # Measure actual model performance
+    performance_data = measure_model_performance(model_name, prompt, max_tokens, temperature)
     
-    # Simple efficiency score based on time
-    if latency <= 1.0:
-        efficiency = 1.0
-    elif latency <= 3.0:
-        efficiency = 0.7
-    elif latency <= 5.0:
-        efficiency = 0.4
-    else:
-        efficiency = 0.1
+    # Check answer accuracy
+    expected_answers = task.get("reference", ["au"])  # Default to gold symbol
+    accuracy_score = check_answer_accuracy(performance_data.get("response", ""), expected_answers)
+    
+    # Calculate efficiency score (including accuracy)
+    efficiency = calculate_efficiency_score(performance_data, accuracy_score)
+    
+    if verbose:
+        logger.info(f"Model Size: {performance_data['model_size_mb']:.1f} MB")
+        logger.info(f"Inference Time: {performance_data['inference_time_seconds']:.3f}s")
+        logger.info(f"Peak Memory: {performance_data['peak_memory_mb']:.1f} MB")
+        logger.info(f"CPU Usage: {performance_data['cpu_usage_percent']:.1f}%")
+        logger.info(f"Answer Accuracy: {accuracy_score:.3f} ({'Correct' if accuracy_score == 1.0 else 'Incorrect'})")
+        logger.info(f"Efficiency Score: {efficiency:.3f}")
     
     # Find or create run directory
     run_dir = find_latest_run_directory()
     metric_dir = run_dir / "efficiency"
     metric_dir.mkdir(exist_ok=True)
     
-    # Save responses in organized Markdown format
-    task_data = [{"id": "eff_001", "prompt": prompt}]
-    response_file = save_responses_markdown(
-        model_name, "efficiency", task_data, [response], 
-        None, [efficiency]
+    # Save responses with detailed metrics
+    response_file = save_efficiency_responses_markdown(
+        model_name, task, performance_data, efficiency, accuracy_score
     )
     
     # Save detailed results
     with open(metric_dir / "detail.jsonl", "w") as f:
         detail = {
-            "task_id": "eff_001",
+            "task_id": task.get("id", "eff_001"),
             "prompt": prompt,
-            "response": response,
-            "latency_seconds": latency,
-            "cpu_usage_percent": cpu_usage,
-            "memory_used_mb": max(0, memory_used),
+            "response": performance_data.get("response", ""),
+            "expected_answers": task.get("reference", ["au"]),
+            "accuracy_score": accuracy_score,
+            "inference_time_seconds": performance_data.get("inference_time_seconds", 0),
+            "model_size_mb": performance_data.get("model_size_mb", 0),
+            "peak_memory_mb": performance_data.get("peak_memory_mb", 0),
+            "memory_delta_mb": performance_data.get("memory_delta_mb", 0),
+            "cpu_usage_percent": performance_data.get("cpu_usage_percent", 0),
+            "ollama_processes": performance_data.get("ollama_processes", 0),
             "efficiency": efficiency,
-            "success": success
+            "success": performance_data.get("success", False),
+            "model_info": performance_data.get("model_info", {}),
+            "initial_ollama_state": performance_data.get("initial_ollama_state", {}),
+            "final_ollama_state": performance_data.get("final_ollama_state", {})
         }
         f.write(json.dumps(detail) + "\n")
     
@@ -180,10 +390,12 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
         "model": model_name,
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "efficiency": efficiency,
-        "latency_seconds": latency,
-        "cpu_usage_percent": cpu_usage,
-        "memory_used_mb": max(0, memory_used),
-        "success": success,
+        "accuracy_score": accuracy_score,
+        "inference_time_seconds": performance_data.get("inference_time_seconds", 0),
+        "model_size_mb": performance_data.get("model_size_mb", 0),
+        "peak_memory_mb": performance_data.get("peak_memory_mb", 0),
+        "cpu_usage_percent": performance_data.get("cpu_usage_percent", 0),
+        "success": performance_data.get("success", False),
         "generation_profile": "deterministic",
         "dataset_path": "prompts/efficiency_tasks.json"
     }
@@ -197,10 +409,6 @@ def run_efficiency_evaluation(model_name: str, verbose: bool = False) -> dict:
     if verbose:
         logger.info(f"Results saved to: {metric_dir}")
         logger.info(f"Response file: {response_file}")
-        logger.info(f"Efficiency: {efficiency:.3f}")
-        logger.info(f"Latency: {latency:.3f}s")
-        logger.info(f"CPU: {cpu_usage:.1f}%")
-        logger.info(f"Memory: {memory_used:.1f}MB")
     
     return {
         "metric": "efficiency",
@@ -217,8 +425,8 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/step_efficiency.py --model phi3:mini
-  python scripts/step_efficiency.py --model phi3:mini --verbose
+  python scripts/step_efficiency.py --model phi3:3.8b
+  python scripts/step_efficiency.py --model phi3:3.8b --verbose
         """
     )
     

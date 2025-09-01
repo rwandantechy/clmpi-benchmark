@@ -1,3 +1,16 @@
-# CLMPI Coherence Metric Configuration
-dataset: prompts/coherence.json
-profile: creative
+name: coherence_gen
+components:
+  sentence_similarity:
+    model: sentence-transformers/all-MiniLM-L6-v2
+    pair: last_context_sentence_vs_generated
+    postprocess:
+      min0_max1: true
+      negate_negatives: true
+    weight: 0.7
+  repetition_penalty:
+    ngram: 3
+    weight: 0.3
+guards:
+  max_sentences: 1
+  min_tokens: 3
+normalize: clamp_0_1

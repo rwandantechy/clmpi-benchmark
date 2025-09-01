@@ -1,34 +1,30 @@
 # phi3:3.8b - Coherence Responses
 
-**Evaluation Date**: 2025-08-30 02:45:14
+**Evaluation Date**: 2025-09-01 13:57:37
 **Metric**: Coherence
 **Total Questions**: 1
 
 ---
 
-## Question 1: coh_storycloze_001
+## Question 1: coh_multispeaker_002
 
 **Question/Prompt**: 
 ```
-A woman is at a restaurant. She orders a hamburger. The waiter brings her the hamburger.
+Context:
+"Jane studied hard for weeks. She set her alarm early on the morning of the big exam."
+Write ONE coherent next sentence.
 
-Choose the most coherent next sentence:
-A) She throws the hamburger on the floor.
-B) She eats the hamburger.
-C) She puts the hamburger in her purse.
-D) She gives the hamburger to the waiter.
-
-Answer in this format: {"id":"coh_storycloze_001","answer":"A|B|C|D"}
+Return ONLY: {"id":"coh_multispeaker_002","answer":"<sentence>"} Do not explain.
 ```
 
 **Model Response**: 
 ```
-
+{"id":"coh_multispeaker_0static">"After her preparation, Jane felt confident and ready for the exam."}
 ```
 
-**Expected Answer**: B
+**Expected Answer**: Score: 0.370
 
-**Score**: 0
+**Score**: 0.37
 
 ---
 
