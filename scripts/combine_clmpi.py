@@ -1,287 +1,227 @@
 #!/usr/bin/env python3
 """
-CLMPI Combiner Script
-Combines individual metric results into final CLMPI score for stepwise evaluation
+Automated CLMPI score combination script
+Reads individual dimension results and calculates the combined CLMPI score
 """
 
-import argparse
 import json
-import yaml
-import time
-import logging
+import argparse
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Any
+import logging
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def load_model_config() -> dict:
-    """Load model configuration for weights"""
-    config_path = Path("config/model_config.yaml")
-    if not config_path.exists():
-        raise FileNotFoundError(f"Model config not found: {config_path}")
+class CLMPICombiner:
+    """Automated CLMPI score combination"""
     
-    with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
-
-
-def find_latest_run_directory() -> Path:
-    """Find the latest stepwise run directory"""
-    results_dir = Path("results")
-    if not results_dir.exists():
-        raise FileNotFoundError("No results directory found. Run individual metrics first.")
-    
-    # Look for existing stepwise runs
-    stepwise_runs = list(results_dir.glob("*_stepwise"))
-    if not stepwise_runs:
-        raise FileNotFoundError("No stepwise runs found. Run individual metrics first.")
-    
-    # Use the most recent one
-    latest = max(stepwise_runs, key=lambda p: p.stat().st_mtime)
-    return latest
-
-
-def load_metric_summary(run_dir: Path, metric: str) -> Optional[Dict]:
-    """Load summary for a specific metric"""
-    summary_path = run_dir / metric / "summary.json"
-    if not summary_path.exists():
-        return None
-    
-    with open(summary_path, 'r') as f:
-        return json.load(f)
-
-
-def calculate_clmpi(metric_scores: Dict[str, float], weights: Dict[str, float]) -> Dict[str, float]:
-    """Calculate CLMPI score from individual metric scores and weights"""
-    
-    # Validate weights sum to 1.0
-    weight_sum = sum(weights.values())
-    if abs(weight_sum - 1.0) > 1e-6:
-        raise ValueError(f"Weights must sum to 1.0, got {weight_sum}")
-    
-    # Calculate weighted CLMPI score according to paper formula
-    # CLMPI = 25 * (0.25*ACC + 0.20*CON + 0.20*COH + 0.20*FLU + 0.15*EFF)
-    clmpi_01 = sum(weights[metric] * score for metric, score in metric_scores.items())
-    clmpi_25 = clmpi_01 * 25  # Paper uses 0-25 range
-    
-    return {
-        "clmpi_01": clmpi_01,
-        "clmpi_25": clmpi_25,
-        "component_scores": metric_scores.copy(),
-        "weights_used": weights.copy()
-    }
-
-
-def combine_clmpi_scores(model_name: str, verbose: bool = False) -> dict:
-    """Combine individual metric results into CLMPI score"""
-    
-    # Setup logging
-    logging.basicConfig(
-        level=logging.INFO if verbose else logging.WARNING,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
-    logger = logging.getLogger(__name__)
-    
-    # Load model config for weights
-    model_config = load_model_config()
-    weights = model_config.get('evaluation_weights', {})
-    
-    if verbose:
-        logger.info(f"Loaded weights: {weights}")
-    
-    # Find latest run directory
-    run_dir = find_latest_run_directory()
-    
-    if verbose:
-        logger.info(f"Using run directory: {run_dir}")
-    
-    # Load individual metric summaries
-    metrics = {
-        "accuracy": "accuracy",
-        "contextual_understanding": "context", 
-        "coherence": "coherence",
-        "fluency": "fluency",
-        "performance_efficiency": "efficiency"
-    }
-    
-    metric_scores = {}
-    metric_summaries = {}
-    missing_metrics = []
-    
-    for weight_key, folder_name in metrics.items():
-        summary = load_metric_summary(run_dir, folder_name)
-        if summary is None:
-            missing_metrics.append(folder_name)
-            continue
-        
-        metric_summaries[weight_key] = summary
-        
-        # Extract score based on metric type
-        if folder_name == "accuracy":
-            metric_scores[weight_key] = summary.get("exact_match", 0.0)
-        elif folder_name == "context":
-            metric_scores[weight_key] = summary.get("exact_match", 0.0)
-        elif folder_name == "coherence":
-            metric_scores[weight_key] = summary.get("exact_match", 0.0)
-        elif folder_name == "fluency":
-            metric_scores[weight_key] = summary.get("exact_match", 0.0)
-        elif folder_name == "efficiency":
-            metric_scores[weight_key] = summary.get("efficiency", 0.0)
-    
-    if missing_metrics:
-        logger.warning(f"Missing metrics: {missing_metrics}")
-        if verbose:
-            logger.info(f"Available metrics: {list(metric_scores.keys())}")
-    
-    # Validate we have all required metrics
-    required_metrics = set(weights.keys())
-    available_metrics = set(metric_scores.keys())
-    
-    if required_metrics != available_metrics:
-        missing = required_metrics - available_metrics
-        if missing:
-            raise ValueError(f"Missing required metrics: {missing}. Run these first: {[metrics.get(m, m) for m in missing]}")
-    
-    # Calculate CLMPI
-    clmpi_result = calculate_clmpi(metric_scores, weights)
-    
-    # Create combined summary
-    combined_summary = {
-        "model": model_name,
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "run_directory": str(run_dir),
-        "clmpi_scores": clmpi_result,
-        "individual_metrics": metric_summaries,
-        "generation_info": {
-            "stepwise_evaluation": True,
-            "combination_timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+    def __init__(self, weights: Dict[str, float] = None):
+        self.weights = weights or {
+            'accuracy': 0.25,
+            'contextual_understanding': 0.20,
+            'coherence': 0.20,
+            'fluency': 0.20,
+            'performance_efficiency': 0.15
         }
-    }
+        self._validate_weights()
     
-    # Save combined results
-    clmpi_summary_path = run_dir / "clmpi_summary.json"
-    with open(clmpi_summary_path, "w") as f:
-        json.dump(combined_summary, f, indent=2)
+    def _validate_weights(self):
+        """Ensure weights sum to 1.0"""
+        total_weight = sum(self.weights.values())
+        if abs(total_weight - 1.0) > 1e-6:
+            raise ValueError(f"Weights must sum to 1.0, got {total_weight}")
     
-    # Create run_info.json with device info, weights, and generation profiles
-    run_info = {
-        "run_type": "stepwise_clmpi",
-        "model": model_name,
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "evaluation_weights": weights,
-        "generation_profiles": {
-            "deterministic": {
-                "description": "Used for accuracy and contextual understanding",
-                "temperature": 0.0,
-                "top_p": 1.0,
-                "top_k": 1
-            },
-            "creative": {
-                "description": "Used for coherence and fluency",
-                "temperature": 0.7,
-                "top_p": 0.9,
-                "top_k": 40
+    def read_dimension_results(self, results_dir: Path) -> Dict[str, Any]:
+        """Read all dimension results from the results directory"""
+        dimension_scores = {}
+        dimension_details = {}
+        
+        # Expected dimension directories
+        dimensions = ['accuracy', 'context', 'coherence', 'fluency', 'efficiency']
+        
+        for dim in dimensions:
+            summary_file = results_dir / dim / 'summary.json'
+            if not summary_file.exists():
+                logger.warning(f"Summary file not found for {dim}: {summary_file}")
+                continue
+            
+            try:
+                with open(summary_file, 'r') as f:
+                    summary = json.load(f)
+                
+                # Extract the main score for each dimension
+                if dim == 'accuracy':
+                    score = summary.get('f1_score', 0.0)
+                elif dim == 'context':
+                    score = summary.get('combined_score', 0.0)
+                elif dim == 'coherence':
+                    score = summary.get('coherence_score', 0.0)
+                elif dim == 'fluency':
+                    score = summary.get('fluency_score', 0.0)
+                elif dim == 'efficiency':
+                    score = summary.get('efficiency', 0.0)
+                else:
+                    score = 0.0
+                
+                dimension_scores[dim] = score
+                dimension_details[dim] = summary
+                logger.info(f"Loaded {dim}: {score}")
+                
+            except Exception as e:
+                logger.error(f"Error reading {dim} results: {e}")
+                dimension_scores[dim] = 0.0
+                dimension_details[dim] = {}
+        
+        return dimension_scores, dimension_details
+    
+    def calculate_clmpi(self, dimension_scores: Dict[str, float]) -> Dict[str, Any]:
+        """Calculate the combined CLMPI score"""
+        
+        # Map dimension names to weight keys
+        dimension_mapping = {
+            'accuracy': 'accuracy',
+            'context': 'contextual_understanding',
+            'coherence': 'coherence',
+            'fluency': 'fluency',
+            'efficiency': 'performance_efficiency'
+        }
+        
+        # Calculate weighted contributions
+        contributions = {}
+        total_score = 0.0
+        
+        for dim, score in dimension_scores.items():
+            weight_key = dimension_mapping.get(dim, dim)
+            weight = self.weights.get(weight_key, 0.0)
+            contribution = weight * score
+            contributions[dim] = {
+                'score': score,
+                'weight': weight,
+                'contribution': contribution
             }
-        },
-        "metric_configs": {
-            "accuracy": {"dataset": "prompts/accuracy.json", "profile": "deterministic"},
-            "context": {"dataset": "prompts/context.json", "profile": "deterministic"},
-            "coherence": {"dataset": "prompts/coherence.json", "profile": "creative"},
-            "fluency": {"dataset": "prompts/fluency.json", "profile": "creative"},
-            "efficiency": {"dataset": "prompts/coherence.json", "profile": "deterministic"}
-        },
-        "clmpi_formula": "CLMPI = 25 * (0.25*ACC + 0.20*CON + 0.20*COH + 0.20*FLU + 0.15*EFF)",
-        "paper_reference": "Benchmarking Large Language Models with a Unified Performance Ranking Metric by Maikel Leon (University of Miami, 2024)"
-    }
-    
-    run_info_path = run_dir / "run_info.json"
-    with open(run_info_path, "w") as f:
-        json.dump(run_info, f, indent=2)
-    
-    # Print results
-    print(f"[CLMPI] {model_name} combined_score={clmpi_result['clmpi_01']:.3f} (0-1) / {clmpi_result['clmpi_25']:.1f} (0-25)")
-    
-    if verbose:
-        logger.info(f"Combined results saved to: {clmpi_summary_path}")
-        logger.info("Component scores:")
-        for metric, score in clmpi_result['component_scores'].items():
-            logger.info(f"  {metric}: {score:.3f}")
-        logger.info(f"Final CLMPI: {clmpi_result['clmpi_01']:.3f}")
-    
-    return {
-        "clmpi_01": clmpi_result['clmpi_01'],
-        "clmpi_25": clmpi_result['clmpi_25'],
-        "run_dir": str(run_dir),
-        "summary_path": str(clmpi_summary_path)
-    }
-
-
-def print_detailed_summary(run_dir: Path, model_name: str):
-    """Print a detailed summary of all metrics and final CLMPI"""
-    print("\n" + "="*60)
-    print("STEPWISE CLMPI EVALUATION SUMMARY")
-    print("="*60)
-    print(f"Model: {model_name}")
-    print(f"Run Directory: {run_dir}")
-    print("")
-    
-    # Load CLMPI summary
-    clmpi_path = run_dir / "clmpi_summary.json"
-    if clmpi_path.exists():
-        with open(clmpi_path, 'r') as f:
-            clmpi_data = json.load(f)
+            total_score += contribution
         
-        scores = clmpi_data['clmpi_scores']['component_scores']
-        weights = clmpi_data['clmpi_scores']['weights_used']
+        # Calculate CLMPI scores in different scales
+        clmpi_01 = total_score  # 0-1 scale
+        clmpi_25 = total_score * 25  # 0-25 scale
+        clmpi_100 = total_score * 100  # 0-100 scale
         
-        print("INDIVIDUAL METRICS:")
-        print("-" * 40)
-        for metric, score in scores.items():
-            weight = weights.get(metric, 0.0)
-            weighted = score * weight
-            print(f"{metric.replace('_', ' ').title():25s}: {score:.3f} (weight: {weight:.2f}, contrib: {weighted:.3f})")
-        
-        print("")
-        print("FINAL CLMPI SCORE:")
-        print("-" * 40)
-        print(f"CLMPI (0-1):  {clmpi_data['clmpi_scores']['clmpi_01']:.3f}")
-        print(f"CLMPI (0-25): {clmpi_data['clmpi_scores']['clmpi_25']:.1f}")
+        return {
+            'clmpi_01': clmpi_01,
+            'clmpi_25': clmpi_25,
+            'clmpi_100': clmpi_100,
+            'component_scores': contributions,
+            'total_score': total_score
+        }
     
-    print("="*60)
+    def create_summary(self, results_dir: Path, dimension_scores: Dict[str, float], 
+                      dimension_details: Dict[str, Any], clmpi_results: Dict[str, Any]) -> Dict[str, Any]:
+        """Create comprehensive CLMPI summary"""
+        
+        # Get model name and timestamp from first available dimension
+        model_name = "unknown"
+        timestamp = "unknown"
+        evaluation_run = results_dir.name
+        
+        for dim_details in dimension_details.values():
+            if dim_details:
+                model_name = dim_details.get('model', model_name)
+                timestamp = dim_details.get('timestamp', timestamp)
+                break
+        
+        # Create generation profiles mapping
+        generation_profiles = {}
+        datasets_used = {}
+        
+        for dim, details in dimension_details.items():
+            if details:
+                generation_profiles[dim] = details.get('generation_profile', 'unknown')
+                datasets_used[dim] = details.get('dataset_path', 'unknown')
+        
+        return {
+            'model': model_name,
+            'timestamp': timestamp,
+            'evaluation_run': evaluation_run,
+            
+            'clmpi_scores': {
+                'clmpi_01': clmpi_results['clmpi_01'],
+                'clmpi_25': clmpi_results['clmpi_25'],
+                'clmpi_100': clmpi_results['clmpi_100']
+            },
+            
+            'component_scores': clmpi_results['component_scores'],
+            
+            'weights_used': self.weights,
+            
+            'detailed_results': dimension_details,
+            
+            'evaluation_metadata': {
+                'generation_profiles_used': generation_profiles,
+                'datasets_used': datasets_used
+            }
+        }
+    
+    def combine_results(self, results_dir: Path) -> Dict[str, Any]:
+        """Main method to combine all CLMPI results"""
+        logger.info(f"Combining CLMPI results from: {results_dir}")
+        
+        # Read dimension results
+        dimension_scores, dimension_details = self.read_dimension_results(results_dir)
+        
+        # Calculate CLMPI
+        clmpi_results = self.calculate_clmpi(dimension_scores)
+        
+        # Create summary
+        summary = self.create_summary(results_dir, dimension_scores, dimension_details, clmpi_results)
+        
+        # Save summary
+        output_file = results_dir / 'clmpi_summary.json'
+        with open(output_file, 'w') as f:
+            json.dump(summary, f, indent=2)
+        
+        logger.info(f"CLMPI summary saved to: {output_file}")
+        logger.info(f"Final CLMPI score: {clmpi_results['clmpi_01']:.3f} (0-1 scale)")
+        logger.info(f"Final CLMPI score: {clmpi_results['clmpi_25']:.3f} (0-25 scale)")
+        logger.info(f"Final CLMPI score: {clmpi_results['clmpi_100']:.1f} (0-100 scale)")
+        
+        return summary
 
 
 def main():
-    """Main function with CLI argument parsing"""
-    parser = argparse.ArgumentParser(
-        description='Combine individual CLMPI metric results into final score',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  python scripts/combine_clmpi.py --model phi3:mini
-  python scripts/combine_clmpi.py --model phi3:mini --verbose
-  python scripts/combine_clmpi.py --model phi3:mini --detailed
-        """
-    )
-    
-    parser.add_argument('--model', type=str, required=True,
-                       help='Model name (for labeling, must match individual metric runs)')
-    parser.add_argument('--verbose', action='store_true',
-                       help='Enable verbose output')
-    parser.add_argument('--detailed', action='store_true',
-                       help='Print detailed summary at the end')
+    parser = argparse.ArgumentParser(description='Combine CLMPI dimension results into final score')
+    parser.add_argument('--results-dir', type=str, required=True,
+                       help='Path to results directory containing dimension evaluations')
+    parser.add_argument('--weights', type=str, default=None,
+                       help='JSON string of custom weights (optional)')
     
     args = parser.parse_args()
     
+    results_dir = Path(args.results_dir)
+    if not results_dir.exists():
+        logger.error(f"Results directory does not exist: {results_dir}")
+        return 1
+    
+    # Parse custom weights if provided
+    weights = None
+    if args.weights:
+        try:
+            weights = json.loads(args.weights)
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid weights JSON: {e}")
+            return 1
+    
+    # Combine results
     try:
-        result = combine_clmpi_scores(args.model, args.verbose)
-        
-        if args.detailed:
-            run_dir = Path(result['run_dir'])
-            print_detailed_summary(run_dir, args.model)
-        
+        combiner = CLMPICombiner(weights)
+        summary = combiner.combine_results(results_dir)
+        logger.info("CLMPI combination completed successfully!")
         return 0
     except Exception as e:
-        print(f"Error: {e}")
+        logger.error(f"Error combining CLMPI results: {e}")
         return 1
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     exit(main())
