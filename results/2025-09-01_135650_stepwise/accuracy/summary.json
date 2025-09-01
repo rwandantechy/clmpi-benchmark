@@ -1,7 +1,7 @@
 {
   "metric": "accuracy",
-  "model": "phi3:3.8b",
-  "timestamp": "2025-08-30 02:41:29",
+  "model": "llama3.1:8b",
+  "timestamp": "2025-09-01 14:12:24",
   "exact_match": 1.0,
   "f1_score": 1.0,
   "total_questions": 1,

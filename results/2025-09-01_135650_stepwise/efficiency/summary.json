@@ -1,0 +1,14 @@
+{
+  "metric": "efficiency",
+  "model": "llama3.1:8b",
+  "timestamp": "2025-09-01 14:13:40",
+  "efficiency": 0.45999999999999996,
+  "accuracy_score": 1.0,
+  "inference_time_seconds": 6.451481819152832,
+  "model_size_mb": 4692.7823486328125,
+  "peak_memory_mb": 7.11328125,
+  "cpu_usage_percent": 0.0,
+  "success": true,
+  "generation_profile": "deterministic",
+  "dataset_path": "prompts/efficiency_tasks.json"
+}

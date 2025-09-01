@@ -1,1 +1,0 @@
-{"task_id": "eff_001", "prompt": "What is the chemical symbol for gold?\n\nAnswer in this format: {\"id\":\"eff_mmlu_001\",\"answer\":\"symbol\"}", "response": "{ \"id\": \"eff_mmlu_0nergy\", \"answer\": \"Au\" }", "latency_seconds": 5.07088828086853, "cpu_usage_percent": 0.2, "memory_used_mb": 1.05859375, "efficiency": 0.1, "success": true}
