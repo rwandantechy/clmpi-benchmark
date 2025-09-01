@@ -1,9 +1,9 @@
 {
   "metric": "accuracy",
-  "model": "llama3.1:8b",
-  "timestamp": "2025-09-01 14:27:30",
-  "exact_match": 1.0,
-  "f1_score": 1.0,
+  "model": "mistral:7b",
+  "timestamp": "2025-09-01 15:02:42",
+  "exact_match": 0.0,
+  "f1_score": 0.0,
   "total_questions": 1,
   "generation_profile": "deterministic",
   "dataset_path": "prompts/accuracy.json"

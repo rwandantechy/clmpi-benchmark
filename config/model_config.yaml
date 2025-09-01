@@ -32,8 +32,8 @@ prompt_sets:
 # Add models here as needed. All models must be available via Ollama
 # Generation settings are standardized via generation_config.yaml
 models:
-  phi3_3_8b:
-    ollama_name: "phi3:3.8b"
+  mistral_7b:
+    ollama_name: "mistral:7b"
     timeout_seconds: 30
 
 # Evaluation Parameters

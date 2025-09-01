@@ -1,13 +1,13 @@
 # CLMPI Accuracy Evaluation Report
 
-**Model**: llama3.1:8b
-**Evaluation Date**: 2025-09-01 14:27:30
+**Model**: mistral:7b
+**Evaluation Date**: 2025-09-01 15:02:42
 **Dataset**: Standardized Accuracy Dataset
 
 ## Summary
 
-- **Exact Match Score**: 1.000
-- **F1 Score**: 1.000
+- **Exact Match Score**: 0.000
+- **F1 Score**: 0.000
 - **Total Questions**: 1
 
 ## Detailed Results
@@ -18,11 +18,11 @@
 
 **Model Response**: 
 ```
-{"id":"acc_gsmhard_001","answer":"611"}
+ {"id":"acc_gsmhard_001","answer":601}
 ```
 
 **Expected Answer**: 611
 
-**Score**: 1.000
+**Score**: 0.000
 
 ---

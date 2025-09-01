@@ -1,17 +1,17 @@
 {
-  "model": "llama3.1:8b",
-  "timestamp": "2025-09-01 14:27:30",
+  "model": "mistral:7b",
+  "timestamp": "2025-09-01 15:02:42",
   "evaluation_run": "2025-09-01_142730_stepwise",
   "clmpi_scores": {
-    "clmpi_01": 0.8969090909090908,
-    "clmpi_25": 22.42272727272727,
-    "clmpi_100": 89.69090909090907
+    "clmpi_01": 0.6372077922077922,
+    "clmpi_25": 15.930194805194805,
+    "clmpi_100": 63.72077922077922
   },
   "component_scores": {
     "accuracy": {
-      "score": 1.0,
+      "score": 0.0,
       "weight": 0.25,
-      "contribution": 0.25
+      "contribution": 0.0
     },
     "context": {
       "score": 1.0,
@@ -19,19 +19,19 @@
       "contribution": 0.2
     },
     "coherence": {
-      "score": 0.8345454545454545,
+      "score": 0.8981818181818182,
       "weight": 0.2,
-      "contribution": 0.1669090909090909
+      "contribution": 0.17963636363636365
     },
     "fluency": {
-      "score": 0.95,
+      "score": 0.9428571428571428,
       "weight": 0.2,
-      "contribution": 0.19
+      "contribution": 0.18857142857142858
     },
     "efficiency": {
-      "score": 0.6,
+      "score": 0.45999999999999996,
       "weight": 0.15,
-      "contribution": 0.09
+      "contribution": 0.06899999999999999
     }
   },
   "weights_used": {
@@ -44,18 +44,18 @@
   "detailed_results": {
     "accuracy": {
       "metric": "accuracy",
-      "model": "llama3.1:8b",
-      "timestamp": "2025-09-01 14:27:30",
-      "exact_match": 1.0,
-      "f1_score": 1.0,
+      "model": "mistral:7b",
+      "timestamp": "2025-09-01 15:02:42",
+      "exact_match": 0.0,
+      "f1_score": 0.0,
       "total_questions": 1,
       "generation_profile": "deterministic",
       "dataset_path": "prompts/accuracy.json"
     },
     "context": {
       "metric": "contextual_understanding",
-      "model": "llama3.1:8b",
-      "timestamp": "2025-09-01 14:54:35",
+      "model": "mistral:7b",
+      "timestamp": "2025-09-01 15:03:04",
       "exact_match": 1.0,
       "f1_score": 1.0,
       "context_similarity": 0.0,
@@ -66,35 +66,35 @@
     },
     "coherence": {
       "metric": "coherence",
-      "model": "llama3.1:8b",
-      "timestamp": "2025-09-01 14:44:54",
-      "exact_match": 0.8345454545454545,
-      "f1_score": 0.8345454545454545,
-      "coherence_score": 0.8345454545454545,
+      "model": "mistral:7b",
+      "timestamp": "2025-09-01 15:03:24",
+      "exact_match": 0.8981818181818182,
+      "f1_score": 0.8981818181818182,
+      "coherence_score": 0.8981818181818182,
       "total_prompts": 1,
       "generation_profile": "creative",
       "dataset_path": "prompts/coherence.json"
     },
     "fluency": {
       "metric": "fluency",
-      "model": "llama3.1:8b",
-      "timestamp": "2025-09-01 14:50:17",
-      "exact_match": 0.95,
-      "f1_score": 0.95,
-      "fluency_score": 0.95,
+      "model": "mistral:7b",
+      "timestamp": "2025-09-01 15:03:41",
+      "exact_match": 0.9428571428571428,
+      "f1_score": 0.9428571428571428,
+      "fluency_score": 0.9428571428571428,
       "total_prompts": 1,
       "generation_profile": "creative",
       "dataset_path": "prompts/fluency.json"
     },
     "efficiency": {
       "metric": "efficiency",
-      "model": "llama3.1:8b",
-      "timestamp": "2025-09-01 14:29:26",
-      "efficiency": 0.6,
+      "model": "mistral:7b",
+      "timestamp": "2025-09-01 15:03:55",
+      "efficiency": 0.45999999999999996,
       "accuracy_score": 1.0,
-      "inference_time_seconds": 4.441774129867554,
-      "model_size_mb": 4692.7823486328125,
-      "peak_memory_mb": 12.5625,
+      "inference_time_seconds": 7.939990043640137,
+      "model_size_mb": 4170.238220214844,
+      "peak_memory_mb": 8.6953125,
       "cpu_usage_percent": 0.0,
       "success": true,
       "generation_profile": "deterministic",
