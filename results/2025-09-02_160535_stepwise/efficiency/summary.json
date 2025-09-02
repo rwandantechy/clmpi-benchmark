@@ -1,0 +1,14 @@
+{
+  "metric": "efficiency",
+  "model": "phi3:mini",
+  "timestamp": "2025-09-02 16:08:03",
+  "efficiency": 0.52,
+  "accuracy_score": 1.0,
+  "inference_time_seconds": 5.850062847137451,
+  "model_size_mb": 2075.364227294922,
+  "peak_memory_mb": 17.16015625,
+  "cpu_usage_percent": 0.0,
+  "success": true,
+  "generation_profile": "deterministic",
+  "dataset_path": "prompts/efficiency_tasks.json"
+}
