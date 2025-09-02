@@ -39,9 +39,9 @@ ollama pull mistral:7b
 
 ### Model Configuration
 Edit `config/model_config.yaml` to define:
-- Models to evaluate
 - Evaluation weights
 - Prompt set mappings
+- Default model settings (optional)
 
 ### Generation Configuration
 Edit `config/generation_config.yaml` to set:
@@ -68,6 +68,19 @@ python scripts/runners/step_efficiency.py --model "mistral:7b"
 
 # Combine into final CLMPI score
 python scripts/combine_clmpi.py --model "mistral:7b"
+```
+
+### Testing Multiple Models
+**Simple Approach**: Use models directly without configuration changes:
+
+```bash
+# Pull different models
+ollama pull phi3:mini
+ollama pull llama3.1:8b
+
+# Test them directly
+python scripts/runners/step_accuracy.py --model "phi3:mini"
+python scripts/runners/step_accuracy.py --model "llama3.1:8b"
 ```
 
 ### Complete Evaluation (Legacy)
@@ -220,10 +233,9 @@ The system has been successfully tested with Mistral 7B, producing:
 
 ### Model Selection
 1. Pull only the models you need for evaluation
-2. Add models to config only when ready to evaluate
-3. Remove models from config after use to keep it clean
-4. Consider hardware constraints and model size
-5. Test with small samples first
+2. Use command-line model specification for simplicity
+3. Consider hardware constraints and model size
+4. Test with small samples first
 
 ### Result Analysis
 1. Review detailed logs for anomalies

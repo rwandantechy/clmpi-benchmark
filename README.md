@@ -98,18 +98,27 @@ evaluation_weights:
 
 Edit `config/device_default.yaml` for your hardware.
 
-### Add Models
+### Adding Models
 
-1. Pull your model: `ollama pull <your_model_name>`
-2. Copy `docs/examples/model_config_example.yaml` to `config/model_config.yaml` and edit for your models:
-   ```yaml
-   models:
-     your_model_name:
-       ollama_name: "your_model_name"
-       timeout_seconds: 30
-   ```
-3. Run evaluation
-4. Remove model from config after use if desired
+**Simple Approach**: Just pull the model and use it directly:
+```bash
+# Pull any model you want to test
+ollama pull phi3:mini
+ollama pull llama3.1:8b
+ollama pull mistral:7b
+
+# Use directly without config changes
+python scripts/runners/step_accuracy.py --model "phi3:mini"
+python scripts/runners/step_accuracy.py --model "llama3.1:8b"
+```
+
+**Advanced Configuration**: For custom settings, edit `config/model_config.yaml`:
+```yaml
+models:
+  your_model_name:
+    ollama_name: "your_model_name"
+    timeout_seconds: 30
+```
 
 ## Outputs
 

@@ -103,6 +103,20 @@ You should see a `clmpi_summary.json` file with:
 - **Fluency (20%)**: Language quality and grammatical correctness
 - **Efficiency (15%)**: Resource usage and inference speed
 
+## Testing Multiple Models
+
+**Simple**: Just pull and use different models without config changes:
+
+```bash
+# Pull additional models
+ollama pull phi3:mini
+ollama pull llama3.1:8b
+
+# Test them directly
+python scripts/runners/step_accuracy.py --model "phi3:mini"
+python scripts/runners/step_accuracy.py --model "llama3.1:8b"
+```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -130,7 +144,7 @@ You should see a `clmpi_summary.json` file with:
 Once you've successfully run the evaluation:
 
 1. **Try different models**: Pull and test other models
-2. **Customize weights**: Edit `config/model_config.yaml`
+2. **Customize weights**: Edit `config/model_config.yaml` if needed
 3. **Add custom prompts**: Modify files in `prompts/` directory
 4. **Batch evaluation**: Use the legacy `evaluate_models.py` for multiple models
 
