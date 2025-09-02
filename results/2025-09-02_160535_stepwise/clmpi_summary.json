@@ -1,11 +1,11 @@
 {
-  "model": "phi3:mini",
-  "timestamp": "2025-09-02 16:05:35",
+  "model": "llama3.2:latest",
+  "timestamp": "2025-09-02 17:08:57",
   "evaluation_run": "2025-09-02_160535_stepwise",
   "clmpi_scores": {
-    "clmpi_01": 0.7165714285714285,
-    "clmpi_25": 17.914285714285715,
-    "clmpi_100": 71.65714285714286
+    "clmpi_01": 0.9025714285714286,
+    "clmpi_25": 22.564285714285713,
+    "clmpi_100": 90.25714285714285
   },
   "component_scores": {
     "accuracy": {
@@ -19,9 +19,9 @@
       "contribution": 0.2
     },
     "coherence": {
-      "score": 0.0,
+      "score": 0.72,
       "weight": 0.2,
-      "contribution": 0.0
+      "contribution": 0.144
     },
     "fluency": {
       "score": 0.9428571428571428,
@@ -29,9 +29,9 @@
       "contribution": 0.18857142857142858
     },
     "efficiency": {
-      "score": 0.52,
+      "score": 0.7999999999999999,
       "weight": 0.15,
-      "contribution": 0.078
+      "contribution": 0.11999999999999998
     }
   },
   "weights_used": {
@@ -44,8 +44,8 @@
   "detailed_results": {
     "accuracy": {
       "metric": "accuracy",
-      "model": "phi3:mini",
-      "timestamp": "2025-09-02 16:05:35",
+      "model": "llama3.2:latest",
+      "timestamp": "2025-09-02 17:08:57",
       "exact_match": 1.0,
       "f1_score": 1.0,
       "total_questions": 1,
@@ -54,11 +54,11 @@
     },
     "context": {
       "metric": "contextual_understanding",
-      "model": "phi3:mini",
-      "timestamp": "2025-09-02 16:06:12",
+      "model": "llama3.2:latest",
+      "timestamp": "2025-09-02 17:10:02",
       "exact_match": 1.0,
       "f1_score": 1.0,
-      "context_similarity": 0.375,
+      "context_similarity": 0.0,
       "combined_score": 1.0,
       "total_conversations": 1,
       "generation_profile": "deterministic",
@@ -66,19 +66,19 @@
     },
     "coherence": {
       "metric": "coherence",
-      "model": "phi3:mini",
-      "timestamp": "2025-09-02 16:06:56",
-      "exact_match": 0.0,
-      "f1_score": 0.0,
-      "coherence_score": 0.0,
+      "model": "llama3.2:latest",
+      "timestamp": "2025-09-02 17:09:31",
+      "exact_match": 0.72,
+      "f1_score": 0.72,
+      "coherence_score": 0.72,
       "total_prompts": 1,
       "generation_profile": "creative",
       "dataset_path": "prompts/coherence.json"
     },
     "fluency": {
       "metric": "fluency",
-      "model": "phi3:mini",
-      "timestamp": "2025-09-02 16:07:09",
+      "model": "llama3.2:latest",
+      "timestamp": "2025-09-02 17:10:31",
       "exact_match": 0.9428571428571428,
       "f1_score": 0.9428571428571428,
       "fluency_score": 0.9428571428571428,
@@ -88,13 +88,13 @@
     },
     "efficiency": {
       "metric": "efficiency",
-      "model": "phi3:mini",
-      "timestamp": "2025-09-02 16:08:03",
-      "efficiency": 0.52,
+      "model": "llama3.2:latest",
+      "timestamp": "2025-09-02 17:10:59",
+      "efficiency": 0.7999999999999999,
       "accuracy_score": 1.0,
-      "inference_time_seconds": 5.850062847137451,
-      "model_size_mb": 2075.364227294922,
-      "peak_memory_mb": 17.16015625,
+      "inference_time_seconds": 2.609261989593506,
+      "model_size_mb": 1925.8283386230469,
+      "peak_memory_mb": 18.078125,
       "cpu_usage_percent": 0.0,
       "success": true,
       "generation_profile": "deterministic",

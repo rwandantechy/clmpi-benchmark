@@ -1,10 +1,10 @@
 {
   "metric": "coherence",
-  "model": "phi3:mini",
-  "timestamp": "2025-09-02 16:06:56",
-  "exact_match": 0.0,
-  "f1_score": 0.0,
-  "coherence_score": 0.0,
+  "model": "llama3.2:latest",
+  "timestamp": "2025-09-02 17:09:31",
+  "exact_match": 0.72,
+  "f1_score": 0.72,
+  "coherence_score": 0.72,
   "total_prompts": 1,
   "generation_profile": "creative",
   "dataset_path": "prompts/coherence.json"
