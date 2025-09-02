@@ -1,8 +1,8 @@
 # CLMPI Quick Start Guide
 
-**Get CLMPI scores in 5 simple steps**
+**Get CLMPI scores in 3 simple steps**
 
-This guide will walk you through evaluating a language model using the tested and working stepwise evaluation system.
+This guide will walk you through evaluating a language model using the tested and working automated CLMPI system.
 
 ## Prerequisites
 
@@ -29,71 +29,18 @@ ollama pull mistral:7b
 ollama list
 ```
 
-## Step 3: Run Individual Metrics
-
-Run each metric evaluation separately:
+## Step 3: Run Everything
 
 ```bash
-# Accuracy (25% weight) - Mathematical reasoning
-python scripts/runners/step_accuracy.py --model "mistral:7b"
-
-# Context (20% weight) - Multi-turn conversations  
-python scripts/runners/step_context.py --model "mistral:7b"
-
-# Coherence (20% weight) - Logical flow
-python scripts/runners/step_coherence.py --model "mistral:7b"
-
-# Fluency (20% weight) - Language quality
-python scripts/runners/step_fluency.py --model "mistral:7b"
-
-# Efficiency (15% weight) - Resource usage
-python scripts/runners/step_efficiency.py --model "mistral:7b"
+# One command runs everything automatically
+python scripts/run_clmpi.py --model "mistral:7b"
 ```
 
-## Step 4: Generate CLMPI Score
-
-```bash
-# Combine all metrics into final CLMPI score
-python scripts/combine_clmpi.py --model "mistral:7b"
-```
-
-## Step 5: View Results
-
-```bash
-# Check the latest results
-ls -l results/latest/
-
-# View the CLMPI summary
-cat results/latest/clmpi_summary.json
-
-# View individual metric results
-cat results/latest/accuracy/summary.json
-cat results/latest/context/summary.json
-cat results/latest/coherence/summary.json
-cat results/latest/fluency/summary.json
-cat results/latest/efficiency/summary.json
-```
-
-## Expected Output
-
-You should see a `clmpi_summary.json` file with:
-
-```json
-{
-  "model": "mistral:7b",
-  "clmpi_scores": {
-    "clmpi_01": 0.637,
-    "clmpi_100": 63.72
-  },
-  "component_scores": {
-    "accuracy": {"score": 0.0, "contribution": 0.0},
-    "context": {"score": 1.0, "contribution": 0.2},
-    "coherence": {"score": 0.898, "contribution": 0.180},
-    "fluency": {"score": 0.943, "contribution": 0.189},
-    "efficiency": {"score": 0.460, "contribution": 0.069}
-  }
-}
-```
+That's it! The system will automatically:
+- Check if the model is available
+- Run all 5 evaluation metrics (accuracy, context, coherence, fluency, efficiency)
+- Combine results into final CLMPI score
+- Display results and save everything
 
 ## What Each Metric Tests
 
@@ -105,16 +52,69 @@ You should see a `clmpi_summary.json` file with:
 
 ## Testing Multiple Models
 
-**Simple**: Just pull and use different models without config changes:
+**Super Simple**: Just pull and run different models:
 
 ```bash
 # Pull additional models
 ollama pull phi3:mini
 ollama pull llama3.1:8b
 
-# Test them directly
-python scripts/runners/step_accuracy.py --model "phi3:mini"
-python scripts/runners/step_accuracy.py --model "llama3.1:8b"
+# Run evaluation immediately
+python scripts/run_clmpi.py --model "phi3:mini"
+python scripts/run_clmpi.py --model "llama3.1:8b"
+```
+
+## View Results
+
+Results are automatically displayed after each run, but you can also view them separately:
+
+```bash
+# Show latest results without running evaluation
+python scripts/run_clmpi.py --model "any_model" --show-results
+
+# Check the results directory
+ls -l results/latest/
+cat results/latest/clmpi_summary.json
+```
+
+## Expected Output
+
+You should see output like this:
+
+```
+Looking for model 'mistral:7b'...
+Great! Found 'mistral:7b', starting evaluation...
+============================================================
+Running accuracy evaluation...
+✓ accuracy completed successfully
+Running context evaluation...
+✓ context completed successfully
+Running coherence evaluation...
+✓ coherence completed successfully
+Running fluency evaluation...
+✓ fluency completed successfully
+Running efficiency evaluation...
+✓ efficiency completed successfully
+
+Combining results into final CLMPI score...
+✓ CLMPI score calculated successfully
+
+All done! Everything completed successfully.
+
+============================================================
+CLMPI Results from: 2025-09-01_142730_stepwise
+==================================================
+CLMPI_01:  0.637
+CLMPI_100: 63.72
+
+Component Scores:
+  accuracy              0.000 (contributes 0.000)
+  context              1.000 (contributes 0.200)
+  coherence            0.898 (contributes 0.180)
+  fluency              0.943 (contributes 0.189)
+  efficiency           0.460 (contributes 0.069)
+
+Total time: 45.2 seconds
 ```
 
 ## Troubleshooting
@@ -146,7 +146,7 @@ Once you've successfully run the evaluation:
 1. **Try different models**: Pull and test other models
 2. **Customize weights**: Edit `config/model_config.yaml` if needed
 3. **Add custom prompts**: Modify files in `prompts/` directory
-4. **Batch evaluation**: Use the legacy `evaluate_models.py` for multiple models
+4. **Advanced usage**: Use individual step runners for specific needs
 
 ## Success Indicators
 

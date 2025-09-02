@@ -17,27 +17,35 @@ CLMPI evaluates language models across 5 dimensions for edge deployment suitabil
 
 ## Quick Start
 
-### Stepwise Evaluation (Recommended & Tested)
+### One Command Evaluation (Recommended)
 ```bash
 # 1) Install dependencies
 pip install -r requirements.txt
 
-# 2) Pull a model to test
+# 2) Pull a model
 ollama pull mistral:7b
 
-# 3) Run each metric individually (tested and working)
+# 3) Run everything with one command
+python scripts/run_clmpi.py --model "mistral:7b"
+```
+
+That's it! The system will automatically:
+- Check if the model is available
+- Run all 5 evaluation metrics
+- Combine results into final CLMPI score
+- Display results and save everything
+
+### Stepwise Evaluation (Advanced)
+```bash
+# Run each metric individually if needed
 python scripts/runners/step_accuracy.py --model "mistral:7b"
 python scripts/runners/step_context.py --model "mistral:7b"
 python scripts/runners/step_coherence.py --model "mistral:7b"
 python scripts/runners/step_fluency.py --model "mistral:7b"
 python scripts/runners/step_efficiency.py --model "mistral:7b"
 
-# 4) Combine into final CLMPI score
+# Combine into final CLMPI score
 python scripts/combine_clmpi.py --model "mistral:7b"
-
-# 5) View results
-ls -l results/latest/
-cat results/latest/clmpi_summary.json
 ```
 
 ### Complete Evaluation (Legacy)
@@ -100,16 +108,15 @@ Edit `config/device_default.yaml` for your hardware.
 
 ### Adding Models
 
-**Simple Approach**: Just pull the model and use it directly:
+**Super Simple**: Just pull and run - no configuration needed!
 ```bash
-# Pull any model you want to test
+# Pull any model
 ollama pull phi3:mini
 ollama pull llama3.1:8b
-ollama pull mistral:7b
 
-# Use directly without config changes
-python scripts/runners/step_accuracy.py --model "phi3:mini"
-python scripts/runners/step_accuracy.py --model "llama3.1:8b"
+# Run evaluation immediately
+python scripts/run_clmpi.py --model "phi3:mini"
+python scripts/run_clmpi.py --model "llama3.1:8b"
 ```
 
 **Advanced Configuration**: For custom settings, edit `config/model_config.yaml`:
