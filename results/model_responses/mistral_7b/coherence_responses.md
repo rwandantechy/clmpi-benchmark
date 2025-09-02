@@ -1,6 +1,6 @@
-# phi3:3.8b - Coherence Responses
+# mistral:7b - Coherence Responses
 
-**Evaluation Date**: 2025-09-01 13:57:37
+**Evaluation Date**: 2025-09-01 15:03:24
 **Metric**: Coherence
 **Total Questions**: 1
 
@@ -19,12 +19,12 @@ Return ONLY: {"id":"coh_multispeaker_002","answer":"<sentence>"} Do not explain.
 
 **Model Response**: 
 ```
-{"id":"coh_multispeaker_0static">"After her preparation, Jane felt confident and ready for the exam."}
+ {"id":"coh_multispeaker_002","answer": "Jane woke up feeling ready for the challenge ahead."}
 ```
 
-**Expected Answer**: Score: 0.370
+**Expected Answer**: Score: 0.898
 
-**Score**: 0.37
+**Score**: 0.8981818181818182
 
 ---
 

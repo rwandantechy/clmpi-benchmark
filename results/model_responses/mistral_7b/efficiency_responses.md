@@ -1,6 +1,6 @@
-# phi3:3.8b - Efficiency Responses
+# mistral:7b - Efficiency Responses
 
-**Evaluation Date**: 2025-09-01 13:58:11
+**Evaluation Date**: 2025-09-01 15:03:55
 **Metric**: Efficiency
 **Total Questions**: 1
 
@@ -17,23 +17,23 @@ Answer in this format: {"id":"eff_mmlu_001","answer":"symbol"}
 
 **Model Response**: 
 ```
-{ "id": "eff_mmlu_0nergy", "answer": "Au" }
+ {"id":"eff_mmlu_001","answer":"Au"}
 ```
 
 **Ollama Model Performance Metrics**:
-- **Inference Time**: 5.108 seconds
-- **Model Size**: 2075.4 MB (2.0 GB)
-- **Peak Memory Usage**: 7.0 MB
+- **Inference Time**: 7.940 seconds
+- **Model Size**: 4170.2 MB (4.1 GB)
+- **Peak Memory Usage**: 8.7 MB
 - **Memory Delta**: 0.0 MB
 - **CPU Usage**: 0.0%
 - **Ollama Processes**: 3
 
 **Answer Accuracy**: 1.000 (Correct)
 
-**Efficiency Score**: 0.520
+**Efficiency Score**: 0.460
 
 **Expected Answer**: ['au']
 
-**Score**: 0.520
+**Score**: 0.460
 
 ---

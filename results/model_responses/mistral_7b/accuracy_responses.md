@@ -1,6 +1,6 @@
-# phi3:3.8b - Accuracy Responses
+# mistral:7b - Accuracy Responses
 
-**Evaluation Date**: 2025-09-01 13:56:50
+**Evaluation Date**: 2025-09-01 15:02:42
 **Metric**: Accuracy
 **Total Questions**: 1
 
@@ -17,19 +17,19 @@ Answer in this format: {"id":"acc_gsmhard_001","answer":"number"}
 
 **Model Response**: 
 ```
-{"id":"acc_gsmhard_0static_calculation_2023","answer":611}
+ {"id":"acc_gsmhard_001","answer":601}
 ```
 
 **Expected Answer**: 611
 
-**Score**: 1.0
+**Score**: 0
 
 **Evaluation Details**:
-- **Parsed Answer**: 611
-- **Match Type**: string_exact
+- **Parsed Answer**: 601
+- **Match Type**: numeric_equal
 - **Parse Step**: json_numeric
 - **Violations**: None
-- **Exact Match**: Yes
+- **Exact Match**: No
 
 ---
 
