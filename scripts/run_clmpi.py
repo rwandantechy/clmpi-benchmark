@@ -11,6 +11,10 @@ import time
 from pathlib import Path
 from datetime import datetime
 
+# Import utility functions
+sys.path.append(str(Path(__file__).parent))
+from utils import create_results_structure, create_run_directory, update_latest_symlink, get_latest_run_directory
+
 def check_ollama_model(model_name: str) -> bool:
     """Check if a model is available via Ollama"""
     try:
@@ -72,18 +76,11 @@ def run_combine_clmpi(model_name: str, verbose: bool = False) -> bool:
 
 def show_results():
     """Show the latest results"""
-    results_dir = Path("results")
-    if not results_dir.exists():
-        print("No results directory found")
+    latest_run = get_latest_run_directory()
+    if not latest_run:
+        print("No evaluation runs found")
         return
     
-    # Find the latest stepwise run
-    stepwise_runs = list(results_dir.glob("*_stepwise"))
-    if not stepwise_runs:
-        print("No stepwise evaluation runs found")
-        return
-    
-    latest_run = max(stepwise_runs, key=lambda p: p.stat().st_mtime)
     clmpi_file = latest_run / "clmpi_summary.json"
     
     if clmpi_file.exists():
@@ -138,6 +135,9 @@ Examples:
         show_results()
         return 0
     
+    # Ensure results structure exists
+    create_results_structure()
+    
     # Check if model is available
     print(f"Looking for model '{args.model}'...")
     if not check_ollama_model(args.model):
@@ -149,6 +149,10 @@ Examples:
     print("=" * 60)
     
     start_time = time.time()
+    
+    # Create run directory
+    run_dir = create_run_directory("stepwise")
+    print(f"Created run directory: {run_dir.name}")
     
     # Run all evaluation steps
     steps = ['accuracy', 'context', 'coherence', 'fluency', 'efficiency']
@@ -164,6 +168,12 @@ Examples:
     if success_count == len(steps):
         if run_combine_clmpi(args.model, args.verbose):
             print("\nAll done! Everything completed successfully.")
+            
+            # Update latest symlink
+            if update_latest_symlink(run_dir):
+                print(f"Updated latest symlink to: {run_dir.name}")
+            else:
+                print("Warning: Could not create latest symlink")
         else:
             print("\nEvaluation finished but had trouble combining results")
     else:
