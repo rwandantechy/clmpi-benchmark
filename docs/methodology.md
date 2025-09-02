@@ -163,7 +163,11 @@ Normalized_Efficiency = (Raw_Efficiency - Min_Efficiency) / (Max_Efficiency - Mi
 
 ## CLMPI Calculation
 
-### Component Weights
+### Weight Configurations
+
+CLMPI supports multiple weight configurations optimized for different deployment scenarios:
+
+#### Current Default (Edge-Focused)
 ```yaml
 accuracy: 0.25              # 25% - Factual correctness
 contextual_understanding: 0.20  # 20% - Multi-turn conversations
@@ -171,6 +175,42 @@ coherence: 0.20             # 20% - Logical flow
 fluency: 0.20               # 20% - Language quality
 performance_efficiency: 0.15   # 15% - Resource efficiency
 ```
+
+#### Edge-First (Strict)
+```yaml
+accuracy: 0.30              # 30% - Factual correctness (highest quality weight)
+contextual_understanding: 0.15  # 15% - Multi-turn conversations
+coherence: 0.10             # 10% - Logical flow
+fluency: 0.05               # 5% - Language quality
+performance_efficiency: 0.40   # 40% - Resource efficiency (highest efficiency weight)
+```
+
+#### Edge-Balanced (Practical Default)
+```yaml
+accuracy: 0.35              # 35% - Factual correctness
+contextual_understanding: 0.15  # 15% - Multi-turn conversations
+coherence: 0.10             # 10% - Logical flow
+fluency: 0.05               # 5% - Language quality
+performance_efficiency: 0.35   # 35% - Resource efficiency
+```
+
+### Why This Shape Works
+
+The edge-focused weight distributions are designed based on real-world deployment constraints:
+
+1. **Accuracy gets the largest single quality weight (0.30–0.35)**
+   - On edge devices, wrong-but-fast is useless
+   - Factual correctness is critical for user trust
+
+2. **Context > Coherence > Fluency priority**
+   - Instruction-following (context) matters more than perfect prose
+   - Logical flow (coherence) is more important than grammatical perfection
+   - Surface quality (fluency) is the least critical for edge applications
+
+3. **Efficiency is heavyweight (0.35–0.40)**
+   - Battery life, thermal management, and UX latency are hard constraints
+   - Resource efficiency directly impacts device usability
+   - On-device performance cannot be ignored
 
 ### Final CLMPI Formula
 ```

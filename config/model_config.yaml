@@ -7,12 +7,45 @@
 # COH: Coherence - logical flow [0,1]
 # FLU: Fluency - language quality [0,1]
 # EFF: Performance Efficiency - resource usage [0,1]
+
+# Current Default (Edge-Focused)
+# This configuration balances quality and efficiency for edge deployment
 evaluation_weights:
-  accuracy: 0.25          # 25% - Factual correctness
+  accuracy: 0.25          # 25% - Factual correctness (critical for edge)
   contextual_understanding: 0.20  # 20% - Multi-turn conversations
   coherence: 0.20         # 20% - Logical flow and structure
   fluency: 0.20           # 20% - Language quality
   performance_efficiency: 0.15   # 15% - Resource efficiency
+
+# Alternative Weight Configurations (uncomment to use):
+# 
+# Edge-First (Strict) - Maximum efficiency focus
+# evaluation_weights:
+#   accuracy: 0.30          # 30% - Factual correctness (highest quality weight)
+#   contextual_understanding: 0.15  # 15% - Multi-turn conversations
+#   coherence: 0.10         # 10% - Logical flow
+#   fluency: 0.05           # 5% - Language quality
+#   performance_efficiency: 0.40   # 40% - Resource efficiency (highest efficiency weight)
+#
+# Edge-Balanced (Practical Default) - Balanced quality and efficiency
+# evaluation_weights:
+#   accuracy: 0.35          # 35% - Factual correctness
+#   contextual_understanding: 0.15  # 15% - Multi-turn conversations
+#   coherence: 0.10         # 10% - Logical flow
+#   fluency: 0.05           # 5% - Language quality
+#   performance_efficiency: 0.35   # 35% - Resource efficiency
+
+# Why This Shape Works:
+# 1. Accuracy gets the largest single quality weight (0.30–0.35)
+#    - On edge devices, wrong-but-fast is useless
+#    - Factual correctness is critical for user trust
+# 2. Context > Coherence > Fluency priority
+#    - Instruction-following (context) matters more than perfect prose
+#    - Logical flow (coherence) is more important than grammatical perfection
+#    - Surface quality (fluency) is the least critical for edge applications
+# 3. Efficiency is heavyweight (0.35–0.40)
+#    - Battery life, thermal management, and UX latency are hard constraints
+#    - Resource efficiency directly impacts device usability
 
 # Prompt Sets to Enable
 # Each maps to a specific evaluation dimension with principled benchmark datasets
