@@ -5,6 +5,6 @@
     "type": "span",
     "prompt": "What is the chemical symbol for gold?\n\nAnswer in this format: {\"id\":\"eff_mmlu_001\",\"answer\":\"symbol\"}",
     "reference": ["au"],
-    "source": "https://huggingface.co/datasets/mmlu"
+    "source": "https://huggingface.co/datasets/cais/mmlu"
   }
 ]
