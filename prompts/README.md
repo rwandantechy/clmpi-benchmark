@@ -1,15 +1,15 @@
 # CLMPI Evaluation Prompts
 
-This directory contains prompt sets used for CLMPI benchmark evaluation. All datasets are currently working and producing consistent results.
+This directory contains prompt sets used for CLMPI benchmark evaluation. Each metric currently uses 1 prompt per evaluation dimension.
 
-## Active Prompt Sets
+## Current Prompt Sets
 
 Each JSON file maps to specific CLMPI evaluation dimensions:
 
-| File | Dimension | Description | Target Count | Status |
-|------|-----------|-------------|--------------|---------|
+| File | Dimension | Description | Current Count | Status |
+|------|-----------|-------------|---------------|---------|
 | `accuracy.json` | Accuracy | GSM-Hard mathematical reasoning | 1 prompt | Working |
-| `context.json` | Contextual Understanding | Multi-turn conversations with context | 1 prompt | Working |
+| `context.json` | Contextual Understanding | SQuAD passage comprehension | 1 prompt | Working |
 | `coherence.json` | Coherence | Logical flow evaluation | 1 prompt | Working |
 | `fluency.json` | Fluency | Language quality assessment | 1 prompt | Working |
 | `efficiency_tasks.json` | Performance Efficiency | Resource usage measurement | 1 prompt | Working |
@@ -30,21 +30,21 @@ Each JSON file maps to specific CLMPI evaluation dimensions:
 ]
 ```
 
-### Context Tasks (Multi-turn)
+### Context Tasks (SQuAD)
 ```json
 [
   {
-    "id": "ctx_001",
+    "id": "ctx_squad_001",
     "category": "context",
-    "type": "conversation",
-    "prompt": "Context: [conversation context]\nQuestion: [specific question]\n\nAnswer:",
-    "reference": ["expected answer"],
-    "source": "curated"
+    "type": "span",
+    "prompt": "Passage: The Eiffel Tower is a wrought-iron lattice tower located in Paris, France. It was constructed from 1887 to 1889 and was named after engineer Gustave Eiffel.\n\nQuestion: Who was the Eiffel Tower named after?\n\nAnswer in this format: {\"id\":\"ctx_squad_001\",\"answer\":\"name\"}",
+    "reference": ["gustave eiffel"],
+    "source": "https://huggingface.co/datasets/squad"
   }
 ]
 ```
 
-### Coherence & Fluency Tasks (Open-ended)
+### Coherence Tasks (Custom)
 ```json
 [
   {
@@ -52,20 +52,34 @@ Each JSON file maps to specific CLMPI evaluation dimensions:
     "category": "coherence",
     "type": "narrative",
     "prompt": "Write a short story about...",
-    "source": "curated"
+    "source": "custom"
   }
 ]
 ```
 
-### Efficiency Tasks (Performance)
+### Fluency Tasks (Custom)
 ```json
 [
   {
-    "id": "eff_001",
-    "category": "efficiency",
-    "type": "computation",
-    "prompt": "Task description for performance measurement",
-    "source": "curated"
+    "id": "flu_001",
+    "category": "fluency",
+    "type": "descriptive",
+    "prompt": "Describe the importance of education...",
+    "source": "custom"
+  }
+]
+```
+
+### Efficiency Tasks (Custom)
+```json
+[
+  {
+    "id": "eff_mmlu_001",
+    "category": "resource_efficiency",
+    "type": "span",
+    "prompt": "What is the chemical symbol for gold?\n\nAnswer in this format: {\"id\":\"eff_mmlu_001\",\"answer\":\"symbol\"}",
+    "reference": ["au"],
+    "source": "https://huggingface.co/datasets/mmlu"
   }
 ]
 ```
@@ -74,7 +88,7 @@ Each JSON file maps to specific CLMPI evaluation dimensions:
 
 ### Working Components
 - **Accuracy**: GSM-Hard mathematical reasoning with structured JSON responses
-- **Context**: Multi-turn conversation understanding with context relevance
+- **Context**: SQuAD passage comprehension with context relevance
 - **Coherence**: Open-ended prompts with internal consistency scoring
 - **Fluency**: Language quality evaluation with grammar and diversity metrics
 - **Efficiency**: Resource usage measurement with timing and memory metrics
@@ -94,7 +108,7 @@ prompt_sets:
   accuracy:
     - "accuracy.json"  # GSM-Hard mathematical reasoning
   contextual_understanding:
-    - "context.json"  # Multi-turn conversations
+    - "context.json"  # SQuAD passage comprehension
   coherence:
     - "coherence.json"  # Logical flow evaluation
   fluency:
@@ -103,30 +117,76 @@ prompt_sets:
     - "efficiency_tasks.json"  # Resource usage measurement
 ```
 
-## Dataset Sources
+## Current Limitations
 
-- **Accuracy**: [GSM-Hard](https://huggingface.co/datasets/reasoning-machines/gsm-hard) - Mathematical reasoning
-- **Context**: Curated multi-turn conversations
-- **Coherence**: Curated open-ended prompts
-- **Fluency**: Curated language quality tasks
-- **Efficiency**: Curated performance measurement tasks
+### 1. Limited Coverage
+- Only 1 prompt per metric
+- Results lack statistical significance
+- Single-point evaluations can be misleading
 
-## Best Practices
+### 2. Dataset Sources
+- Some prompts from public datasets (GSM-Hard, SQuAD, MMLU)
+- Some custom prompts for coherence and fluency
+- Limited validation of prompt effectiveness
 
-- **Keep prompts concise** - avoid very long inputs
-- **Use diverse topics** - cover different domains
-- **Include edge cases** - test model robustness
-- **Maintain consistency** - similar format across files
-- **Document sources** - note if prompts are from existing datasets
-- **Use stable IDs** - acc_0001, ctx_0001, coh_0001, flu_0001, eff_0001 format
+### 3. Statistical Power
+- Single prompt evaluations lack statistical power
+- Results should be interpreted with caution
+- Comparative analysis between models is limited
 
 ## Testing Status
 
-All prompt sets have been successfully tested with Mistral 7B:
-- Accuracy evaluation completed
-- Context evaluation completed  
-- Coherence evaluation completed
-- Fluency evaluation completed
-- Efficiency evaluation completed
+### Verified Working
+- All prompt files load correctly
+- Response parsing works for all metrics
+- Scoring calculations produce valid results
+- Integration with evaluation pipeline functional
 
-**Ready for production use!**
+### Known Issues
+- Limited prompt coverage affects result reliability
+- Single-prompt evaluations lack statistical significance
+- No prompt difficulty classification
+
+## Future Improvements
+
+### 1. Expand Coverage
+- Add multiple prompts per metric (5-10 minimum)
+- Include different question types and difficulty levels
+- Implement prompt sampling strategies
+
+### 2. Dataset Quality
+- Create custom prompt engineering
+- Validate prompt effectiveness
+- Add difficulty level classification
+
+### 3. Statistical Analysis
+- Calculate confidence intervals
+- Add standard deviations and error margins
+- Implement cross-validation approaches
+
+## Usage Guidelines
+
+### 1. Result Interpretation
+- Results are based on single-prompt evaluations
+- Compare models with caution
+- Consider prompt-specific performance
+
+### 2. Model Comparison
+- Limited statistical significance
+- Focus on relative performance patterns
+- Consider model size and architecture differences
+
+### 3. Extensions
+- Add more questions from same datasets
+- Create custom prompts for specific domains
+- Implement prompt difficulty scaling
+
+## Conclusion
+
+The current CLMPI prompt system provides a working framework for model evaluation but is limited by single-prompt coverage. The system demonstrates potential for comprehensive evaluation but requires expansion to provide statistically reliable results.
+
+**Next Steps**:
+1. Expand prompt coverage for statistical significance
+2. Improve dataset quality and validation
+3. Implement statistical analysis tools
+4. Create custom prompt engineering capabilities

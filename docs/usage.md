@@ -1,8 +1,12 @@
-# Professional CLMPI Usage Guide
+# CLMPI Usage Guide
 
 ## Overview
 
-The CLMPI (Comprehensive Language Model Performance Index) provides a rigorous, reproducible benchmarking framework for evaluating language models across multiple dimensions. The stepwise evaluation system has been successfully tested and produces consistent CLMPI scores.
+The CLMPI (Comprehensive Language Model Performance Index) provides a benchmarking framework for evaluating language models across multiple dimensions. The stepwise evaluation system has been tested with several models and produces CLMPI scores.
+
+## Current Status
+
+**Note**: This is a working prototype. Each metric currently uses 1 prompt per evaluation dimension, which limits statistical significance.
 
 ## System Requirements
 
@@ -57,9 +61,9 @@ Edit `config/device_default.yaml` to specify:
 
 ## Usage
 
-### Stepwise Evaluation (Recommended & Tested)
+### Stepwise Evaluation (Current Implementation)
 ```bash
-# Run each metric individually (tested and working)
+# Run each metric individually
 python scripts/runners/step_accuracy.py --model "mistral:7b"
 python scripts/runners/step_context.py --model "mistral:7b"
 python scripts/runners/step_coherence.py --model "mistral:7b"
@@ -67,7 +71,7 @@ python scripts/runners/step_fluency.py --model "mistral:7b"
 python scripts/runners/step_efficiency.py --model "mistral:7b"
 
 # Combine into final CLMPI score
-python scripts/combine_clmpi.py --model "mistral:7b"
+python scripts/combine_clmpi.py --results-dir results/YYYY-MM-DD_HHMMSS_stepwise
 ```
 
 ### Testing Multiple Models
@@ -101,159 +105,162 @@ python scripts/test_system.py
 
 ### Results Directory
 ```
-results/YYYY-MM-DD_HHMMSS_label/
-├── clmpi_summary.json             # Final CLMPI scores and metadata
-├── accuracy/
-│   ├── detail.jsonl              # All Q&A pairs with scores
-│   └── summary.json              # Accuracy summary
-├── context/
-│   ├── detail.jsonl              # Context evaluation details
-│   └── summary.json              # Context summary
-├── coherence/
-│   ├── detail.jsonl              # Coherence evaluation details
-│   └── summary.json              # Coherence summary
-├── fluency/
-│   ├── detail.jsonl              # Fluency evaluation details
-│   └── summary.json              # Fluency summary
-└── efficiency/
-    ├── detail.jsonl              # Efficiency evaluation details
-    └── summary.json              # Efficiency summary
+results/YYYY-MM-DD_HHMMSS_stepwise/
+├── clmpi_summary.json          # Final CLMPI scores
+├── accuracy/                   # Accuracy evaluation results
+├── context/                    # Context evaluation results
+├── coherence/                  # Coherence evaluation results
+├── fluency/                    # Fluency evaluation results
+└── efficiency/                 # Efficiency evaluation results
+```
+
+### Model Responses
+```
+results/model_responses/
+├── model_name_1/
+│   ├── accuracy_responses.md
+│   ├── context_responses.md
+│   ├── coherence_responses.md
+│   ├── fluency_responses.md
+│   └── efficiency_responses.md
+└── model_name_2/
+    └── ... (same structure)
 ```
 
 ### Key Files
-- **clmpi_summary.json**: Complete CLMPI scores and component breakdowns
-- **detail.jsonl**: Per-response detailed scores for analysis
-- **summary.json**: Per-metric summary statistics
-- **latest/**: Symlink to most recent evaluation
+
+#### `clmpi_summary.json`
+Contains final CLMPI scores and component breakdown:
+```json
+{
+  "clmpi_scores": {
+    "clmpi_01": 0.706,
+    "clmpi_100": 70.6
+  },
+  "component_scores": {
+    "accuracy": {"score": 0.0, "contribution": 0.0},
+    "context": {"score": 1.0, "contribution": 0.2},
+    "coherence": {"score": 0.964, "contribution": 0.181},
+    "fluency": {"score": 0.920, "contribution": 0.184},
+    "efficiency": {"score": 0.860, "contribution": 0.129}
+  }
+}
+```
+
+#### Individual Metric Results
+Each metric directory contains:
+- `summary.json` - Aggregated scores and metadata
+- `detail.jsonl` - Detailed evaluation results
+- `evaluation_report.md` - Human-readable summary
 
 ## Evaluation Dimensions
 
-### Accuracy (25%)
-- **Method**: Exact Match + F1 scoring
-- **Dataset**: GSM-Hard mathematical reasoning
-- **Profile**: Deterministic generation
-- **Output**: Structured JSON response parsing
+### 1. Accuracy (25% weight)
+- **Purpose**: Measure factual correctness
+- **Method**: Mathematical reasoning problems
+- **Current Coverage**: 1 question from GSM-Hard dataset
+- **Scoring**: F1 score based on word overlap
 
-### Contextual Understanding (20%)
-- **Method**: EM + F1 + context relevance
-- **Dataset**: Multi-turn conversations
-- **Profile**: Deterministic generation
-- **Output**: Context-aware response evaluation
+### 2. Contextual Understanding (20% weight)
+- **Purpose**: Measure multi-turn conversation ability
+- **Method**: Context + question comprehension
+- **Current Coverage**: 1 question from SQuAD dataset
+- **Scoring**: Combined F1 and context similarity
 
-### Coherence (20%)
-- **Method**: Sentence similarity + repetition penalty
-- **Dataset**: Open-ended prompts
-- **Profile**: Creative generation
-- **Output**: Internal consistency scoring
+### 3. Coherence (20% weight)
+- **Purpose**: Measure logical flow and consistency
+- **Method**: Open-ended narrative generation
+- **Current Coverage**: 1 custom prompt
+- **Scoring**: Sentence similarity with repetition penalty
 
-### Fluency (20%)
-- **Method**: Grammar checking + perplexity
-- **Dataset**: Surface quality tasks
-- **Profile**: Creative generation
-- **Output**: Language quality metrics
+### 4. Fluency (20% weight)
+- **Purpose**: Measure language quality
+- **Method**: Descriptive text generation
+- **Current Coverage**: 1 custom prompt
+- **Scoring**: Grammar and word diversity
 
-### Performance Efficiency (15%)
-- **Method**: Latency + memory measurement
-- **Dataset**: Accuracy tasks (for consistency)
-- **Profile**: Deterministic generation
-- **Output**: Resource usage metrics
+### 5. Efficiency (15% weight)
+- **Purpose**: Measure resource usage
+- **Method**: Performance timing and memory
+- **Current Coverage**: 1 computational task
+- **Scoring**: Latency and resource efficiency
 
 ## Reproducibility
 
+### Fixed Random Seed
+- **Seed**: 42 (configurable in config)
+- **Purpose**: Deterministic question sampling
+- **Location**: `clmpi_summary.json`
+
 ### Hardware Logging
+System automatically logs:
 - CPU model and cores
 - Memory capacity
 - Operating system
 - Python version
 
 ### Configuration Versioning
-- All configs have version numbers
-- Dependencies pinned to exact versions
-- Random seed fixed (configurable)
+All configs are version-controlled and documented in the repository.
 
-### Validation
-- Pre-evaluation config validation
-- Per-metric score validation
-- Post-evaluation result validation
+## Limitations and Considerations
 
-## Verified Results
+### 1. Limited Statistical Power
+- Single prompt per metric limits statistical significance
+- Results should be interpreted with caution
+- Comparative analysis between models is limited
 
-The system has been successfully tested with Mistral 7B, producing:
-- CLMPI_01: 0.637
-- CLMPI_100: 63.72
-- Component Scores: All 5 dimensions successfully evaluated
-- Reproducibility: Consistent results across runs
+### 2. Prompt Quality
+- Prompts sourced from public datasets
+- Limited validation of prompt effectiveness
+- No custom prompt engineering
+
+### 3. Model Variability
+- Single evaluation run per model
+- No confidence intervals
+- Results may vary with different prompts
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Model Not Found**
-   - Verify model is installed: `ollama list`
-   - Check model name in config matches Ollama name
+1. **Model Timeout**
+   - Check Ollama is running: `ollama list`
+   - Verify model is available: `ollama list | grep model_name`
+   - Large models may need longer timeouts
 
-2. **Insufficient Memory**
-   - Reduce concurrent evaluations
-   - Check device config memory thresholds
+2. **Memory Issues**
    - Close other applications
+   - Use smaller models for testing
+   - Check available RAM: `free -h`
 
-3. **Timeout Errors**
-   - Increase timeout in device config
-   - Check Ollama service status
-   - Verify network connectivity
-
-4. **Import Errors**
-   - Install missing dependencies: `pip install -r requirements.txt`
-   - Check Python version compatibility
-
-### Validation Failures
-
-1. **Config Validation**
-   - Verify YAML syntax
-   - Check required fields present
+3. **Configuration Errors**
+   - Verify YAML syntax in config files
+   - Check file paths exist
    - Ensure weights sum to 1.0
 
-2. **Dataset Validation**
-   - Verify JSON syntax
-   - Check required fields in datasets
-   - Ensure prompt files exist
+### Validation
 
-3. **Score Validation**
+1. **Check Results Structure**
+   - Verify all metric directories exist
+   - Check `clmpi_summary.json` is generated
+   - Confirm model responses are saved
+
+2. **Verify Scores**
    - All scores should be in [0,1] range
-   - CLMPI score should be in [0,1] range
-   - Check for NaN or infinite values
-
-## Best Practices
-
-### Evaluation Setup
-1. Use clean system state
-2. Close unnecessary applications
-3. Ensure consistent network conditions
-4. Document hardware configuration
-
-### Model Selection
-1. Pull only the models you need for evaluation
-2. Use command-line model specification for simplicity
-3. Consider hardware constraints and model size
-4. Test with small samples first
-
-### Result Analysis
-1. Review detailed logs for anomalies
-2. Compare across multiple runs
-3. Consider hardware variations
-4. Document any deviations
-
-## Support
-
-For technical support:
-1. Check documentation in `/docs`
-2. Review troubleshooting section
-3. Examine error logs in results
-4. Validate system with test script
+   - Component contributions should sum to CLMPI score
+   - Weights should match configuration
 
 ## Version Information
 
-- **CLMPI Version**: 1.0.0
-- **CLMPI System**: 1.0.0
-- **Last Updated**: 2025
-- **Status**: Tested and Working
+- **Current Version**: 1.1.0
+- **Last Updated**: 2025-09-02
+- **Tested Models**: Mistral 7B, Llama3.1 8B, Gemma2 2B, Phi3 Mini, Qwen2.5 0.5B
+- **Status**: Working prototype with limited prompt coverage
+
+## Next Steps
+
+To improve the system:
+1. **Expand prompt coverage** for statistical significance
+2. **Add more evaluation metrics** for comprehensive assessment
+3. **Implement confidence intervals** for result reliability
+4. **Create custom prompt engineering** for better evaluation

@@ -2,7 +2,11 @@
 
 ## Overview
 
-The CLMPI (Comprehensive Language Model Performance Index) implements rigorous benchmarking methodology with standardized generation settings, curated expert-validated datasets, and transparent scoring formulas. This system has been successfully tested and produces reproducible CLMPI scores.
+The CLMPI (Comprehensive Language Model Performance Index) implements a benchmarking methodology for evaluating language models across multiple dimensions. This system has been tested with several models and produces CLMPI scores based on standardized generation settings and prompt datasets.
+
+## Current Implementation Status
+
+**Note**: This is a working prototype with limited prompt coverage. Each metric currently uses 1 prompt per evaluation dimension.
 
 ## Core Principles
 
@@ -34,41 +38,36 @@ max_tokens: 1000
 - **Use Cases**: Coherence evaluation, fluency assessment
 - **Rationale**: Allows creativity while maintaining consistency
 
-### 2. Curated Expert-Validated Datasets
+### 2. Current Prompt Datasets
 
 #### Accuracy Dataset (`accuracy.json`)
-- **Source**: GSM-Hard mathematical reasoning problems
+- **Source**: Single question from GSM-Hard mathematical reasoning dataset
 - **Structure**: Mathematical calculation with expected numeric answer
-- **Categories**: Mathematical reasoning, arithmetic
-- **Validation**: Each question verified for correctness
+- **Current Coverage**: 1 question
 - **Format**: JSON response with structured answer parsing
 
 #### Contextual Understanding Dataset (`context.json`)
-- **Source**: Multi-turn conversations with context
+- **Source**: Single question from SQuAD dataset
 - **Structure**: Context + question + gold answer
-- **Types**: Conversation, narrative, instruction
-- **Validation**: Expert-validated answers
+- **Current Coverage**: 1 question
 - **Format**: Structured response parsing
 
 #### Coherence Dataset (`coherence.json`)
-- **Source**: Dedicated coherence evaluation prompts
-- **Structure**: Open-ended prompts requiring logical flow
-- **Types**: Narrative, argument, explanation, instruction
-- **Validation**: No reference text - evaluates internal consistency
+- **Source**: Single coherence evaluation prompt
+- **Structure**: Open-ended prompt requiring logical flow
+- **Current Coverage**: 1 question
 - **Format**: Creative generation with coherence scoring
 
 #### Fluency Dataset (`fluency.json`)
-- **Source**: Surface quality evaluation prompts
-- **Structure**: Descriptive, narrative, explanatory tasks
-- **Types**: Descriptive, narrative, explanatory, conversational
-- **Validation**: No reference text - evaluates grammatical correctness
+- **Source**: Single fluency evaluation prompt
+- **Structure**: Descriptive task for language quality
+- **Current Coverage**: 1 question
 - **Format**: Creative generation with fluency scoring
 
 #### Efficiency Dataset (`efficiency_tasks.json`)
-- **Source**: Computational complexity testing
-- **Structure**: Tasks requiring consistent processing
-- **Types**: Accuracy tasks for consistent evaluation
-- **Validation**: Performance metrics and resource usage
+- **Source**: Single computational task
+- **Structure**: Task requiring consistent processing
+- **Current Coverage**: 1 question
 - **Format**: Deterministic generation with timing
 
 ## Scoring Formulas
@@ -218,6 +217,23 @@ CLMPI_01 = Σ(weight_i × normalized_score_i)
 CLMPI_100 = CLMPI_01 × 100
 ```
 
+## Current Limitations
+
+### 1. Limited Prompt Coverage
+- Each metric currently uses only 1 prompt
+- Results may not be statistically representative
+- Single-point evaluations can be misleading
+
+### 2. Dataset Sources
+- Prompts are sourced from public datasets
+- Limited validation of prompt quality
+- No custom prompt engineering
+
+### 3. Statistical Significance
+- Single prompt evaluations lack statistical power
+- Results should be interpreted with caution
+- Comparative analysis between models is limited
+
 ## Validation Procedures
 
 ### 1. Pre-Evaluation Validation
@@ -286,7 +302,7 @@ results/YYYY-MM-DD_HHMMSS_label/
 
 ## Usage Examples
 
-### Stepwise Evaluation (Recommended)
+### Stepwise Evaluation (Current Implementation)
 ```bash
 # Run each metric individually
 python scripts/runners/step_accuracy.py --model "mistral:7b"
@@ -296,7 +312,7 @@ python scripts/runners/step_fluency.py --model "mistral:7b"
 python scripts/runners/step_efficiency.py --model "mistral:7b"
 
 # Combine results
-python scripts/combine_clmpi.py --model "mistral:7b"
+python scripts/combine_clmpi.py --results-dir results/YYYY-MM-DD_HHMMSS_stepwise
 ```
 
 ### Complete Evaluation (Legacy)
@@ -307,13 +323,17 @@ python scripts/evaluate_models.py \
     --device-config config/device_default.yaml
 ```
 
-## Verified Results
+## Tested Results
 
-The system has been successfully tested with Mistral 7B, producing:
-- CLMPI_01: 0.637
-- CLMPI_100: 63.72
-- Component Scores: All 5 dimensions successfully evaluated
-- Reproducibility: Consistent results across runs
+The system has been tested with several models:
+
+- **Mistral 7B**: CLMPI_100: 64.5
+- **Llama3.1 8B**: CLMPI_100: 70.6  
+- **Gemma2 2B**: CLMPI_100: 70.6
+- **Phi3 Mini**: CLMPI_100: 70.6
+- **Qwen2.5 0.5B**: CLMPI_100: 70.6
+
+**Note**: These scores are based on single-prompt evaluations and should be interpreted with caution.
 
 ## Troubleshooting
 
@@ -347,18 +367,23 @@ The system has been successfully tested with Mistral 7B, producing:
 
 ## Future Enhancements
 
-1. **Embedding-Based Similarity**
+1. **Expand Prompt Coverage**
+   - Add more prompts per metric for statistical significance
+   - Implement prompt sampling strategies
+   - Create custom prompt engineering
+
+2. **Embedding-Based Similarity**
    - Replace word overlap with semantic embeddings
    - Improve context similarity calculation
 
-2. **Advanced Grammar Checking**
+3. **Advanced Grammar Checking**
    - Integrate multiple grammar checkers
    - Add style and tone analysis
 
-3. **Automated Validation**
+4. **Automated Validation**
    - Add unit tests for all scoring functions
    - Implement automated result validation
 
-4. **Multi-Language Support**
+5. **Multi-Language Support**
    - Extend to non-English languages
    - Language-specific grammar checking

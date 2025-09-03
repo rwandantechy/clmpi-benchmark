@@ -2,174 +2,180 @@
 
 ## Overview
 
-This document analyzes the results from the successful CLMPI benchmark evaluation of Mistral 7B, demonstrating the system's capability to produce comprehensive, reproducible performance metrics.
+This document analyzes the results from CLMPI benchmark evaluations of several models. The analysis shows the system's capability to produce performance metrics, though results are based on limited prompt coverage.
+
+## Current Limitations
+
+**Important Note**: Each metric currently uses only 1 prompt per evaluation dimension. This limits statistical significance and means results should be interpreted with caution.
 
 ## Test Results Summary
 
-**Model**: Mistral 7B  
-**Evaluation Date**: 2025-09-01  
-**Run ID**: 2025-09-01_142730_stepwise  
-**Status**: Complete and Successful
+### Models Tested
+1. **Mistral 7B** (4.4 GB) - Mistral AI
+2. **Llama3.1 8B** (4.9 GB) - Meta
+3. **Gemma2 2B** (1.6 GB) - Google
+4. **Phi3 Mini** (2.2 GB) - Microsoft
+5. **Qwen2.5 0.5B** (397 MB) - Alibaba
 
-### CLMPI Scores
-- **CLMPI_01**: 0.637 (63.7%)
-- **CLMPI_25**: 15.93 (out of 25)
-- **CLMPI_100**: 63.72 (out of 100)
+### CLMPI Score Comparison
 
-### Component Breakdown
-
-| Metric | Score | Weight | Contribution | Performance |
-|--------|-------|--------|--------------|-------------|
-| **Accuracy** | 0.000 | 25% | 0.000 | Poor |
-| **Context** | 1.000 | 20% | 0.200 | Excellent |
-| **Coherence** | 0.898 | 20% | 0.180 | Good |
-| **Fluency** | 0.943 | 20% | 0.189 | Excellent |
-| **Efficiency** | 0.460 | 15% | 0.069 | Fair |
+| Model | Company | Size | CLMPI_100 | Status |
+|-------|---------|------|------------|---------|
+| **Llama3.1 8B** | Meta | 4.9 GB | 70.6 | Complete |
+| **Gemma2 2B** | Google | 1.6 GB | 70.6 | Complete |
+| **Phi3 Mini** | Microsoft | 2.2 GB | 70.6 | Complete |
+| **Qwen2.5 0.5B** | Alibaba | 397 MB | 70.6 | Complete |
+| **Mistral 7B** | Mistral AI | 4.4 GB | 64.5 | Complete |
 
 ## Detailed Analysis
 
-### 1. Accuracy (25% weight) - Score: 0.000
+### 1. Accuracy Performance (25% weight)
 
-**Performance**: Poor  
-**Contribution**: 0.000 (0% of total CLMPI)
-
-**Details**:
-- **Task**: GSM-Hard mathematical reasoning
-- **Question**: "Calculate: 13 × 47 = ?"
-- **Expected Answer**: 611
-- **Model Response**: 601
-- **Analysis**: The model provided an incorrect mathematical calculation, scoring 0 on accuracy
-
-**Implications**: 
-- Mathematical reasoning is a significant weakness for this model
-- This heavily impacts the overall CLMPI score due to the 25% weight
-- Suggests the model may struggle with precise numerical tasks
-
-### 2. Contextual Understanding (20% weight) - Score: 1.000
-
-**Performance**: Excellent  
-**Contribution**: 0.200 (20% of total CLMPI)
+**Overall Pattern**: Most models scored 0.0 on accuracy, with some exceptions.
 
 **Details**:
-- **Task**: Multi-turn conversation understanding
-- **Performance**: Perfect score on context relevance and comprehension
-- **Analysis**: The model demonstrates excellent ability to understand and respond to contextual information
+- **Qwen2.5 0.5B**: 0.000 (0% contribution)
+- **Gemma2 2B**: 1.000 (25% contribution)
+- **Llama3.1 8B**: 1.000 (25% contribution)
+- **Mistral 7B**: 0.000 (0% contribution)
 
-**Implications**:
-- Strong conversational AI capabilities
-- Good at maintaining context across multiple turns
-- This is a significant strength that partially compensates for accuracy weaknesses
+**Analysis**: 
+- Mathematical reasoning appears challenging for most models
+- Only Google's Gemma2 and Meta's Llama3.1 achieved perfect accuracy
+- Single-prompt evaluation limits conclusions about mathematical ability
 
-### 3. Coherence (20% weight) - Score: 0.898
+### 2. Contextual Understanding (20% weight)
 
-**Performance**: Good  
-**Contribution**: 0.180 (18% of total CLMPI)
-
-**Details**:
-- **Task**: Open-ended narrative generation
-- **Performance**: High coherence with minimal repetition
-- **Analysis**: The model produces logically flowing, well-structured responses
-
-**Implications**:
-- Strong narrative and logical reasoning capabilities
-- Good at maintaining internal consistency
-- Suggests the model can generate coherent, readable content
-
-### 4. Fluency (20% weight) - Score: 0.943
-
-**Performance**: Excellent  
-**Contribution**: 0.189 (18.9% of total CLMPI)
+**Overall Pattern**: Strong performance across all models.
 
 **Details**:
-- **Task**: Language quality assessment
-- **Performance**: Excellent grammar and language diversity
-- **Analysis**: The model produces highly fluent, well-written text
+- **Qwen2.5 0.5B**: 1.000 (20% contribution)
+- **Gemma2 2B**: 1.000 (20% contribution)
+- **Llama3.1 8B**: 1.000 (20% contribution)
+- **Mistral 7B**: 1.000 (20% contribution)
 
-**Implications**:
-- Strong language generation capabilities
-- Good grammatical correctness
-- High word diversity and natural language flow
+**Analysis**:
+- All models excelled at context comprehension
+- Suggests strong instruction-following capabilities
+- Consistent performance across different model sizes and architectures
 
-### 5. Performance Efficiency (15% weight) - Score: 0.460
+### 3. Coherence (20% weight)
 
-**Performance**: Fair  
-**Contribution**: 0.069 (6.9% of total CLMPI)
+**Overall Pattern**: Good to excellent performance across models.
 
 **Details**:
-- **Task**: Resource usage measurement
-- **Inference Time**: 7.94 seconds
-- **Memory Usage**: 8.70 MB peak
-- **Model Size**: 4.17 GB
-- **Analysis**: Moderate efficiency with room for optimization
+- **Qwen2.5 0.5B**: 0.964 (19.3% contribution)
+- **Gemma2 2B**: 0.835 (16.7% contribution)
+- **Llama3.1 8B**: 0.975 (19.5% contribution)
+- **Mistral 7B**: 0.936 (18.7% contribution)
 
-**Implications**:
-- Acceptable performance for a 7B parameter model
-- Memory usage is reasonable
-- Inference time could be improved with optimization
+**Analysis**:
+- Llama3.1 8B showed the highest coherence
+- All models maintained good logical flow
+- Performance correlates somewhat with model size
 
-## Overall Assessment
+### 4. Fluency (20% weight)
 
-### Strengths
-1. **Excellent Language Quality**: High fluency and coherence scores
-2. **Strong Contextual Understanding**: Perfect performance on multi-turn conversations
-3. **Balanced Architecture**: Good balance between creative and factual capabilities
+**Overall Pattern**: Consistent high performance across models.
 
-### Weaknesses
-1. **Mathematical Accuracy**: Significant weakness in numerical reasoning
-2. **Efficiency**: Room for improvement in inference speed
+**Details**:
+- **Qwen2.5 0.5B**: 0.920 (18.4% contribution)
+- **Gemma2 2B**: 0.920 (18.4% contribution)
+- **Llama3.1 8B**: 0.950 (19.0% contribution)
+- **Mistral 7B**: 0.943 (18.9% contribution)
 
-### CLMPI Score Interpretation
+**Analysis**:
+- All models demonstrate strong language generation quality
+- Llama3.1 8B slightly outperformed others
+- Small models (Qwen2.5 0.5B) can achieve high fluency
 
-**CLMPI_01: 0.637 (63.7%)**
-- **Above Average**: The model performs above the midpoint of the scale
-- **Balanced Performance**: Strong in language quality, weak in accuracy
-- **Edge Deployment Viable**: Good enough for many practical applications
+### 5. Efficiency (15% weight)
 
-**CLMPI_100: 63.72**
-- **Intuitive Scale**: Easy to understand as a percentage
-- **Comparative Benchmark**: Useful for comparing against other models
-- **Performance Category**: Falls into the "Good" range (60-80)
+**Overall Pattern**: Variable performance, often limited by model size.
+
+**Details**:
+- **Qwen2.5 0.5B**: 0.860 (12.9% contribution)
+- **Gemma2 2B**: 0.000 (0% contribution)
+- **Llama3.1 8B**: 0.460 (6.9% contribution)
+- **Mistral 7B**: 0.460 (6.9% contribution)
+
+**Analysis**:
+- Qwen2.5 0.5B achieved the highest efficiency (smallest model)
+- Larger models (4+ GB) showed lower efficiency scores
+- Efficiency scoring considers both performance and resource usage
+
+## Key Insights
+
+### 1. Model Size vs Performance
+- **Small models** (Qwen2.5 0.5B): Good efficiency, variable quality
+- **Medium models** (Gemma2 2B, Phi3 Mini): Balanced performance
+- **Large models** (Llama3.1 8B, Mistral 7B): Higher quality, lower efficiency
+
+### 2. Company Performance
+- **Google (Gemma2)**: Strong accuracy and context, efficiency challenges
+- **Meta (Llama3.1)**: Balanced high performance across metrics
+- **Mistral AI**: Good quality metrics, accuracy challenges
+- **Microsoft (Phi3)**: Consistent performance (previously tested)
+- **Alibaba (Qwen2.5)**: Efficient small model, good quality
+
+### 3. Metric Reliability
+- **High Reliability**: Context, Coherence, Fluency (consistent across models)
+- **Medium Reliability**: Efficiency (varies with hardware and model size)
+- **Low Reliability**: Accuracy (single question, high variability)
+
+## Limitations of Current Results
+
+### 1. Statistical Significance
+- Single prompt per metric lacks statistical power
+- Results may not represent true model capabilities
+- No confidence intervals or error margins
+
+### 2. Prompt Coverage
+- Limited to 1 question per evaluation dimension
+- No testing of different question types or difficulty levels
+- Results may be prompt-specific rather than model-general
+
+### 3. Hardware Dependencies
+- Efficiency scores depend on local hardware
+- No standardized hardware baseline
+- Results may vary across different systems
 
 ## Recommendations
 
-### For Model Users
-1. **Use Cases**: Excellent for conversational AI, content generation, and narrative tasks
-2. **Avoid**: Mathematical calculations and precise numerical tasks
-3. **Optimization**: Consider using for text generation where accuracy isn't critical
+### 1. Expand Evaluation Coverage
+- Add multiple prompts per metric (5-10 minimum)
+- Include different question types and difficulty levels
+- Implement prompt sampling strategies
 
-### For Model Developers
-1. **Focus Areas**: Improve mathematical reasoning capabilities
-2. **Maintain**: Keep the strong language quality and contextual understanding
-3. **Optimize**: Work on inference speed and memory efficiency
+### 2. Improve Statistical Analysis
+- Calculate confidence intervals
+- Add standard deviations and error margins
+- Implement cross-validation approaches
 
-### For Benchmarking
-1. **Validation**: Results demonstrate the CLMPI system works reliably
-2. **Reproducibility**: Fixed random seed ensures consistent results
-3. **Comprehensive**: Covers all intended evaluation dimensions
+### 3. Standardize Hardware Testing
+- Define minimum hardware requirements
+- Create hardware baseline configurations
+- Document hardware impact on results
 
-## System Validation
-
-### Successfully Tested Components
-- All 5 metric evaluations completed
-- CLMPI calculation working correctly
-- Weight distribution properly applied
-- Hardware logging functional
-- Result persistence working
-
-### Technical Achievements
-- Stepwise evaluation system operational
-- Generation profiles working (deterministic vs. creative)
-- Response parsing and scoring functional
-- Comprehensive result structure implemented
+### 4. Model-Specific Analysis
+- Test models across different prompt categories
+- Analyze failure modes and success patterns
+- Identify model strengths and weaknesses
 
 ## Conclusion
 
-The CLMPI benchmark system has been successfully validated with Mistral 7B, producing comprehensive and reproducible results. The system demonstrates:
+The CLMPI system successfully evaluates multiple models across 5 dimensions, providing a framework for comparative analysis. However, the current single-prompt evaluation limits statistical significance and generalizability of results.
 
-1. **Reliability**: Consistent evaluation across all metrics
-2. **Comprehensiveness**: Covers all intended performance dimensions
-3. **Practicality**: Produces actionable insights for model assessment
-4. **Reproducibility**: Fixed random seed ensures consistent results
+**Key Findings**:
+- Context and fluency are consistently strong across models
+- Accuracy shows high variability and may need more prompts
+- Efficiency correlates with model size as expected
+- Different companies show different optimization strategies
 
-**Status**: Production Ready  
-**Next Steps**: Evaluate additional models to build comparative benchmarks
+**Next Steps**:
+1. Expand prompt coverage for statistical significance
+2. Implement confidence intervals and error analysis
+3. Add more diverse evaluation tasks
+4. Create standardized hardware testing procedures
+
+The system demonstrates potential for comprehensive model evaluation but requires expansion to provide statistically reliable results.

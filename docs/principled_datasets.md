@@ -1,113 +1,130 @@
-# Principled Dataset Selection for CLMPI Framework
+# Dataset Information for CLMPI Framework
 
 ## Overview
 
-This document outlines the principled approach to dataset selection for the CLMPI framework, using well-established academic and industrial benchmarks that are widely recognized in LLM research.
+This document describes the current datasets used in the CLMPI framework. The system currently uses single prompts from established public datasets for each evaluation dimension.
 
-## Dataset Selection Criteria
+## Current Implementation Status
 
-### 1. Academic Credibility
-- Published in peer-reviewed conferences/journals
-- Widely cited in the research community
-- Clear methodology and validation procedures
+**Note**: Each metric currently uses only 1 prompt per evaluation dimension. This is a limitation that affects statistical significance of results.
 
-### 2. Benchmark Standards
-- Established evaluation protocols
-- Reproducible results
-- Clear scoring mechanisms
+## Dataset Sources
 
-### 3. Real-World Relevance
-- Practical applications
-- Industry adoption
-- Continuous community validation
+### Accuracy: GSM-Hard Mathematical Reasoning
+- **Source**: Single question from reasoning-machines/gsm-hard dataset
+- **Rationale**: Mathematical reasoning tests factual accuracy
+- **Question Type**: Mathematical calculation requiring logical reasoning
+- **Current Coverage**: 1 question
+- **Example**: "Calculate: 13 × 47 = ?"
 
-## Selected Benchmarks by Category
-
-### Accuracy: GSM8K (Grade School Math Word Problems)
-- **Source**: Cobbe, K., et al. (2021). Training Verifiers to Solve Math Word Problems. arXiv:2110.14168
-- **Rationale**: Mathematical reasoning is fundamental to factual accuracy
-- **Question Type**: Multi-step word problems requiring logical reasoning
-- **Example**: "Janet's dogs eat 2 pounds of dog food each day. Janet has 5 dogs. How many pounds of dog food does Janet need to feed her dogs for 30 days?"
-
-### Contextual Understanding: SQuAD (Stanford Question Answering Dataset)
-- **Source**: Rajpurkar, P., et al. (2016). SQuAD: 100,000+ Questions for Machine Comprehension of Text. EMNLP 2016
-- **Rationale**: Passage comprehension is essential for contextual understanding
+### Contextual Understanding: SQuAD
+- **Source**: Single question from Stanford Question Answering Dataset
+- **Rationale**: Passage comprehension tests contextual understanding
 - **Question Type**: Span-based question answering from passages
-- **Example**: Context about Eiffel Tower construction, question about original purpose
+- **Current Coverage**: 1 question
+- **Example**: Context about Eiffel Tower, question about who it was named after
 
-### Coherence: HellaSwag (Harder Endings for Language Models)
-- **Source**: Zellers, R., et al. (2019). HellaSwag: Can a Machine Really Finish Your Sentence? ACL 2019
-- **Rationale**: Sentence completion tests logical flow and coherence
-- **Question Type**: Sentence continuation with multiple choice endings
-- **Example**: "A person is cooking in the kitchen. They are preparing a meal and following a recipe. The person carefully measures ingredients and follows each step. Next,"
+### Coherence: Custom Prompt
+- **Source**: Single custom coherence evaluation prompt
+- **Rationale**: Tests logical flow and internal consistency
+- **Question Type**: Open-ended narrative generation
+- **Current Coverage**: 1 question
+- **Example**: Generate coherent narrative about a topic
 
-### Fluency: CoLA (Corpus of Linguistic Acceptability)
-- **Source**: Warstadt, A., et al. (2019). Neural Network Acceptability Judgments. TACL 2019
-- **Rationale**: Grammatical acceptability is fundamental to fluency
-- **Question Type**: Grammatical acceptability judgments
-- **Example**: Write grammatically correct sentences about education importance
+### Fluency: Custom Prompt
+- **Source**: Single custom fluency evaluation prompt
+- **Rationale**: Tests language quality and grammatical correctness
+- **Question Type**: Descriptive text generation
+- **Current Coverage**: 1 question
+- **Example**: Generate descriptive text about a subject
 
-### Performance Efficiency: Coherence Task Performance Measurement
-- **Source**: CLMPI Framework Methodology
-- **Rationale**: Measure performance metrics during coherence evaluation
-- **Method**: Performance monitoring during HellaSwag sentence completion tasks
-- **Metrics**: Latency, CPU usage, memory consumption during generation
+### Performance Efficiency: Custom Task
+- **Source**: Single computational task
+- **Rationale**: Measures resource usage and performance
+- **Question Type**: Task requiring consistent processing
+- **Current Coverage**: 1 question
+- **Example**: Chemical symbol identification task
 
-## Implementation Benefits
+## Current Limitations
 
-### 1. Credibility
-- Results comparable to published research
-- Established baseline performance
-- Peer-reviewed methodology
+### 1. Limited Coverage
+- Only 1 prompt per metric
+- Results lack statistical significance
+- Single-point evaluations can be misleading
 
-### 2. Reproducibility
-- Clear evaluation protocols
-- Standardized scoring methods
-- Version-controlled datasets
+### 2. Dataset Quality
+- Prompts sourced from public datasets
+- Limited validation of prompt effectiveness
+- No custom prompt engineering
 
-### 3. Extensibility
-- Easy to add more questions from same benchmarks
-- Framework supports multiple datasets per category
-- Modular design for new benchmarks
+### 3. Statistical Power
+- Single prompt evaluations lack statistical power
+- Results should be interpreted with caution
+- Comparative analysis between models is limited
 
-## Dataset Versioning
+## Implementation Details
 
-### Version 2.0.0 Changes
-- Replaced custom questions with benchmark questions
-- Added source attribution and references
-- Standardized question format across categories
-- Reduced to one question per category for focused evaluation
+### Prompt Format
+All prompts use JSON format with:
+- `id`: Unique identifier
+- `category`: Metric category
+- `type`: Question type
+- `prompt`: The actual question/prompt
+- `reference`: Expected answer(s)
+- `source`: Dataset source attribution
 
-### Future Versions
-- Multiple questions per benchmark
-- Additional benchmark sources
-- Domain-specific evaluations
-- Multi-language support
+### Response Parsing
+- Accuracy and Context: Structured JSON response parsing
+- Coherence and Fluency: Free-form text generation
+- Efficiency: Performance metrics collection
+
+## Future Improvements
+
+### 1. Expand Coverage
+- Add multiple prompts per metric (5-10 minimum)
+- Include different question types and difficulty levels
+- Implement prompt sampling strategies
+
+### 2. Dataset Quality
+- Create custom prompt engineering
+- Validate prompt effectiveness
+- Add difficulty level classification
+
+### 3. Statistical Analysis
+- Calculate confidence intervals
+- Add standard deviations and error margins
+- Implement cross-validation approaches
 
 ## Usage Guidelines
 
-### 1. Citation Requirements
-When using CLMPI results, cite both:
-- CLMPI framework methodology
-- Original benchmark papers
+### 1. Result Interpretation
+- Results are based on single-prompt evaluations
+- Compare models with caution
+- Consider prompt-specific performance
 
-### 2. Result Interpretation
-- Compare against published benchmark baselines
-- Consider model size and architecture
-- Account for evaluation methodology differences
+### 2. Model Comparison
+- Limited statistical significance
+- Focus on relative performance patterns
+- Consider model size and architecture differences
 
 ### 3. Extensions
-- Add more questions from same benchmarks
-- Include additional benchmark sources
-- Customize for specific domains
+- Add more questions from same datasets
+- Create custom prompts for specific domains
+- Implement prompt difficulty scaling
 
-## References
+## Dataset Attribution
 
-1. Cobbe, K., et al. (2021). Training Verifiers to Solve Math Word Problems. arXiv:2110.14168
-2. Rajpurkar, P., et al. (2016). SQuAD: 100,000+ Questions for Machine Comprehension of Text. EMNLP 2016
-3. Zellers, R., et al. (2019). HellaSwag: Can a Machine Really Finish Your Sentence? ACL 2019
-4. Warstadt, A., et al. (2019). Neural Network Acceptability Judgments. TACL 2019
+When using CLMPI results, acknowledge:
+- CLMPI framework methodology
+- Original dataset sources where applicable
+- Current limitations of single-prompt evaluation
 
 ## Conclusion
 
-The principled dataset selection ensures CLMPI evaluations are grounded in established research standards, making results credible, reproducible, and comparable to published benchmarks. This approach provides a solid foundation for language model evaluation while maintaining the flexibility to adapt to new research developments.
+The current CLMPI implementation provides a working framework for model evaluation but is limited by single-prompt coverage. The system demonstrates potential for comprehensive evaluation but requires expansion to provide statistically reliable results.
+
+**Next Steps**:
+1. Expand prompt coverage for statistical significance
+2. Improve dataset quality and validation
+3. Implement statistical analysis tools
+4. Create custom prompt engineering capabilities
