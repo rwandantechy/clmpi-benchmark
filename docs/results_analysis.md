@@ -11,7 +11,7 @@ This document analyzes the results from CLMPI benchmark evaluations. The analysi
 ## Test Results Summary
 
 ### Models Tested
-1. **Mistral 7B** (4.4 GB) - Mistral AI - **Results Available** ✅
+1. **Mistral 7B** (4.4 GB) - Mistral AI - **Results Available**
 2. **Llama3.1 8B** (4.9 GB) - Meta - Tested but results not saved
 3. **Gemma2 2B** (1.6 GB) - Google - Tested but results not saved  
 4. **Phi3 Mini** (2.2 GB) - Microsoft - Previously tested
@@ -21,7 +21,7 @@ This document analyzes the results from CLMPI benchmark evaluations. The analysi
 
 | Model | Company | Size | CLMPI_100 | Status |
 |-------|---------|------|------------|---------|
-| **Mistral 7B** | Mistral AI | 4.4 GB | 64.5 | Complete ✅ |
+| **Mistral 7B** | Mistral AI | 4.4 GB | 64.5 | Complete |
 | **Phi3 Mini** | Microsoft | 2.2 GB | 70.6 | Previous run |
 | **Qwen2.5 0.5B** | Alibaba | 397 MB | 70.6 | Previous run |
 
