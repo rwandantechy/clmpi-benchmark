@@ -1,7 +1,7 @@
 {
   "metric": "fluency",
-  "model": "llama3.2:latest",
-  "timestamp": "2025-09-02 17:10:31",
+  "model": "mistral:7b",
+  "timestamp": "2025-09-02 21:24:03",
   "exact_match": 0.9428571428571428,
   "f1_score": 0.9428571428571428,
   "fluency_score": 0.9428571428571428,

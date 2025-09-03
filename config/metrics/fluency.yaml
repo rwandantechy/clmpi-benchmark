@@ -1,15 +1,3 @@
-name: fluency_gen
-components:
-  perplexity:
-    lm: "gpt2"
-    cap: 100
-    to_score: "1_over_1_plus_value"
-    weight: 0.6
-  grammar:
-    tool: "acceptability"
-    err_cap: 0.2
-    to_score: "1_minus_rate"
-    weight: 0.4
-guards:
-  min_tokens: 3
-normalize: clamp_0_1
+# CLMPI Fluency Metric Configuration
+dataset: prompts/fluency.json
+profile: deterministic

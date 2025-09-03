@@ -61,14 +61,6 @@ prompt_sets:
   performance_efficiency:
     - "efficiency_tasks.json"  # Computational complexity testing
 
-# Model Definitions
-# Add models here as needed. All models must be available via Ollama
-# Generation settings are standardized via generation_config.yaml
-models:
-  mistral_7b:
-    ollama_name: "mistral:7b"
-    timeout_seconds: 30
-
 # Evaluation Parameters
 evaluation:
   samples_per_task: 5      # Number of prompts per task type

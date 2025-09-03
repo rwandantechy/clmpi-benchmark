@@ -1,5 +1,6 @@
 # CLMPI Generation Configuration
 # Standardized decoding settings for fair model comparison
+# the reas
 version: "1.0.0"
 
 # Generation profiles for different evaluation types
@@ -20,12 +21,6 @@ generation_profiles:
     use_for: ["coherence", "fluency"]
     description: "Creative generation for quality evaluation"
 
-# Model-specific overrides (if needed)
-model_overrides:
-  # Add model-specific overrides here if needed
-  # Example:
-  # "my_model":
-  #   max_tokens: 800
 
 # Validation rules
 validation:

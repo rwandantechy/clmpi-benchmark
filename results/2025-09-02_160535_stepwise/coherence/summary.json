@@ -1,10 +1,10 @@
 {
   "metric": "coherence",
-  "model": "llama3.2:latest",
-  "timestamp": "2025-09-02 17:09:31",
-  "exact_match": 0.72,
-  "f1_score": 0.72,
-  "coherence_score": 0.72,
+  "model": "mistral:7b",
+  "timestamp": "2025-09-02 21:23:50",
+  "exact_match": 0.9363636363636363,
+  "f1_score": 0.9363636363636363,
+  "coherence_score": 0.9363636363636363,
   "total_prompts": 1,
   "generation_profile": "creative",
   "dataset_path": "prompts/coherence.json"
