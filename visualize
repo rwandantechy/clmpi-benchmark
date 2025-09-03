@@ -1,4 +1,0 @@
-#!/bin/bash
-# Simple visualization command - just run: ./visualize
-
-python scripts/visualize.py "$@"

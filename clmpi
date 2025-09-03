@@ -1,4 +1,0 @@
-#!/bin/bash
-# Simple CLMPI command - just run: ./clmpi
-
-python scripts/clmpi.py
