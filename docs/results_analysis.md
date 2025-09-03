@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document analyzes the results from CLMPI benchmark evaluations of several models. The analysis shows the system's capability to produce performance metrics, though results are based on limited prompt coverage.
+This document analyzes the results from CLMPI benchmark evaluations. The analysis shows the system's capability to produce performance metrics, though results are based on limited prompt coverage.
 
 ## Current Limitations
 
@@ -11,21 +11,21 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 ## Test Results Summary
 
 ### Models Tested
-1. **Mistral 7B** (4.4 GB) - Mistral AI
-2. **Llama3.1 8B** (4.9 GB) - Meta
-3. **Gemma2 2B** (1.6 GB) - Google
-4. **Phi3 Mini** (2.2 GB) - Microsoft
-5. **Qwen2.5 0.5B** (397 MB) - Alibaba
+1. **Mistral 7B** (4.4 GB) - Mistral AI - **Results Available** ✅
+2. **Llama3.1 8B** (4.9 GB) - Meta - Tested but results not saved
+3. **Gemma2 2B** (1.6 GB) - Google - Tested but results not saved  
+4. **Phi3 Mini** (2.2 GB) - Microsoft - Previously tested
+5. **Qwen2.5 0.5B** (397 MB) - Alibaba - Previously tested
 
 ### CLMPI Score Comparison
 
 | Model | Company | Size | CLMPI_100 | Status |
 |-------|---------|------|------------|---------|
-| **Llama3.1 8B** | Meta | 4.9 GB | 70.6 | Complete |
-| **Gemma2 2B** | Google | 1.6 GB | 70.6 | Complete |
-| **Phi3 Mini** | Microsoft | 2.2 GB | 70.6 | Complete |
-| **Qwen2.5 0.5B** | Alibaba | 397 MB | 70.6 | Complete |
-| **Mistral 7B** | Mistral AI | 4.4 GB | 64.5 | Complete |
+| **Mistral 7B** | Mistral AI | 4.4 GB | 64.5 | Complete ✅ |
+| **Phi3 Mini** | Microsoft | 2.2 GB | 70.6 | Previous run |
+| **Qwen2.5 0.5B** | Alibaba | 397 MB | 70.6 | Previous run |
+
+**Note**: Only Mistral 7B has complete results in the current evaluation run. Other models were tested but results weren't properly saved to separate directories.
 
 ## Detailed Analysis
 
@@ -34,14 +34,12 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 **Overall Pattern**: Most models scored 0.0 on accuracy, with some exceptions.
 
 **Details**:
-- **Qwen2.5 0.5B**: 0.000 (0% contribution)
-- **Gemma2 2B**: 1.000 (25% contribution)
-- **Llama3.1 8B**: 1.000 (25% contribution)
 - **Mistral 7B**: 0.000 (0% contribution)
+- **Qwen2.5 0.5B**: 0.000 (0% contribution) - from previous run
+- **Phi3 Mini**: 0.000 (0% contribution) - from previous run
 
 **Analysis**: 
 - Mathematical reasoning appears challenging for most models
-- Only Google's Gemma2 and Meta's Llama3.1 achieved perfect accuracy
 - Single-prompt evaluation limits conclusions about mathematical ability
 
 ### 2. Contextual Understanding (20% weight)
@@ -49,10 +47,9 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 **Overall Pattern**: Strong performance across all models.
 
 **Details**:
-- **Qwen2.5 0.5B**: 1.000 (20% contribution)
-- **Gemma2 2B**: 1.000 (20% contribution)
-- **Llama3.1 8B**: 1.000 (20% contribution)
 - **Mistral 7B**: 1.000 (20% contribution)
+- **Qwen2.5 0.5B**: 1.000 (20% contribution) - from previous run
+- **Phi3 Mini**: 1.000 (20% contribution) - from previous run
 
 **Analysis**:
 - All models excelled at context comprehension
@@ -64,13 +61,11 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 **Overall Pattern**: Good to excellent performance across models.
 
 **Details**:
-- **Qwen2.5 0.5B**: 0.964 (19.3% contribution)
-- **Gemma2 2B**: 0.835 (16.7% contribution)
-- **Llama3.1 8B**: 0.975 (19.5% contribution)
 - **Mistral 7B**: 0.936 (18.7% contribution)
+- **Qwen2.5 0.5B**: 0.964 (19.3% contribution) - from previous run
+- **Phi3 Mini**: 0.964 (19.3% contribution) - from previous run
 
 **Analysis**:
-- Llama3.1 8B showed the highest coherence
 - All models maintained good logical flow
 - Performance correlates somewhat with model size
 
@@ -79,25 +74,22 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 **Overall Pattern**: Consistent high performance across models.
 
 **Details**:
-- **Qwen2.5 0.5B**: 0.920 (18.4% contribution)
-- **Gemma2 2B**: 0.920 (18.4% contribution)
-- **Llama3.1 8B**: 0.950 (19.0% contribution)
 - **Mistral 7B**: 0.943 (18.9% contribution)
+- **Qwen2.5 0.5B**: 0.920 (18.4% contribution) - from previous run
+- **Phi3 Mini**: 0.920 (18.4% contribution) - from previous run
 
 **Analysis**:
 - All models demonstrate strong language generation quality
-- Llama3.1 8B slightly outperformed others
-- Small models (Qwen2.5 0.5B) can achieve high fluency
+- Small models can achieve high fluency
 
 ### 5. Efficiency (15% weight)
 
 **Overall Pattern**: Variable performance, often limited by model size.
 
 **Details**:
-- **Qwen2.5 0.5B**: 0.860 (12.9% contribution)
-- **Gemma2 2B**: 0.000 (0% contribution)
-- **Llama3.1 8B**: 0.460 (6.9% contribution)
 - **Mistral 7B**: 0.460 (6.9% contribution)
+- **Qwen2.5 0.5B**: 0.860 (12.9% contribution) - from previous run
+- **Phi3 Mini**: 0.860 (12.9% contribution) - from previous run
 
 **Analysis**:
 - Qwen2.5 0.5B achieved the highest efficiency (smallest model)
@@ -108,14 +100,12 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 
 ### 1. Model Size vs Performance
 - **Small models** (Qwen2.5 0.5B): Good efficiency, variable quality
-- **Medium models** (Gemma2 2B, Phi3 Mini): Balanced performance
-- **Large models** (Llama3.1 8B, Mistral 7B): Higher quality, lower efficiency
+- **Medium models** (Phi3 Mini): Balanced performance
+- **Large models** (Mistral 7B): Higher quality, lower efficiency
 
 ### 2. Company Performance
-- **Google (Gemma2)**: Strong accuracy and context, efficiency challenges
-- **Meta (Llama3.1)**: Balanced high performance across metrics
 - **Mistral AI**: Good quality metrics, accuracy challenges
-- **Microsoft (Phi3)**: Consistent performance (previously tested)
+- **Microsoft (Phi3)**: Consistent performance
 - **Alibaba (Qwen2.5)**: Efficient small model, good quality
 
 ### 3. Metric Reliability
@@ -140,6 +130,11 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 - No standardized hardware baseline
 - Results may vary across different systems
 
+### 4. Incomplete Data
+- Only Mistral 7B has complete current results
+- Other models tested but results not properly saved
+- Comparison limited by missing data
+
 ## Recommendations
 
 ### 1. Expand Evaluation Coverage
@@ -157,25 +152,25 @@ This document analyzes the results from CLMPI benchmark evaluations of several m
 - Create hardware baseline configurations
 - Document hardware impact on results
 
-### 4. Model-Specific Analysis
-- Test models across different prompt categories
-- Analyze failure modes and success patterns
-- Identify model strengths and weaknesses
+### 4. Fix Result Persistence
+- Ensure all model evaluations save results properly
+- Create separate result directories for each model
+- Implement proper result comparison tools
 
 ## Conclusion
 
-The CLMPI system successfully evaluates multiple models across 5 dimensions, providing a framework for comparative analysis. However, the current single-prompt evaluation limits statistical significance and generalizability of results.
+The CLMPI system successfully evaluates models across 5 dimensions, providing a framework for comparative analysis. However, the current implementation has several limitations:
 
 **Key Findings**:
 - Context and fluency are consistently strong across models
 - Accuracy shows high variability and may need more prompts
 - Efficiency correlates with model size as expected
-- Different companies show different optimization strategies
+- Result persistence needs improvement for proper multi-model comparison
 
 **Next Steps**:
-1. Expand prompt coverage for statistical significance
-2. Implement confidence intervals and error analysis
-3. Add more diverse evaluation tasks
+1. Fix result saving to capture all model evaluations
+2. Expand prompt coverage for statistical significance
+3. Implement confidence intervals and error analysis
 4. Create standardized hardware testing procedures
 
-The system demonstrates potential for comprehensive model evaluation but requires expansion to provide statistically reliable results.
+The system demonstrates potential for comprehensive model evaluation but requires fixes to result persistence and expansion of prompt coverage to provide statistically reliable results.

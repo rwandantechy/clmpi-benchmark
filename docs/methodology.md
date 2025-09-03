@@ -327,13 +327,11 @@ python scripts/evaluate_models.py \
 
 The system has been tested with several models:
 
-- **Mistral 7B**: CLMPI_100: 64.5
-- **Llama3.1 8B**: CLMPI_100: 70.6  
-- **Gemma2 2B**: CLMPI_100: 70.6
-- **Phi3 Mini**: CLMPI_100: 70.6
-- **Qwen2.5 0.5B**: CLMPI_100: 70.6
+- **Mistral 7B**: CLMPI_100: 64.5 (current run)
+- **Phi3 Mini**: CLMPI_100: 70.6 (previous run)
+- **Qwen2.5 0.5B**: CLMPI_100: 70.6 (previous run)
 
-**Note**: These scores are based on single-prompt evaluations and should be interpreted with caution.
+**Note**: These scores are based on single-prompt evaluations and should be interpreted with caution. Only Mistral 7B has complete results in the current evaluation run.
 
 ## Troubleshooting
 
